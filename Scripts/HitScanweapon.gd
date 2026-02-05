@@ -99,10 +99,13 @@ func _do_hitscan(dmg_base: float, spread: float) -> void:
 
 	var world: World3D = camera.get_viewport().get_world_3d()
 	var space: PhysicsDirectSpaceState3D = world.direct_space_state
+	if world == null:
+		return
 	var q := PhysicsRayQueryParameters3D.create(from, to)
 	q.collision_mask = hit_mask
 	q.collide_with_areas = true
 	q.collide_with_bodies = true
+	
 
 	var hit := space.intersect_ray(q)
 	if hit.is_empty():

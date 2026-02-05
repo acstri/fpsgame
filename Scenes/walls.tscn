@@ -1,14 +1,9 @@
 [gd_scene format=3 uid="uid://c8a5s64pbm82q"]
 
-[ext_resource type="Texture2D" uid="uid://dpxxqn3gdlflx" path="res://Assets/Wall_Texture.png" id="1_2bj67"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7yo87"]
-albedo_texture = ExtResource("1_2bj67")
-uv1_scale = Vector3(0.13, 0.13, 0.13)
-uv1_triplanar = true
+[ext_resource type="Material" uid="uid://diaynsxnu33s3" path="res://Assets/Materials/wall_mat.tres" id="1_2bj67"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_q2d71"]
-material = SubResource("StandardMaterial3D_7yo87")
+material = ExtResource("1_2bj67")
 size = Vector3(4, 4, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y7y61"]

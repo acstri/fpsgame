@@ -120,7 +120,7 @@ transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.977
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
 
 [node name="HandsOverlay" type="CanvasLayer" parent="." unique_id=1778965903]
-layer = 20
+layer = -1
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="HandsOverlay" unique_id=432757317]
 anchors_preset = 15
@@ -128,6 +128,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="HandsOverlay/SubViewportContainer" unique_id=1981594871]
@@ -146,8 +147,18 @@ camera = NodePath("../../../../../../Player/Head/WorldCam")
 stats = NodePath("../../../../../../Player/Stats")
 
 [node name="wizardry" parent="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanWeapon/Weapon" parent_id_path=PackedInt32Array(1319821979, 1288314729) index="0" unique_id=1447871875 node_paths=PackedStringArray("camera", "stats")]
+automatic = null
 camera = NodePath("../../../../../../../../Player/Head/WorldCam")
 stats = NodePath("../../../../../../../../Player/Stats")
+base_damage = null
+base_range = null
+base_fire_rate = null
+spread_deg = null
+mag_size = null
+ammo_in_mag = null
+ammo_reserve = null
+infinite_ammo = null
+reload_time = null
 
 [editable path="Player"]
 [editable path="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam"]

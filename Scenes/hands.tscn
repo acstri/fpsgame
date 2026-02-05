@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://dnofohb10icx7"]
 
-[ext_resource type="Shader" uid="uid://de7y3s7227rgj" path="res://Scenes/hands.gdshader" id="1_xhkl4"]
+[ext_resource type="Shader" uid="uid://de7y3s7227rgj" path="res://Assets/Materials/hands.gdshader" id="1_xhkl4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s8rny"]
 

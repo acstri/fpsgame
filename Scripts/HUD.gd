@@ -32,7 +32,7 @@ func _ready() -> void:
 	# Weapon (via NodePath)
 	var weapon: Node = null
 	if weapon_path != NodePath():
-		weapon = player.get_node_or_null(weapon_path)
+		weapon = get_node_or_null(weapon_path) # not player.get_node_or_null
 
 	if weapon != null and weapon.has_signal("ammo_changed"):
 		weapon.connect("ammo_changed", _on_ammo_changed)
