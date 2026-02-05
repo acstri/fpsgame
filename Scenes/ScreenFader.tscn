@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://byujljsy5qhu1"]
+
+[ext_resource type="Script" uid="uid://duadf3ximc8a7" path="res://ScreenFader.gd" id="1_wkb3l"]
+
+[node name="ScreenFader" type="Control" unique_id=243986901]
+process_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_wkb3l")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1489330467]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://c3qw14r6douqb"]
+
+[ext_resource type="Script" uid="uid://cdmqacb0kdcj6" path="res://Scripts/EnemyAI_Chase.gd" id="1_1f0kj"]
+[ext_resource type="Script" uid="uid://dpexa3r6alfst" path="res://Scripts/EnemHealth.gd" id="1_hghv2"]
+[ext_resource type="Script" uid="uid://cmxikjcajuyf6" path="res://Scripts/Dropper.gd" id="3_xeo28"]
+[ext_resource type="Script" uid="uid://cl4nwx6vex266" path="res://Scripts/EnemyMeleeDamage.gd" id="4_kpr8r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1f0kj"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_afpow"]
+material = SubResource("StandardMaterial3D_1f0kj")
+height = 1.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_287tu"]
+height = 1.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpr8r"]
+radius = 1.0
+
+[node name="Enemy" type="CharacterBody3D" unique_id=949816573 groups=["enemy"]]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_1f0kj")
+stop_distance = 1.86
+
+[node name="Visuals" type="MeshInstance3D" parent="." unique_id=766435993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("CapsuleMesh_afpow")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=648665732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_287tu")
+
+[node name="Health" type="Node" parent="." unique_id=1467536774]
+script = ExtResource("1_hghv2")
+
+[node name="Dropper" type="Node" parent="." unique_id=2066269416]
+script = ExtResource("3_xeo28")
+
+[node name="HurtArea" type="Area3D" parent="." unique_id=2126833244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("4_kpr8r")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtArea" unique_id=905280981]
+shape = SubResource("CapsuleShape3D_kpr8r")

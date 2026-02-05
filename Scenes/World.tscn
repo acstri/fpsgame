@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://bou3w56xm8geo"]
+
+[ext_resource type="Script" uid="uid://l2t0fq1ep3in" path="res://Scripts/Director.gd" id="1_5nsto"]
+[ext_resource type="PackedScene" uid="uid://b2qx3gasbyjlo" path="res://Scenes/HUD.tscn" id="1_45d1s"]
+[ext_resource type="PackedScene" uid="uid://8dwo1d2d67qo" path="res://Scenes/upgrade_screen.tscn" id="1_gjpho"]
+[ext_resource type="PackedScene" uid="uid://c0jp8fyq4bgcf" path="res://Scenes/GameOverScreen.tscn" id="1_y7y61"]
+[ext_resource type="PackedScene" uid="uid://c3qw14r6douqb" path="res://Scenes/Enemy.tscn" id="2_gjpho"]
+[ext_resource type="PackedScene" uid="uid://bba1rtjmy8a0l" path="res://Scenes/Player.tscn" id="3_p70al"]
+[ext_resource type="Script" uid="uid://d0cgobcghafpp" path="res://Scripts/upgrades/RunHooks.gd" id="5_p70al"]
+[ext_resource type="PackedScene" uid="uid://byujljsy5qhu1" path="res://Scenes/ScreenFader.tscn" id="7_q2d71"]
+[ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
+[ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
+[ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_7yo87"]
+sky_material = SubResource("ProceduralSkyMaterial_kn06e")
+
+[sub_resource type="Environment" id="Environment_ti1bm"]
+background_mode = 2
+sky = SubResource("Sky_7yo87")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kn06e"]
+load_path = "res://.godot/imported/tileable-img_0062-verydark.png-5a2498277c194578928fedad82ed18af.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_45d1s"]
+albedo_texture = SubResource("CompressedTexture2D_kn06e")
+uv1_scale = Vector3(0.045, 0.045, 0.045)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_45d1s"]
+material = SubResource("StandardMaterial3D_45d1s")
+size = Vector2(70, 70)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uo7di"]
+size = Vector3(70, 0, 70)
+
+[node name="World" type="Node3D" unique_id=453812787]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=214763159]
+environment = SubResource("Environment_ti1bm")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1884147217]
+transform = Transform3D(-0.86708915, -0.434575, 0.24351805, -0.0052823946, 0.4968355, 0.86782867, -0.49812505, 0.7511985, -0.43309623, 0, 28.628138, 0)
+layers = 1048575
+shadow_enabled = true
+
+[node name="RunHooks" type="Node" parent="." unique_id=1093399152 node_paths=PackedStringArray("player", "upgrade_screen", "director", "game_over_screen", "screen_fader")]
+script = ExtResource("5_p70al")
+player = NodePath("../Player")
+upgrade_screen = NodePath("../UpgradeScreen")
+director = NodePath("../Director")
+game_over_screen = NodePath("../GameOverScreen")
+death_slowmo_duration = 3.0
+screen_fader = NodePath("../ScreenFader")
+
+[node name="GameOverScreen" parent="." unique_id=1227436529 instance=ExtResource("1_y7y61")]
+process_mode = 3
+
+[node name="HUD" parent="." unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
+player = NodePath("../Player")
+weapon_path = NodePath("../HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanWeapon/Weapon/wizardry")
+
+[node name="UpgradeScreen" parent="." unique_id=847933536 instance=ExtResource("1_gjpho")]
+process_mode = 3
+
+[node name="Director" type="Node" parent="." unique_id=1563088560]
+script = ExtResource("1_5nsto")
+enemy_scene = ExtResource("2_gjpho")
+avoid_mask = 1
+avoid_radius = 0.6
+ground_body_path = NodePath("../statics/FloorLayer")
+
+[node name="ScreenFader" parent="." unique_id=243986901 instance=ExtResource("7_q2d71")]
+process_mode = 3
+visible = false
+z_index = -1
+
+[node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
+
+[node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
+near = 0.1
+
+[node name="statics" type="Node" parent="." unique_id=1329344165]
+
+[node name="FloorLayer" type="StaticBody3D" parent="statics" unique_id=865853195]
+collision_mask = 6
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/FloorLayer" unique_id=32640974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021928787, 0.024451256, -0.013404846)
+mesh = SubResource("PlaneMesh_45d1s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/FloorLayer" unique_id=427253245]
+shape = SubResource("BoxShape3D_uo7di")
+
+[node name="Tower" parent="statics" unique_id=2114612622 instance=ExtResource("9_kn06e")]
+transform = Transform3D(2.9722862, 0.40683544, 0, -0.40683544, 2.9722862, 0, 0, 0, 3, 3.415676, -1.26408, -30.695646)
+
+[node name="Tower2" parent="statics" unique_id=1633041765 instance=ExtResource("9_kn06e")]
+transform = Transform3D(2.9729638, -0.40046704, 0.033367738, 0.40185475, 2.962697, -0.24685803, 0, 0.24910296, 2.98964, 23, -2.656622, 21)
+
+[node name="Tower3" parent="statics" unique_id=715385468 instance=ExtResource("9_kn06e")]
+transform = Transform3D(3, 0, 0, 0, 2.995398, 0.16610526, 0, -0.16610526, 2.995398, -20.29766, -1.5750408, 21)
+
+[node name="Walls" parent="statics" unique_id=1348878863 instance=ExtResource("9_uo7di")]
+transform = Transform3D(0.97790015, 0.18379733, 0.09964848, -0.20907243, 0.85968024, 0.46608856, 0, -0.47662184, 0.8791084, 11, -0.11551857, -16)
+
+[node name="Walls2" parent="statics" unique_id=71518215 instance=ExtResource("9_uo7di")]
+transform = Transform3D(0.8585664, 0, 0.51270235, 0, 1, 0, -0.51270235, 0, 0.8585664, -10.833212, -0.68736935, 14.4562025)
+
+[node name="Walls3" parent="statics" unique_id=1008833160 instance=ExtResource("9_uo7di")]
+transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.9779366, -7.31147, 2, -20.057621)
+
+[node name="Walls4" parent="statics" unique_id=1141679315 instance=ExtResource("9_uo7di")]
+transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
+
+[node name="HandsOverlay" type="CanvasLayer" parent="." unique_id=1778965903]
+layer = 20
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HandsOverlay" unique_id=432757317]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HandsOverlay/SubViewportContainer" unique_id=1981594871]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="ViewModelRoot" type="Node3D" parent="HandsOverlay/SubViewportContainer/SubViewport" unique_id=54564143]
+
+[node name="ViewCam" parent="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot" unique_id=1319821979 instance=ExtResource("11_7yo87")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="HitscanWeapon" parent="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam" index="0" unique_id=1419976119 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../../../../../Player/Head/WorldCam")
+stats = NodePath("../../../../../../Player/Stats")
+
+[node name="wizardry" parent="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanWeapon/Weapon" parent_id_path=PackedInt32Array(1319821979, 1288314729) index="0" unique_id=1447871875 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../../../../../../../Player/Head/WorldCam")
+stats = NodePath("../../../../../../../../Player/Stats")
+
+[editable path="Player"]
+[editable path="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam"]
+[editable path="HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanWeapon/Weapon/wizardry/hands"]

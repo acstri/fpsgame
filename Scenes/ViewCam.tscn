@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://chl2k1t6hoxl0"]
+
+[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/HitScanweapon.gd" id="1_bf7uu"]
+[ext_resource type="Script" uid="uid://dvyn6g7cc511y" path="res://Scripts/Rifle.gd" id="2_ksyp5"]
+[ext_resource type="PackedScene" uid="uid://dnofohb10icx7" path="res://Scenes/hands.tscn" id="3_ksyp5"]
+
+[node name="ViewCam" type="Camera3D" unique_id=1319821979]
+process_priority = 1
+cull_mask = 524288
+current = true
+fov = 35.0
+near = 0.01
+
+[node name="HitscanWeapon" type="Node3D" parent="." unique_id=1419976119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)
+script = ExtResource("1_bf7uu")
+hit_mask = 5
+
+[node name="Weapon" type="Node3D" parent="HitscanWeapon" unique_id=1288314729 groups=["weapon"]]
+
+[node name="wizardry" type="Node3D" parent="HitscanWeapon/Weapon" unique_id=1447871875]
+script = ExtResource("2_ksyp5")
+hit_mask = 5
+
+[node name="hands" parent="HitscanWeapon/Weapon/wizardry" unique_id=948130663 instance=ExtResource("3_ksyp5")]
+
+[editable path="HitscanWeapon/Weapon/wizardry/hands"]

@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://b2qx3gasbyjlo"]
+
+[ext_resource type="Script" uid="uid://b2jrr3wk2fery" path="res://Scripts/HUD.gd" id="1_sd512"]
+
+[node name="HUD" type="Control" unique_id=1975167068]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sd512")
+
+[node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 50.0
+
+[node name="HPLabel" type="Label" parent="TopLeft" unique_id=1879003467]
+layout_mode = 2
+
+[node name="AmmoLabel" type="Label" parent="TopLeft" unique_id=442655773]
+layout_mode = 2
+
+[node name="Bottom" type="VBoxContainer" parent="." unique_id=245589413]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 936.0
+offset_top = 594.0
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="XPBar" type="ProgressBar" parent="Bottom" unique_id=1874698629]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="Bottom" unique_id=2029892286]
+layout_mode = 2

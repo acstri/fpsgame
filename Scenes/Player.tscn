@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bba1rtjmy8a0l"]
+
+[ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
+[ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
+[ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/PlayerHealth.gd" id="6_nn08x"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vgqql"]
+material = SubResource("StandardMaterial3D_6t5aa")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fkybt"]
+
+[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera") groups=["player"]]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_v0iea")
+head = NodePath("Head")
+camera = NodePath("Head/WorldCam")
+jump_velocity = 7.0
+
+[node name="Head" type="Node3D" parent="." unique_id=419456813]
+
+[node name="WorldCam" type="Camera3D" parent="Head" unique_id=1011416034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+cull_mask = 524287
+current = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=148226516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_vgqql")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1190013678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_fkybt")
+
+[node name="LevelSystem" type="Node" parent="." unique_id=2075312957]
+script = ExtResource("4_dewec")
+
+[node name="Stats" type="Node" parent="." unique_id=114155298]
+script = ExtResource("5_5ixxa")
+
+[node name="Health" type="Node" parent="." unique_id=1193666010]
+script = ExtResource("6_nn08x")
