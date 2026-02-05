@@ -1,8 +1,68 @@
 [gd_scene format=3 uid="uid://chl2k1t6hoxl0"]
 
-[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/HitScanweapon.gd" id="1_bf7uu"]
-[ext_resource type="Script" uid="uid://dvyn6g7cc511y" path="res://Scripts/Rifle.gd" id="2_ksyp5"]
 [ext_resource type="PackedScene" uid="uid://dnofohb10icx7" path="res://Scenes/hands.tscn" id="3_ksyp5"]
+
+[sub_resource type="Animation" id="Animation_bhhdu"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("right_hand/arm_lower:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.11885368, 0.0011925697)]
+}
+
+[sub_resource type="Animation" id="Animation_megsn"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.43333334, 1.3666667),
+"transitions": PackedFloat32Array(1.1, 0.5, 1.1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0.019, -0.06), Vector3(0, -0.059, 0.13)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("right_hand/arm_lower:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.11885368, 0.0011925697)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ksyp5"]
+_data = {
+&"RESET": SubResource("Animation_bhhdu"),
+&"idle": SubResource("Animation_megsn")
+}
 
 [node name="ViewCam" type="Camera3D" unique_id=1319821979]
 process_priority = 1
@@ -11,17 +71,12 @@ current = true
 fov = 35.0
 near = 0.01
 
-[node name="HitscanWeapon" type="Node3D" parent="." unique_id=1419976119]
+[node name="WeaponRig" type="Node3D" parent="." unique_id=1288314729 groups=["weapon"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)
-script = ExtResource("1_bf7uu")
-hit_mask = 5
 
-[node name="Weapon" type="Node3D" parent="HitscanWeapon" unique_id=1288314729 groups=["weapon"]]
+[node name="hands" parent="WeaponRig" unique_id=948130663 instance=ExtResource("3_ksyp5")]
 
-[node name="wizardry" type="Node3D" parent="HitscanWeapon/Weapon" unique_id=1447871875]
-script = ExtResource("2_ksyp5")
-hit_mask = 5
+[node name="AnimationTree" type="AnimationPlayer" parent="WeaponRig/hands" unique_id=1109696373]
+libraries/ = SubResource("AnimationLibrary_ksyp5")
 
-[node name="hands" parent="HitscanWeapon/Weapon/wizardry" unique_id=948130663 instance=ExtResource("3_ksyp5")]
-
-[editable path="HitscanWeapon/Weapon/wizardry/hands"]
+[editable path="WeaponRig/hands"]

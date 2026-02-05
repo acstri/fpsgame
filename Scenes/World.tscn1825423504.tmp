@@ -9,7 +9,6 @@
 [ext_resource type="Script" uid="uid://d0cgobcghafpp" path="res://Scripts/upgrades/RunHooks.gd" id="5_p70al"]
 [ext_resource type="PackedScene" uid="uid://byujljsy5qhu1" path="res://Scenes/ScreenFader.tscn" id="7_q2d71"]
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
-[ext_resource type="Resource" uid="uid://d2k2mhs35wmmq" path="res://MagicMissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
 [ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
 
@@ -65,7 +64,7 @@ process_mode = 3
 
 [node name="HUD" parent="." unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
 player = NodePath("../Player")
-spell_caster_path = NodePath("../Player/SpellCaster/MagicMissileCaster")
+weapon_path = NodePath("../Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanSpell/Weapon/wizardry")
 
 [node name="UpgradeScreen" parent="." unique_id=847933536 instance=ExtResource("1_gjpho")]
 process_mode = 3
@@ -87,12 +86,6 @@ z_index = -1
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
 
-[node name="SpellCaster" parent="Player" index="6" unique_id=571459364 node_paths=PackedStringArray("hitscan")]
-hitscan = NodePath("HitscanSpell")
-
-[node name="MagicMissileCaster" parent="Player/SpellCaster" index="1" unique_id=392683619]
-spell = ExtResource("9_ti1bm")
-
 [node name="HandsOverlay" type="CanvasLayer" parent="Player" unique_id=1778965903]
 layer = -1
 
@@ -111,8 +104,18 @@ handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
-[node name="ViewCam" parent="Player/HandsOverlay/SubViewportContainer/SubViewport" unique_id=1319821979 instance=ExtResource("11_7yo87")]
+[node name="ViewModelRoot" type="Node3D" parent="Player/HandsOverlay/SubViewportContainer/SubViewport" unique_id=54564143]
+
+[node name="ViewCam" parent="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot" unique_id=1319821979 instance=ExtResource("11_7yo87")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="HitscanSpell" parent="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam" index="0" unique_id=1419976119 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../../../../../Head/WorldCam")
+stats = NodePath("../../../../../../Stats")
+
+[node name="wizardry" parent="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanSpell/Weapon" parent_id_path=PackedInt32Array(1319821979, 1288314729) index="0" unique_id=1447871875 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../../../../../../../Head/WorldCam")
+stats = NodePath("../../../../../../../../Stats")
 
 [node name="statics" type="Node" parent="." unique_id=1329344165]
 
@@ -148,3 +151,5 @@ transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.977
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
 
 [editable path="Player"]
+[editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam"]
+[editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewModelRoot/ViewCam/HitscanSpell/Weapon/wizardry/hands"]

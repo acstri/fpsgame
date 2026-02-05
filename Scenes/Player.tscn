@@ -3,7 +3,10 @@
 [ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
 [ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
+[ext_resource type="Script" uid="uid://8tuo47nk0sas" path="res://Scripts/SpellCaster.gd" id="5_52ee3"]
+[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/HitScanSpell.gd" id="5_nn08x"]
 [ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/PlayerHealth.gd" id="6_nn08x"]
+[ext_resource type="Script" uid="uid://d3kn4ba8eij1a" path="res://Scripts/MagicMissileCaster.gd" id="7_52ee3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
 albedo_color = Color(0, 0, 1, 1)
@@ -45,3 +48,17 @@ script = ExtResource("5_5ixxa")
 
 [node name="Health" type="Node" parent="." unique_id=1193666010]
 script = ExtResource("6_nn08x")
+
+[node name="SpellCaster" type="Node" parent="." unique_id=571459364]
+script = ExtResource("5_52ee3")
+
+[node name="HitscanSpell" type="Node3D" parent="SpellCaster" unique_id=1392762653 node_paths=PackedStringArray("camera", "stats")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)
+script = ExtResource("5_nn08x")
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../Stats")
+hit_mask = 5
+
+[node name="MagicMissileCaster" type="Node" parent="SpellCaster" unique_id=392683619 node_paths=PackedStringArray("hitscan")]
+script = ExtResource("7_52ee3")
+hitscan = NodePath("../HitscanSpell")

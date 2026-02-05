@@ -586,68 +586,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_3ne8i")
 
-[sub_resource type="Animation" id="Animation_bhhdu"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("right_hand/arm_lower:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, -0.11885368, 0.0011925697)]
-}
-
-[sub_resource type="Animation" id="Animation_megsn"]
-resource_name = "idle"
-length = 2.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.43333334, 1.3666667),
-"transitions": PackedFloat32Array(1.1, 0.5, 1.1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 0.019, -0.06), Vector3(0, -0.059, 0.13)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("right_hand/arm_lower:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, -0.11885368, 0.0011925697)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_yoq75"]
-_data = {
-&"RESET": SubResource("Animation_bhhdu"),
-&"idle": SubResource("Animation_megsn")
-}
-
 [node name="hands" type="Node3D" unique_id=948130663]
 transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.055, 0, 0, 0)
 
@@ -824,6 +762,3 @@ mesh = SubResource("ArrayMesh_3e1se")
 transform = Transform3D(0.9211854, 0.38912395, 0, -0.38912395, 0.9211854, 0, 0, 0, 1, 0.28644383, 0, -0.39743483)
 layers = 524288
 mesh = SubResource("ArrayMesh_oi730")
-
-[node name="AnimationTree" type="AnimationPlayer" parent="." unique_id=1912533683]
-libraries/ = SubResource("AnimationLibrary_yoq75")

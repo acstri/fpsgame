@@ -37,3 +37,8 @@ layout_mode = 2
 
 [node name="LevelLabel" type="Label" parent="Bottom" unique_id=2029892286]
 layout_mode = 2
+
+[node name="Center" type="VBoxContainer" parent="." unique_id=286431526]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
