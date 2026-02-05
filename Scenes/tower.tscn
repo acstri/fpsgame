@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ba768gedrunjg"]
 
-[ext_resource type="Material" uid="uid://cixhj07w3qmc6" path="res://tower_mat.tres" id="1_ndpwd"]
+[ext_resource type="Material" uid="uid://cixhj07w3qmc6" path="res://Assets/tower_mat.tres" id="1_ndpwd"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_mh5eo"]
 material = ExtResource("1_ndpwd")

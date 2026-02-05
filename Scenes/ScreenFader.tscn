@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://byujljsy5qhu1"]
 
-[ext_resource type="Script" uid="uid://duadf3ximc8a7" path="res://ScreenFader.gd" id="1_wkb3l"]
+[ext_resource type="Script" uid="uid://duadf3ximc8a7" path="res://Scripts/ScreenFader.gd" id="1_wkb3l"]
 
 [node name="ScreenFader" type="Control" unique_id=243986901]
 process_mode = 1
