@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
 [ext_resource type="Resource" uid="uid://d2k2mhs35wmmq" path="res://MagicMissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
+[ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/ProjectileSpell.gd" id="10_8l3nt"]
+[ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/SpellProjectile.tscn" id="10_op4cu"]
 [ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
@@ -90,8 +92,15 @@ near = 0.1
 [node name="SpellCaster" parent="Player" index="6" unique_id=571459364 node_paths=PackedStringArray("hitscan")]
 hitscan = NodePath("HitscanSpell")
 
-[node name="MagicMissileCaster" parent="Player/SpellCaster" index="1" unique_id=392683619]
+[node name="MagicMissileCaster" parent="Player/SpellCaster" index="1" unique_id=392683619 node_paths=PackedStringArray("projectile_spell")]
+projectile_spell = NodePath("../ProjectileSpell")
 spell = ExtResource("9_ti1bm")
+
+[node name="ProjectileSpell" type="Node3D" parent="Player/SpellCaster" index="2" unique_id=1372373660 node_paths=PackedStringArray("camera", "stats")]
+script = ExtResource("10_8l3nt")
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../Stats")
+projectile_scene = ExtResource("10_op4cu")
 
 [node name="HandsOverlay" type="CanvasLayer" parent="Player" unique_id=1778965903]
 layer = -1

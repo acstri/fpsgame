@@ -4,8 +4,4 @@
 
 [resource]
 script = ExtResource("1_0udqh")
-damage = 8.0
-range = 140.0
-spread_deg = 0.6
-cooldown = 0.12
 metadata/_custom_type_script = "uid://cdwgpfk6al1jf"

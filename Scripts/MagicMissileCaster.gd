@@ -2,8 +2,9 @@ extends Node
 class_name MagicMissileCaster
 
 @export var hitscan: HitscanSpell
-@export var spell: SpellData      # tiny spread like rifle bloom
-@export var automatic := true         # hold to cast
+@export var projectile_spell: ProjectileSpell
+@export var spell: SpellData
+@export var automatic := true
 
 var _cd_left := 0.0
 
@@ -15,10 +16,18 @@ func _physics_process(delta: float) -> void:
 		try_cast()
 
 func try_cast() -> void:
-	if hitscan == null or spell == null:
+	if spell == null:
 		return
 	if _cd_left > 0.0:
 		return
 
 	_cd_left = maxf(0.01, spell.cooldown)
-	hitscan.cast(spell.damage, spell.spell_range, spell.spread_deg)
+
+	# Prefer projectile if assigned
+	if projectile_spell != null:
+		projectile_spell.cast(spell.damage, spell.spell_range, spell.spread_deg)
+		return
+
+	# Fallback to hitscan
+	if hitscan != null:
+		hitscan.cast(spell.damage, spell.spell_range, spell.spread_deg)
