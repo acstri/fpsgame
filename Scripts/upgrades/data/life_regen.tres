@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://serm4imhucch"]
+
+[ext_resource type="Script" uid="uid://cpsts44t5urjv" path="res://Scripts/upgrades/UpgradeData.gd" id="1_nkbop"]
+
+[resource]
+script = ExtResource("1_nkbop")
+title = "Life Regen +1%"
+description = "Increase your Life Regeneration by 1%"
+effect_key = "life_regen_up"
+effect_value = 0.01
+metadata/_custom_type_script = "uid://cpsts44t5urjv"

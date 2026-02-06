@@ -6,14 +6,20 @@
 [ext_resource type="PackedScene" uid="uid://c0jp8fyq4bgcf" path="res://Scenes/GameOverScreen.tscn" id="1_y7y61"]
 [ext_resource type="PackedScene" uid="uid://c3qw14r6douqb" path="res://Scenes/Enemy.tscn" id="2_gjpho"]
 [ext_resource type="PackedScene" uid="uid://bba1rtjmy8a0l" path="res://Scenes/Player.tscn" id="3_p70al"]
+[ext_resource type="Script" uid="uid://xfslssbcxm88" path="res://Scripts/upgrades/UpgradeManager.gd" id="4_mvfa8"]
 [ext_resource type="Script" uid="uid://d0cgobcghafpp" path="res://Scripts/upgrades/RunHooks.gd" id="5_p70al"]
+[ext_resource type="Script" uid="uid://cpsts44t5urjv" path="res://Scripts/upgrades/UpgradeData.gd" id="5_r0dna"]
+[ext_resource type="Resource" uid="uid://bvxj8j5uhqgc3" path="res://Scripts/upgrades/data/move_speed_up.tres" id="6_b5aes"]
 [ext_resource type="PackedScene" uid="uid://byujljsy5qhu1" path="res://Scenes/ScreenFader.tscn" id="7_q2d71"]
+[ext_resource type="Resource" uid="uid://2b8yk6wvpoul" path="res://Scripts/upgrades/data/fire_rate_up.tres" id="7_w0bku"]
+[ext_resource type="Resource" uid="uid://de6beud2jv2ye" path="res://Scripts/upgrades/data/damage_up.tres" id="8_0ao37"]
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
 [ext_resource type="Resource" uid="uid://d2k2mhs35wmmq" path="res://MagicMissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
-[ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/ProjectileSpell.gd" id="10_8l3nt"]
-[ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/SpellProjectile.tscn" id="10_op4cu"]
+[ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/MagicMissile.gd" id="10_8l3nt"]
+[ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/MM_SpellProjectile.tscn" id="10_op4cu"]
 [ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
+[ext_resource type="PackedScene" uid="uid://b2vd83os48jst" path="res://Scenes/StatBlock.tscn" id="11_r0dna"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -26,7 +32,6 @@ sky_material = SubResource("ProceduralSkyMaterial_kn06e")
 background_mode = 2
 sky = SubResource("Sky_7yo87")
 tonemap_mode = 2
-glow_enabled = true
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kn06e"]
 load_path = "res://.godot/imported/tileable-img_0062-verydark.png-5a2498277c194578928fedad82ed18af.s3tc.ctex"
@@ -53,54 +58,76 @@ transform = Transform3D(-0.86708915, -0.434575, 0.24351805, -0.0052823946, 0.496
 layers = 1048575
 shadow_enabled = true
 
-[node name="RunHooks" type="Node" parent="." unique_id=1093399152 node_paths=PackedStringArray("player", "upgrade_screen", "director", "game_over_screen", "screen_fader")]
+[node name="GameStates" type="Node" parent="." unique_id=615229750]
+
+[node name="RunHooks" type="Node" parent="GameStates" unique_id=629901134 node_paths=PackedStringArray("player", "upgrade_screen", "level_system", "stats", "upgrades", "director", "game_over_screen", "health", "screen_fader")]
 script = ExtResource("5_p70al")
-player = NodePath("../Player")
-upgrade_screen = NodePath("../UpgradeScreen")
+player = NodePath("../../Player")
+upgrade_screen = NodePath("../../UI/UpgradeScreen")
+level_system = NodePath("../../Player/LevelSystem")
+stats = NodePath("../../Player/Stats")
+upgrades = NodePath("../UpgradeManager")
 director = NodePath("../Director")
-game_over_screen = NodePath("../GameOverScreen")
-death_slowmo_duration = 3.0
-screen_fader = NodePath("../ScreenFader")
+game_over_screen = NodePath("../../UI/GameOverScreen")
+health = NodePath("../../Player/Health")
+screen_fader = NodePath("../../UI/ScreenFader")
 
-[node name="GameOverScreen" parent="." unique_id=1227436529 instance=ExtResource("1_y7y61")]
-process_mode = 3
-
-[node name="HUD" parent="." unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
-player = NodePath("../Player")
-spell_caster_path = NodePath("../Player/SpellCaster/MagicMissileCaster")
-
-[node name="UpgradeScreen" parent="." unique_id=847933536 instance=ExtResource("1_gjpho")]
-process_mode = 3
-
-[node name="Director" type="Node" parent="." unique_id=1563088560]
+[node name="Director" type="Node" parent="GameStates" unique_id=1563088560]
 script = ExtResource("1_5nsto")
 enemy_scene = ExtResource("2_gjpho")
 avoid_mask = 1
 avoid_radius = 0.6
-ground_body_path = NodePath("../statics/FloorLayer")
+ground_body_path = NodePath("../../statics/FloorLayer")
 
-[node name="ScreenFader" parent="." unique_id=243986901 instance=ExtResource("7_q2d71")]
+[node name="UpgradeManager" type="Node" parent="GameStates" unique_id=1077308573]
+script = ExtResource("4_mvfa8")
+all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResource("7_w0bku"), ExtResource("6_b5aes")])
+
+[node name="UI" type="Node" parent="." unique_id=1103826466]
+
+[node name="GameOverScreen" parent="UI" unique_id=1227436529 instance=ExtResource("1_y7y61")]
+process_mode = 3
+
+[node name="HUD" parent="UI" unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
+mouse_filter = 2
+player = NodePath("../../Player")
+spell_caster_path = NodePath("../../Player/SpellCaster")
+
+[node name="StatBlock" parent="UI/HUD" unique_id=1916233769 node_paths=PackedStringArray("stats") instance=ExtResource("11_r0dna")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 1
+stats = NodePath("../../../Player/Stats")
+
+[node name="UpgradeScreen" parent="UI" unique_id=847933536 instance=ExtResource("1_gjpho")]
+process_mode = 3
+
+[node name="ScreenFader" parent="UI" unique_id=243986901 instance=ExtResource("7_q2d71")]
 process_mode = 3
 visible = false
 z_index = -1
 
-[node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
+[node name="Player" parent="." unique_id=111841163 node_paths=PackedStringArray("stats") instance=ExtResource("3_p70al")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.0671177)
+stats = NodePath("Stats")
 
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
 
-[node name="SpellCaster" parent="Player" index="6" unique_id=571459364 node_paths=PackedStringArray("hitscan")]
-hitscan = NodePath("HitscanSpell")
-
-[node name="MagicMissileCaster" parent="Player/SpellCaster" index="1" unique_id=392683619 node_paths=PackedStringArray("projectile_spell")]
-projectile_spell = NodePath("../ProjectileSpell")
+[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("projectile_spell", "stats")]
+projectile_spell = NodePath("MagicMissile")
 spell = ExtResource("9_ti1bm")
+stats = NodePath("../Stats")
 
-[node name="ProjectileSpell" type="Node3D" parent="Player/SpellCaster" index="2" unique_id=1372373660 node_paths=PackedStringArray("camera", "stats")]
+[node name="MagicMissile" type="Node3D" parent="Player/SpellCaster" index="1" unique_id=1372373660 node_paths=PackedStringArray("camera", "stats")]
 script = ExtResource("10_8l3nt")
 camera = NodePath("../../Head/WorldCam")
 stats = NodePath("../../Stats")
 projectile_scene = ExtResource("10_op4cu")
+spawn_distance_from_cam = 0.1
 
 [node name="HandsOverlay" type="CanvasLayer" parent="Player" unique_id=1778965903]
 layer = -1

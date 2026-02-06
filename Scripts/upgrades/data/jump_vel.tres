@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://xfgefhjvboio"]
+
+[ext_resource type="Script" uid="uid://cpsts44t5urjv" path="res://Scripts/upgrades/UpgradeData.gd" id="1_4evx0"]
+
+[resource]
+script = ExtResource("1_4evx0")
+title = "Jump Velocity +1%"
+description = "Increase the hight of you jump by 1%."
+effect_key = "jump_vel_up"
+effect_value = 0.01
+metadata/_custom_type_script = "uid://cpsts44t5urjv"

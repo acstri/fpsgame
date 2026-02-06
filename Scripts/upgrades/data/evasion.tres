@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://bgw0qphqaux1w"]
+
+[ext_resource type="Script" uid="uid://cpsts44t5urjv" path="res://Scripts/upgrades/UpgradeData.gd" id="1_a62sg"]
+
+[resource]
+script = ExtResource("1_a62sg")
+title = "Evasion +2%"
+description = "Increase your chance to evade attacks by 2%"
+effect_key = "evasion_up"
+effect_value = 0.02
+metadata/_custom_type_script = "uid://cpsts44t5urjv"

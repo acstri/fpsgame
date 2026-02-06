@@ -49,7 +49,7 @@ func apply_upgrade(up: UpgradeData, stats: PlayerStats) -> void:
 		"move_speed_up":
 			stats.add_move_speed_percent(up.effect_value)
 		_:
-			push_warning("UpgradeManager: Unknown effect_key: %s" % up.effect_key)
+			push_warning("UpgradeService: Unknown effect_key: %s" % up.effect_key)
 
 func _weighted_pick_excluding(pool: Array[UpgradeData], exclude: Array[UpgradeData]) -> UpgradeData:
 	var total: float = 0.0

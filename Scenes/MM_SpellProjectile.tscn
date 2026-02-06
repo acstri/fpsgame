@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://ddvujrt0dep5a"]
+
+[ext_resource type="Script" uid="uid://coq5ypecnixeq" path="res://Scripts/MM_SpellProjectile.gd" id="1_mlyel"]
+[ext_resource type="Texture2D" uid="uid://bi0jku56t0mrj" path="res://Assets/Textures/smoke_text.png" id="2_dttlx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mlyel"]
+albedo_color = Color(0, 0, 1, 1)
+emission_enabled = true
+emission = Color(0, 1, 1, 1)
+emission_energy_multiplier = 13.85
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_2liid"]
+material = SubResource("StandardMaterial3D_mlyel")
+radius = 0.05
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l6kp3"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("2_dttlx")
+emission = Color(0, 0, 1, 1)
+emission_energy_multiplier = 10.65
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_l6kp3"]
+emission_shape_scale = Vector3(1.355, 1.28, 1.585)
+angle_min = -36.49999
+angle_max = 110.80001
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_dttlx"]
+size = Vector2(0.605, 0.1)
+
+[node name="MM_SpellProjectile" type="Node3D" unique_id=444858449]
+script = ExtResource("1_mlyel")
+arm_time = 2.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1626659345]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_2liid")
+
+[node name="Tracer" type="GPUParticles3D" parent="." unique_id=62759998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005008653)
+material_override = SubResource("StandardMaterial3D_l6kp3")
+amount = 50
+preprocess = 2.22
+speed_scale = 4.6
+process_material = SubResource("ParticleProcessMaterial_l6kp3")
+draw_pass_1 = SubResource("QuadMesh_dttlx")

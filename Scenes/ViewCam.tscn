@@ -2,7 +2,13 @@
 
 [ext_resource type="PackedScene" uid="uid://dnofohb10icx7" path="res://Scenes/hands.tscn" id="3_ksyp5"]
 
+[sub_resource type="Animation" id="Animation_7ak7g"]
+resource_name = "idle"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ksyp5"]
+_data = {
+&"idle": SubResource("Animation_7ak7g")
+}
 
 [node name="ViewCam" type="Camera3D" unique_id=1319821979]
 process_priority = 1

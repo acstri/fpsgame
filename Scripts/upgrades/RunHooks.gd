@@ -4,14 +4,14 @@ class_name RunHooks
 @export var player: Node3D
 @export var upgrade_screen: UpgradeScreen
 
-@onready var level_system: LevelSystem = player.get_node("LevelSystem") as LevelSystem
-@onready var stats: PlayerStats = player.get_node("Stats") as PlayerStats
-@onready var upgrades: UpgradeService = get_node("/root/Upgrades") as UpgradeService
+@export var level_system: LevelSystem 
+@export var stats: PlayerStats 
+@export var upgrades: UpgradeService 
 
 @export var director: Node
 @export var game_over_screen: GameOverScreen
 
-@onready var health: PlayerHealth = player.get_node("Health") as PlayerHealth
+@export var health: PlayerHealth 
 
 @export var death_slowmo_scale := 0.2
 @export var death_slowmo_duration := 1.2
@@ -31,7 +31,8 @@ func _ready() -> void:
 func _on_level_up(_new_level: int) -> void:
 	var choices: Array[UpgradeData] = upgrades.roll_choices()
 	upgrade_screen.open(choices)
-
+	print("all_upgrades=", upgrades.all_upgrades.size(), " rolled=", upgrades.roll_choices().size())
+	
 func _on_upgrade_picked(up: UpgradeData) -> void:
 	upgrades.apply_upgrade(up, stats)
 

@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_0udqh")
+display_name = "MagicMissile"
+spread_deg = 20.0
+cooldown = 2.0
 metadata/_custom_type_script = "uid://cdwgpfk6al1jf"

@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://c3qw14r6douqb"]
 
-[ext_resource type="Script" uid="uid://cdmqacb0kdcj6" path="res://Scripts/EnemyAI_Chase.gd" id="1_1f0kj"]
+[ext_resource type="Script" uid="uid://cdmqacb0kdcj6" path="res://Scripts/Enemy.gd" id="1_1f0kj"]
 [ext_resource type="Script" uid="uid://dpexa3r6alfst" path="res://Scripts/EnemHealth.gd" id="1_hghv2"]
 [ext_resource type="Script" uid="uid://cmxikjcajuyf6" path="res://Scripts/Dropper.gd" id="3_xeo28"]
+[ext_resource type="PackedScene" uid="uid://c0n1udr1xa4i8" path="res://Scenes/XPGem.tscn" id="4_1exfc"]
 [ext_resource type="Script" uid="uid://cl4nwx6vex266" path="res://Scripts/EnemyMeleeDamage.gd" id="4_kpr8r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1f0kj"]
@@ -37,6 +38,7 @@ script = ExtResource("1_hghv2")
 
 [node name="Dropper" type="Node" parent="." unique_id=2066269416]
 script = ExtResource("3_xeo28")
+xp_gem_scene = ExtResource("4_1exfc")
 
 [node name="HurtArea" type="Area3D" parent="." unique_id=2126833244]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -46,3 +48,6 @@ script = ExtResource("4_kpr8r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HurtArea" unique_id=905280981]
 shape = SubResource("CapsuleShape3D_kpr8r")
+
+[node name="AimPoint" type="Marker3D" parent="." unique_id=224235830]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

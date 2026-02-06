@@ -4,6 +4,7 @@ class_name PlayerController
 @export_group("References")
 @export var head: Node3D
 @export var camera: Camera3D
+@export var stats: PlayerStats
 
 @export_group("Look")
 @export var mouse_sensitivity := 0.0025
@@ -69,9 +70,11 @@ func _physics_process(delta: float) -> void:
 	var input_vec := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var wish_dir := (transform.basis * Vector3(input_vec.x, 0.0, input_vec.y)).normalized()
 
-	var target_speed := walk_speed
+	var mult := stats.move_speed_mult if stats != null else 1.0
+
+	var target_speed := walk_speed * mult
 	if Input.is_action_pressed("sprint"):
-		target_speed = sprint_speed
+		target_speed = sprint_speed * mult
 
 	if is_on_floor():
 		# Ground: very snappy
