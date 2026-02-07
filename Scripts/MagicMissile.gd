@@ -7,6 +7,7 @@ signal cast_finished()
 @export_group("Refs")
 @export var camera: Camera3D
 @export var stats: PlayerStats # optional
+@export var caster_root: Node # optional; used for exclusion. If null, will try group "player", else owner.
 
 @export_group("Projectile")
 @export var projectile_scene: PackedScene
@@ -21,11 +22,16 @@ signal cast_finished()
 @export_flags_3d_physics var hit_mask := 5
 @export var exclude_player := true
 
+func _ready() -> void:
+	_autowire()
+
 func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 	cast_started.emit()
 
+	_autowire()
+
 	if camera == null:
-		push_warning("MagicMissile: camera not assigned.")
+		push_warning("MagicMissile: camera not assigned/found.")
 		cast_finished.emit()
 		return
 	if projectile_scene == null:
@@ -46,40 +52,51 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 	var base_forward := -camera.global_transform.basis.z
 	spawn_xform.origin += base_forward * spawn_distance_from_cam
 
-	# exclude player root
-	var caster_node: Node = get_owner() if exclude_player else null
-
-	var count : float = max(1, missiles_per_cast)
+	var caster_node: Node = _get_exclude_node() if exclude_player else null
+	var count: int = maxi(1, missiles_per_cast)
 
 	for i in range(count):
-		# base aim + normal "inaccuracy" spread
 		var dir := SpellUtil.apply_spread(base_forward, spread_deg)
 
-		# deterministic fan so missiles separate visually
 		var yaw := 0.0
 		if count > 1:
 			var t := float(i) / float(count - 1) # 0..1
 			yaw = (t - 0.5) * multi_cast_spread_deg
-
 		dir = _yaw_offset(dir, yaw)
 
 		var p := projectile_scene.instantiate()
+		if p.has_method("setup"):
+			p.callv("setup", [damage, dir, caster_node, projectile_speed, spellrange, hit_mask])
 
-		# Ensure it goes into the main world, not the SubViewport
-		get_tree().current_scene.add_child(p)
+		var parent := get_tree().current_scene
+		if parent == null:
+			parent = get_tree().root
+		parent.add_child(p)
 
 		if p is Node3D:
 			(p as Node3D).global_transform = spawn_xform
 
-		# Configure projectile (keeps your existing setup signature)
-		if p.has_method("setup"):
-			p.callv("setup", [damage, dir, caster_node, projectile_speed, spellrange, hit_mask])
 
 	cast_finished.emit()
+
+func _autowire() -> void:
+	if camera == null:
+		camera = get_viewport().get_camera_3d()
+	if caster_root == null:
+		# Prefer explicit player group, fallback to owner
+		var ps := get_tree().get_nodes_in_group("player")
+		if ps.size() > 0:
+			caster_root = ps[0]
+		elif get_owner() != null:
+			caster_root = get_owner()
+
+func _get_exclude_node() -> Node:
+	if caster_root != null:
+		return caster_root
+	return get_owner()
 
 func _yaw_offset(dir: Vector3, yaw_deg: float) -> Vector3:
 	if absf(yaw_deg) <= 0.0001:
 		return dir.normalized()
-
 	var yaw := Basis(Vector3.UP, deg_to_rad(yaw_deg))
 	return (yaw * dir).normalized()

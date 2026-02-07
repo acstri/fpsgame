@@ -33,6 +33,7 @@ var max_distance: float = 120.0
 var top_speed: float = 55.0
 
 # Internal state
+var _configured := false
 var _life: float = 0.0
 var _traveled: float = 0.0
 var _armed: bool = false
@@ -49,11 +50,18 @@ func setup(p_damage: float, p_direction: Vector3, p_caster: Node, p_speed: float
 	max_distance = p_max_distance
 	hit_mask = p_hit_mask
 	_dir = p_direction.normalized()
+	_configured = true
 
 func _ready() -> void:
 	_speed = start_speed
 	if _tracer:
 		_tracer.emitting = false
+
+	# Fail fast: projectile should never exist without setup.
+	# This turns “silent weird behavior” into an obvious warning.
+	if not _configured:
+		push_warning("MM_SpellProjectile: setup() was not called. Freeing projectile to avoid undefined behavior.")
+		queue_free()
 
 func _physics_process(delta: float) -> void:
 	_life += delta
@@ -97,7 +105,8 @@ func _physics_process(delta: float) -> void:
 	if hit.has("position"):
 		global_position = hit["position"]
 
-	_apply_damage_from_hit(hit, damage)
+	# Use shared utility to keep damage logic consistent across hitscan/projectiles
+	SpellUtil.apply_damage_from_hit(hit, damage)
 	queue_free()
 
 func _steer_toward(current_dir: Vector3, desired_dir: Vector3, delta: float) -> Vector3:
@@ -110,7 +119,10 @@ func _steer_toward(current_dir: Vector3, desired_dir: Vector3, delta: float) -> 
 	return current_dir.slerp(desired_dir, t).normalized()
 
 func _raycast(from: Vector3, to: Vector3) -> Dictionary:
-	var world := get_viewport().get_world_3d()
+	# Prefer Node3D world if available; fallback to viewport world
+	var world: World3D = get_world_3d()
+	if world == null:
+		world = get_viewport().get_world_3d()
 	if world == null:
 		return {}
 
@@ -119,10 +131,29 @@ func _raycast(from: Vector3, to: Vector3) -> Dictionary:
 	q.collision_mask = hit_mask
 	q.collide_with_areas = true
 	q.collide_with_bodies = true
-	if caster != null:
-		q.exclude = [caster]
+
+	var ex := _exclude_rids()
+	if not ex.is_empty():
+		q.exclude = ex
 
 	return space.intersect_ray(q)
+
+func _exclude_rids() -> Array[RID]:
+	var rids: Array[RID] = []
+	if caster == null:
+		return rids
+
+	# Best case: caster is a CollisionObject3D
+	if caster is CollisionObject3D:
+		rids.append((caster as CollisionObject3D).get_rid())
+		return rids
+
+	# Fallback: if node provides get_rid()
+	if caster.has_method("get_rid"):
+		var rid = caster.call("get_rid")
+		if rid is RID:
+			rids.append(rid)
+	return rids
 
 func _find_nearest_enemy() -> Node3D:
 	var enemies := get_tree().get_nodes_in_group("enemy")
@@ -143,7 +174,7 @@ func _find_nearest_enemy() -> Node3D:
 	return best
 
 func _get_target_point(enemy: Node3D) -> Vector3:
-	# 1) Explicit marker (recommended): Enemy/AimPoint (Marker3D)
+	# 1) Explicit marker: Enemy/AimPoint (Marker3D)
 	var aim := enemy.get_node_or_null(aim_point_path)
 	if aim != null and aim is Node3D:
 		return (aim as Node3D).global_position
@@ -155,32 +186,3 @@ func _get_target_point(enemy: Node3D) -> Vector3:
 
 	# 3) Otherwise lift root position so we don't aim at feet
 	return enemy.global_position + Vector3.UP * fallback_aim_height
-
-func _apply_damage_from_hit(hit: Dictionary, amount: float) -> void:
-	var collider: Object = hit.get("collider")
-	if collider == null:
-		return
-
-	if collider is Node:
-		var n := collider as Node
-
-		var h := n.get_node_or_null(^"Health")
-		if h != null and h.has_method("apply_damage"):
-			h.callv("apply_damage", [amount, hit])
-			return
-
-		var p := n.get_parent()
-		if p != null:
-			var hp := p.get_node_or_null(^"Health")
-			if hp != null and hp.has_method("apply_damage"):
-				hp.callv("apply_damage", [amount, hit])
-				return
-
-	if collider.has_method("apply_damage"):
-		collider.callv("apply_damage", [amount, hit])
-		return
-
-	if collider is Node:
-		var parent := (collider as Node).get_parent()
-		if parent != null and parent.has_method("apply_damage"):
-			parent.callv("apply_damage", [amount, hit])

@@ -7,6 +7,7 @@ signal cast_finished(hit: Dictionary) # empty dict = no hit
 @export_group("Refs")
 @export var camera: Camera3D
 @export var stats: PlayerStats # optional
+@export var caster_root: Node # optional; used for exclusion. If null, will try group "player", else owner.
 
 @export_group("Collision")
 @export_flags_3d_physics var hit_mask := 0
@@ -20,22 +21,22 @@ signal cast_finished(hit: Dictionary) # empty dict = no hit
 @export_group("Debug")
 @export var debug_hits := false
 
+func _ready() -> void:
+	_autowire()
 
-# Cast using current defaults (temporary, until you have SpellData)
 func cast_default() -> void:
 	cast(default_damage, default_range, default_spread_deg)
 
-
-# Cast with explicit parameters (works now, no SpellData needed)
 func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 	cast_started.emit()
 
+	_autowire()
+
 	if camera == null:
-		push_warning("HitscanSpell: camera not assigned.")
+		push_warning("HitscanSpell: camera not assigned/found.")
 		cast_finished.emit({})
 		return
 
-	# Optional stat scaling (range/spread must be applied BEFORE raycast)
 	if stats != null:
 		if "damage_mult" in stats:
 			damage *= stats.damage_mult
@@ -63,9 +64,9 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 	q.collide_with_bodies = true
 
 	if exclude_player:
-		var player := get_owner()
-		if player != null:
-			q.exclude = [player]
+		var ex := _get_exclude_node()
+		if ex != null:
+			q.exclude = [ex]
 
 	var hit: Dictionary = space.intersect_ray(q)
 	if hit.is_empty():
@@ -74,3 +75,19 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 
 	SpellUtil.apply_damage_from_hit(hit, damage)
 	cast_finished.emit(hit)
+
+func _autowire() -> void:
+	if camera == null:
+		camera = get_viewport().get_camera_3d()
+
+	if caster_root == null:
+		var ps := get_tree().get_nodes_in_group("player")
+		if ps.size() > 0:
+			caster_root = ps[0]
+		elif get_owner() != null:
+			caster_root = get_owner()
+
+func _get_exclude_node() -> Node:
+	if caster_root != null:
+		return caster_root
+	return get_owner()

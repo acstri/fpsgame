@@ -23,22 +23,44 @@ class_name Enemy
 @export var climb_gravity_mult := 0.2
 @export var max_climb_height_above_player := 20.0
 
-@onready var health: EnemyHealth = $Health
+@export_group("Refs (optional overrides)")
+@export var health: EnemyHealth
 
 var _target: Node3D
 var _blocked_t := 0.0
 var _climb_t := 0.0
+var _ready_ok := false
 
 func _ready() -> void:
+	add_to_group("enemy")
+	_autowire()
+	_ready_ok = _validate_refs()
 	_target = _find_player()
 
 func apply_damage(amount: float, hit := {}) -> void:
-	if health:
+	if health != null:
 		health.apply_damage(amount, hit)
 
 func _physics_process(delta: float) -> void:
+	if not _ready_ok:
+		return
+
+	# Reacquire target as needed
 	if _target == null or not is_instance_valid(_target):
 		_target = _find_player()
+
+	# If still no target, just idle with gravity so enemies don't float
+	if _target == null:
+		velocity.x = move_toward(velocity.x, 0.0, acceleration * delta)
+		velocity.z = move_toward(velocity.z, 0.0, acceleration * delta)
+
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+		else:
+			if velocity.y < 0.0:
+				velocity.y = -0.1
+
+		move_and_slide()
 		return
 
 	var to_target := _target.global_position - global_position
@@ -101,3 +123,24 @@ func _rotate_towards(dir: Vector3, delta: float) -> void:
 func _find_player() -> Node3D:
 	var nodes := get_tree().get_nodes_in_group(player_group)
 	return null if nodes.is_empty() else nodes[0] as Node3D
+
+func _autowire() -> void:
+	if health == null:
+		health = _find_child_by_type(self, EnemyHealth) as EnemyHealth
+		if health == null:
+			health = get_node_or_null("Health") as EnemyHealth
+
+func _validate_refs() -> bool:
+	if health == null:
+		push_error("Enemy: EnemyHealth not found (assign export 'health' or add child named 'Health' with EnemyHealth).")
+		return false
+	return true
+
+func _find_child_by_type(root: Node, t: Variant) -> Node:
+	for c in root.get_children():
+		if is_instance_of(c, t):
+			return c
+		var deep := _find_child_by_type(c, t)
+		if deep != null:
+			return deep
+	return null

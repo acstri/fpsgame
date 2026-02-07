@@ -60,17 +60,17 @@ shadow_enabled = true
 
 [node name="GameStates" type="Node" parent="." unique_id=615229750]
 
-[node name="RunHooks" type="Node" parent="GameStates" unique_id=629901134 node_paths=PackedStringArray("player", "upgrade_screen", "level_system", "stats", "upgrades", "director", "game_over_screen", "health", "screen_fader")]
+[node name="RunHooks" type="Node" parent="GameStates" unique_id=629901134 node_paths=PackedStringArray("player", "upgrade_screen", "game_over_screen", "screen_fader", "director", "level_system", "stats", "upgrades", "health")]
 script = ExtResource("5_p70al")
 player = NodePath("../../Player")
 upgrade_screen = NodePath("../../UI/UpgradeScreen")
+game_over_screen = NodePath("../../UI/GameOverScreen")
+screen_fader = NodePath("../../UI/ScreenFader")
+director = NodePath("../Director")
 level_system = NodePath("../../Player/LevelSystem")
 stats = NodePath("../../Player/Stats")
 upgrades = NodePath("../UpgradeManager")
-director = NodePath("../Director")
-game_over_screen = NodePath("../../UI/GameOverScreen")
 health = NodePath("../../Player/Health")
-screen_fader = NodePath("../../UI/ScreenFader")
 
 [node name="Director" type="Node" parent="GameStates" unique_id=1563088560]
 script = ExtResource("1_5nsto")
@@ -91,7 +91,6 @@ process_mode = 3
 [node name="HUD" parent="UI" unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
 mouse_filter = 2
 player = NodePath("../../Player")
-spell_caster_path = NodePath("../../Player/SpellCaster")
 
 [node name="StatBlock" parent="UI/HUD" unique_id=1916233769 node_paths=PackedStringArray("stats") instance=ExtResource("11_r0dna")]
 layout_mode = 1
@@ -117,10 +116,11 @@ stats = NodePath("Stats")
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
 
-[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("projectile_spell", "stats")]
+[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("projectile_spell", "stats", "camera")]
 projectile_spell = NodePath("MagicMissile")
 spell = ExtResource("9_ti1bm")
 stats = NodePath("../Stats")
+camera = NodePath("../Head/WorldCam")
 
 [node name="MagicMissile" type="Node3D" parent="Player/SpellCaster" index="1" unique_id=1372373660 node_paths=PackedStringArray("camera", "stats")]
 script = ExtResource("10_8l3nt")

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b523kwcij3gnq" path="res://Scripts/GameOverScreen.gd" id="1_d4r0f"]
 
-[node name="GameOverScreen" type="Control" unique_id=1227436529]
+[node name="GameOverScreen" type="Control" unique_id=1227436529 node_paths=PackedStringArray("restart_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_d4r0f")
+restart_button = NodePath("PanelContainer/VBoxContainer/RestartButton")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=370442649]
 layout_mode = 1

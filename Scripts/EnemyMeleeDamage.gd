@@ -16,9 +16,22 @@ func _physics_process(delta: float) -> void:
 		return
 
 	for b in get_overlapping_bodies():
-		if b is Node and b.is_in_group(target_group):
-			var health := b.get_node_or_null("Health")
+		if b is Node and (b as Node).is_in_group(target_group):
+			var health := _find_child_by_type(b as Node, PlayerHealth) as PlayerHealth
+			if health == null:
+				# Fallback for current prototype compatibility
+				health = (b as Node).get_node_or_null("Health") as PlayerHealth
+
 			if health != null and health.has_method("apply_damage"):
 				health.apply_damage(damage)
 				_cooldown = hit_cooldown
 				return
+
+func _find_child_by_type(root: Node, t: Variant) -> Node:
+	for c in root.get_children():
+		if is_instance_of(c, t):
+			return c
+		var deep := _find_child_by_type(c, t)
+		if deep != null:
+			return deep
+	return null

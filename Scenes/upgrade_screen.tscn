@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d6epi1rbvicb" path="res://Scripts/upgrades/UpgradeScreen.gd" id="1_o5sws"]
 
-[node name="UpgradeScreen" type="Control" unique_id=847933536]
+[node name="UpgradeScreen" type="Control" unique_id=847933536 node_paths=PackedStringArray("choice1", "choice2", "choice3")]
 process_mode = 1
 layout_mode = 3
 anchors_preset = 15
@@ -11,6 +11,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_o5sws")
+choice1 = NodePath("PanelContainer/VBoxContainer/Choice1")
+choice2 = NodePath("PanelContainer/VBoxContainer/Choice2")
+choice3 = NodePath("PanelContainer/VBoxContainer/Choice3")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1590582476]
 layout_mode = 1

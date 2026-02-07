@@ -7,15 +7,20 @@ signal died(hit: Dictionary)
 @export var max_hp := 30.0
 @export var invulnerable := false
 
-var hp: float
+# Optional override: if you want to free a specific node on death
+@export var death_owner: Node
 
-@onready var owner_node: Node = get_owner()
+var hp: float
+var _dead := false
 
 func _ready() -> void:
 	hp = max_hp
+	if death_owner == null:
+		# Default behavior from your original script
+		death_owner = get_owner()
 
 func apply_damage(amount: float, hit: Dictionary = {}) -> void:
-	if invulnerable:
+	if invulnerable or _dead:
 		return
 	if amount <= 0.0:
 		return
@@ -27,11 +32,13 @@ func apply_damage(amount: float, hit: Dictionary = {}) -> void:
 		_die(hit)
 
 func _die(hit: Dictionary) -> void:
+	if _dead:
+		return
+	_dead = true
+
 	died.emit(hit)
 
-	# If you later want ragdoll, death anim, drops, etc.:
-	# emit signal here and let other components react.
-	if owner_node != null:
-		owner_node.queue_free()
+	if death_owner != null and is_instance_valid(death_owner):
+		death_owner.queue_free()
 	else:
 		queue_free()

@@ -1,122 +1,136 @@
 extends Control
 class_name HUD
 
-@export_group("Refs")
-@export var player: Node3D
-@export var spell_caster_path: NodePath # optional: point to SpellCaster/MagicMissileCaster
+@export var player: Node # optional; if null, finds group "player"
 
-@onready var hp_label: Label = $TopLeft/HPLabel
-@onready var spell_label: Label = $TopLeft/AmmoLabel # reuse node, but show spell info
-@onready var xp_bar: ProgressBar = $Bottom/XPBar
-@onready var level_label: Label = $Bottom/LevelLabel
+# UI references (assign these in the editor once; then UI can be rearranged safely)
+@export var hp_label: Label
+@export var level_label: Label
+@export var xp_bar: ProgressBar
 
+# Optional: if your XP bar needs max updates
+@export var xp_show_percent := false
+
+var _health: PlayerHealth
 var _level_system: LevelSystem
-var _health: Node
-var _current_level: int = 1
-
+var _spell_caster: Node
 
 func _ready() -> void:
+	_autowire()
+
+	if not _validate_ui():
+		set_process(false)
+		return
+
 	if player == null:
-		push_warning("HUD: player not assigned.")
+		push_error("HUD: player not found (assign export or add player to group 'player').")
+		set_process(false)
 		return
 
-	# Level system
-	_level_system = player.get_node_or_null("LevelSystem") as LevelSystem
-	if _level_system != null:
-		_level_system.xp_changed.connect(_on_xp_changed)
-		_level_system.level_up.connect(_on_level_up)
+	# Prefer type-based wiring (more robust than child names)
+	_health = _find_child_by_type(player, PlayerHealth) as PlayerHealth
+	if _health == null:
+		# fallback to common name, for compatibility with current prototype
+		_health = player.get_node_or_null("Health") as PlayerHealth
 
-	# Health
-	_health = player.get_node_or_null("Health")
-	if _health != null and _health.has_signal("hp_changed"):
-		_health.connect("hp_changed", _on_hp_changed)
-	else:
-		_set_hp_text_unknown()
+	if _health != null:
+		_health.hp_changed.connect(_on_hp_changed)
+		_on_hp_changed(_health.hp, _health.max_hp)
 
-	# Spell / caster display (no more ammo)
-	_wire_spell_caster()
+	_level_system = _find_child_by_type(player, LevelSystem) as LevelSystem
+	if _level_system == null:
+		_level_system = player.get_node_or_null("LevelSystem") as LevelSystem
 
-	_update_level_text()
+	# Spell caster: keep loose; HUD can work without it
+	_spell_caster = player.get_node_or_null("SpellCaster")
+	if _spell_caster == null:
+		_spell_caster = player.get_node_or_null("MagicMissileCaster")
 
+	# Fail-fast for core dependencies
+	if _health == null:
+		push_error("HUD: PlayerHealth not found under player.")
+	if _level_system == null:
+		push_error("HUD: LevelSystem not found under player.")
 
-func _wire_spell_caster() -> void:
-	var caster: Node = null
+	# Initial paint (so it looks correct on frame 1)
+	_refresh_all()
 
-	if spell_caster_path != NodePath():
-		caster = get_node_or_null(spell_caster_path)
-	else:
-		# fallback: try common names under player
-		caster = player.get_node_or_null("SpellCaster")
-		if caster == null:
-			caster = player.get_node_or_null("MagicMissileCaster")
+func _process(_delta: float) -> void:
+	# HUD should not crash if something is missing; it should just stop updating that section.
+	_refresh_runtime()
 
-	if caster == null:
-		spell_label.text = "Spell: --"
+func _autowire() -> void:
+	if player != null:
 		return
+	var ps := get_tree().get_nodes_in_group("player")
+	if ps.size() > 0:
+		player = ps[0]
 
-	# Show something immediately if properties exist
-	_update_spell_text_from_caster(caster)
+func _validate_ui() -> bool:
+	var ok := true
+	if hp_label == null:
+		push_error("HUD: hp_label not assigned.")
+		ok = false
+	if level_label == null:
+		push_error("HUD: level_label not assigned.")
+		ok = false
+	if xp_bar == null:
+		push_error("HUD: xp_bar not assigned.")
+		ok = false
+	return ok
 
-	# Optional: if your caster emits signals, HUD can react automatically.
-	# (You can add these later; HUD won't break if they don't exist.)
-	if caster.has_signal("spell_changed"):
-		caster.connect("spell_changed", func():
-			_update_spell_text_from_caster(caster)
-		)
-	if caster.has_signal("cooldown_changed"):
-		caster.connect("cooldown_changed", func():
-			_update_spell_text_from_caster(caster)
-		)
+func _refresh_all() -> void:
+	_refresh_level()
+	_refresh_xp()
 
-
-func _update_spell_text_from_caster(caster: Node) -> void:
-	var display_name := "Spell"
-	var spell: SpellData = null
-
-	if caster.has_method("get"):
-		spell = caster.get("spell") as SpellData
-
-	if spell != null:
-		display_name = spell.display_name
-		spell_label.text = "%s | DMG: %.0f | CD: %.2fs" % [
-			display_name,
-			spell.damage,
-			spell.cooldown
-		]
-
-	else:
-		spell_label.text = "Spell: %s" % display_name
-
-
-func _get_prop_float(obj: Object, prop: StringName, fallback: float) -> float:
-	if obj == null:
-		return fallback
-	# Godot exposes exported vars as properties.
-	if obj.has_method("get"):
-		var v = obj.get(prop)
-		if typeof(v) == TYPE_FLOAT or typeof(v) == TYPE_INT:
-			return float(v)
-	return fallback
-
-
-func _on_xp_changed(current: int, required: int) -> void:
-	xp_bar.min_value = 0
-	xp_bar.max_value = max(1, required)
-	xp_bar.value = clamp(current, 0, required)
-
-
-func _on_level_up(new_level: int) -> void:
-	_current_level = new_level
-	_update_level_text()
-
+func _refresh_runtime() -> void:
+	# Keep these cheap and safe
+	_refresh_level()
+	_refresh_xp()
 
 func _on_hp_changed(current: float, max_hp: float) -> void:
+	if hp_label == null:
+		return
 	hp_label.text = "HP: %d / %d" % [int(round(current)), int(round(max_hp))]
 
+func _refresh_level() -> void:
+	if _level_system == null or level_label == null:
+		return
+	if "level" in _level_system:
+		level_label.text = "Lv " + str(_level_system.level)
+	else:
+		level_label.text = "Lv"
 
-func _update_level_text() -> void:
-	level_label.text = "Level: %d" % _current_level
+func _refresh_xp() -> void:
+	if _level_system == null or xp_bar == null:
+		return
 
+	# Try common naming patterns; adjust if your LevelSystem differs
+	var xp := 0.0
+	var xp_to_next := 1.0
 
-func _set_hp_text_unknown() -> void:
-	hp_label.text = "HP: --"
+	if "xp" in _level_system:
+		xp = float(_level_system.xp)
+	elif "current_xp" in _level_system:
+		xp = float(_level_system.current_xp)
+
+	if "xp_to_next" in _level_system:
+		xp_to_next = max(1.0, float(_level_system.xp_to_next))
+	elif "xp_required" in _level_system:
+		xp_to_next = max(1.0, float(_level_system.xp_required))
+
+	xp_bar.max_value = xp_to_next
+	xp_bar.value = clamp(xp, 0.0, xp_to_next)
+
+	if xp_show_percent and xp_bar.has_method("set_text"):
+		# Some custom bars support text; default ProgressBar doesn't.
+		xp_bar.set_text(str(int((xp / xp_to_next) * 100.0)) + "%")
+
+func _find_child_by_type(root: Node, t: Variant) -> Node:
+	for c in root.get_children():
+		if is_instance_of(c, t):
+			return c
+		var deep := _find_child_by_type(c, t)
+		if deep != null:
+			return deep
+	return null
