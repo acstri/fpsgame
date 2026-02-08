@@ -13,6 +13,8 @@ emission_energy_multiplier = 13.85
 material = SubResource("StandardMaterial3D_mlyel")
 radius = 0.05
 height = 0.2
+radial_segments = 5
+rings = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l6kp3"]
 transparency = 1
@@ -35,13 +37,49 @@ gravity = Vector3(0, 0, 0)
 [sub_resource type="QuadMesh" id="QuadMesh_dttlx"]
 size = Vector2(0.605, 0.1)
 
+[sub_resource type="Animation" id="Animation_6t4vy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_h7fqp"]
+resource_name = "fire"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.001, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_25ply"]
+_data = {
+&"RESET": SubResource("Animation_6t4vy"),
+&"fire": SubResource("Animation_h7fqp")
+}
+
 [node name="MM_SpellProjectile" type="Node3D" unique_id=444858449]
 script = ExtResource("1_mlyel")
 arm_time = 2.0
 start_speed = 2.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1626659345]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_2liid")
 
 [node name="Tracer" type="GPUParticles3D" parent="." unique_id=62759998]
@@ -50,5 +88,11 @@ material_override = SubResource("StandardMaterial3D_l6kp3")
 amount = 50
 preprocess = 2.22
 speed_scale = 4.6
+trail_enabled = true
+trail_lifetime = 1.6500000000000001
 process_material = SubResource("ParticleProcessMaterial_l6kp3")
 draw_pass_1 = SubResource("QuadMesh_dttlx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1101547480]
+libraries/ = SubResource("AnimationLibrary_25ply")
+autoplay = &"fire"

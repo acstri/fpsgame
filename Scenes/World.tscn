@@ -15,7 +15,7 @@
 [ext_resource type="Resource" uid="uid://de6beud2jv2ye" path="res://Scripts/upgrades/data/damage_up.tres" id="8_0ao37"]
 [ext_resource type="Resource" uid="uid://xfgefhjvboio" path="res://Scripts/upgrades/data/jump_vel.tres" id="9_33kev"]
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
-[ext_resource type="Resource" uid="uid://icifdnnsrqsh" path="res://MagicMissile.tres" id="9_ti1bm"]
+[ext_resource type="Resource" uid="uid://icifdnnsrqsh" path="res://magicmissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
 [ext_resource type="Resource" uid="uid://etcrpyiheqjb" path="res://Scripts/upgrades/data/crit_chance.tres" id="10_g01fq"]
 [ext_resource type="Resource" uid="uid://serm4imhucch" path="res://Scripts/upgrades/data/life_regen.tres" id="11_0bcf6"]
@@ -28,9 +28,13 @@
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="Script" uid="uid://rq6kh6hqs3pg" path="res://Scenes/DamageNumberSpawner.gd" id="17_0bcf6"]
 [ext_resource type="PackedScene" uid="uid://c08axm2ls4whl" path="res://Scenes/ui/DamageNumber3D.tscn" id="18_y1bqn"]
-[ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://ChainLightning.tres" id="25_0bcf6"]
-[ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://Fireball.tres" id="25_mq4nq"]
+[ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
+[ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
 [ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
+[ext_resource type="Texture2D" uid="uid://rglbv2qcc5dm" path="res://Assets/Textures/dirt_text.jpg" id="32_371b6"]
+[ext_resource type="PackedScene" uid="uid://co01o5bii6vsr" path="res://Scenes/stone.tscn" id="32_ao4cr"]
+[ext_resource type="Material" uid="uid://fa4tvrn8ktbk" path="res://Scenes/floor_mat.tres" id="33_irg3d"]
+[ext_resource type="Material" uid="uid://ctkut7vlmsdin" path="res://Scenes/dirt_mat.tres" id="34_y8a40"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -49,20 +53,17 @@ fog_density = 1.0
 fog_depth_curve = 0.59460354
 fog_depth_begin = 5.0
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kn06e"]
-load_path = "res://.godot/imported/tileable-img_0062-verydark.png-5a2498277c194578928fedad82ed18af.s3tc.ctex"
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_45d1s"]
-albedo_texture = SubResource("CompressedTexture2D_kn06e")
-uv1_scale = Vector3(0.045, 0.045, 0.045)
-uv1_triplanar = true
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_45d1s"]
-material = SubResource("StandardMaterial3D_45d1s")
+material = ExtResource("33_irg3d")
 size = Vector2(70, 70)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uo7di"]
 size = Vector3(70, 0, 70)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8a40"]
+albedo_texture = ExtResource("32_371b6")
+uv1_scale = Vector3(-0.025, -0.025, -0.025)
+uv1_triplanar = true
 
 [node name="World" type="Node3D" unique_id=453812787]
 
@@ -93,7 +94,7 @@ script = ExtResource("1_5nsto")
 enemy_scene = ExtResource("2_gjpho")
 avoid_mask = 1
 avoid_radius = 0.6
-ground_body_path = NodePath("../../statics/LevelLayout")
+ground_mask = 1
 
 [node name="UpgradeManager" type="Node" parent="GameStates" unique_id=1077308573]
 script = ExtResource("4_mvfa8")
@@ -157,6 +158,7 @@ camera = NodePath("../../Head/WorldCam")
 stats = NodePath("../../PlayerStats")
 projectile_speed = 8.0
 explosion_radius = 5.0
+aoe_damage_mult = 1.0
 
 [node name="MagicMissile" parent="Player/SpellCaster" index="2" unique_id=1813416411 node_paths=PackedStringArray("camera", "stats")]
 camera = NodePath("../../Head/WorldCam")
@@ -185,18 +187,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="statics" type="Node" parent="." unique_id=1329344165]
 
-[node name="LevelLayout" type="StaticBody3D" parent="statics" unique_id=865853195]
-collision_mask = 6
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/LevelLayout" unique_id=32640974]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021928787, 0.024451256, -0.013404846)
-mesh = SubResource("PlaneMesh_45d1s")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/LevelLayout" unique_id=427253245]
-shape = SubResource("BoxShape3D_uo7di")
-
 [node name="Tower" parent="statics" unique_id=2114612622 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.9722862, 0.40683544, 0, -0.40683544, 2.9722862, 0, 0, 0, 3, 3.415676, -1.26408, -30.695646)
+
+[node name="Tower4" parent="statics" unique_id=296234923 instance=ExtResource("9_kn06e")]
+transform = Transform3D(0.033752978, 2.1516085, -2.0903215, -2.1951966, 1.4424477, 1.449294, 2.0444973, 1.5132496, 1.5906305, -5.111803, 9.903331, -41.374367)
 
 [node name="Tower2" parent="statics" unique_id=1633041765 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.9729638, -0.40046704, 0.033367738, 0.40185475, 2.962697, -0.24685803, 0, 0.24910296, 2.98964, 23, -2.656622, 21)
@@ -210,10 +205,88 @@ transform = Transform3D(0.97790015, 0.18379733, 0.09964848, -0.20907243, 0.85968
 [node name="Walls2" parent="statics" unique_id=71518215 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.8585664, 0, 0.51270235, 0, 1, 0, -0.51270235, 0, 0.8585664, -10.833212, -0.68736935, 14.4562025)
 
+[node name="stone" parent="statics" unique_id=2123473406 instance=ExtResource("32_ao4cr")]
+transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13, 4.120032, -34.273388)
+
+[node name="stone2" parent="statics" unique_id=1425173398 instance=ExtResource("32_ao4cr")]
+transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13, 4.120032, -34.273388)
+
+[node name="stone3" parent="statics" unique_id=1661196152 instance=ExtResource("32_ao4cr")]
+transform = Transform3D(1.8574554, 0.5386019, 1.3084315, -1.4149505, 0.7070419, 1.717624, -2.0876527e-07, -2.1592185, 0.88881963, -34.348892, 8.306734, -35.05007)
+
 [node name="Walls3" parent="statics" unique_id=1008833160 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.9779366, -7.31147, 2, -20.057621)
 
+[node name="Walls5" parent="statics" unique_id=1728580826 instance=ExtResource("9_uo7di")]
+transform = Transform3D(0.7171682, -0.25881904, 0.6470568, 0.19216464, 0.9659258, 0.17337836, -0.66988254, 0, 0.74246716, -23.212894, 10.048943, -54.777435)
+
 [node name="Walls4" parent="statics" unique_id=1141679315 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
+
+[node name="ground" type="Node" parent="." unique_id=1218908264 groups=["ground"]]
+
+[node name="LevelLayout" type="StaticBody3D" parent="ground" unique_id=865853195 groups=["ground"]]
+collision_mask = 6
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ground/LevelLayout" unique_id=32640974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021928787, 0.024451256, -0.013404846)
+mesh = SubResource("PlaneMesh_45d1s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground/LevelLayout" unique_id=427253245]
+shape = SubResource("BoxShape3D_uo7di")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="ground" unique_id=1904758274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, -1.1228848, -52.5)
+use_collision = true
+size = Vector3(35, 19.995, 35)
+material = ExtResource("34_y8a40")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="ground" unique_id=940270754]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.5, 1.8796144, -52.5)
+use_collision = true
+size = Vector3(35, 26, 35)
+material = ExtResource("34_y8a40")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="ground" unique_id=85621723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5, -1.1228848, -17.5)
+use_collision = true
+size = Vector3(35, 19.995, 105)
+material = ExtResource("34_y8a40")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="ground" unique_id=550097769 groups=["ground"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 8.877115, -52.5)
+use_collision = true
+size = Vector3(35, 0, 35)
+material = ExtResource("33_irg3d")
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="ground" unique_id=13395936 groups=["ground"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.5, 14.978331, -52.5)
+material_override = SubResource("StandardMaterial3D_y8a40")
+use_collision = true
+size = Vector3(35, 0, 35)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="ground" unique_id=1862277220 groups=["ground"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5, 8.877, -17.5)
+use_collision = true
+size = Vector3(35, 0, 105)
+material = ExtResource("33_irg3d")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="ground" unique_id=1639586597 groups=["ground"]]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 17.5, 4.4691772, -51.1698)
+use_collision = true
+size = Vector3(35, 0, 35)
+material = ExtResource("33_irg3d")
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="ground" unique_id=1623027872 groups=["ground"]]
+transform = Transform3D(-4.0378794e-08, 0.6090106, 0.79316187, 1.6740309e-08, 0.793162, -0.6090106, -1, -1.131334e-08, -4.222196e-08, -24.17722, -5.7468133, -1.772)
+material_override = SubResource("StandardMaterial3D_y8a40")
+use_collision = true
+size = Vector3(14, 10, 34.967773)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="ground" unique_id=344578097 groups=["ground"]]
+transform = Transform3D(-4.0378794e-08, 0.6090106, 0.79316187, 1.6740309e-08, 0.793162, -0.6090106, -1, -1.131334e-08, -4.222196e-08, -21.121, -1.784, -1.772)
+use_collision = true
+size = Vector3(14, 0, 35)
+material = ExtResource("33_irg3d")
 
 [editable path="Player"]

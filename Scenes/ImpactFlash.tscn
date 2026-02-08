@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dnl7reepucjud"]
+
+[node name="ImpactFlash" type="Node3D" unique_id=1282608592]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1254558737]
+light_energy = 7.941
+omni_range = 1.302

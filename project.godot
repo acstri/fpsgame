@@ -24,6 +24,7 @@ Combat_Events="*uid://bjsakqdryurn7"
 player=""
 enemy=""
 weapon=""
+ground=""
 
 [input]
 

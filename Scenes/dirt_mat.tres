@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ctkut7vlmsdin"]
+
+[ext_resource type="Texture2D" uid="uid://rglbv2qcc5dm" path="res://Assets/Textures/dirt_text.jpg" id="1_gpadn"]
+
+[resource]
+albedo_texture = ExtResource("1_gpadn")
+uv1_scale = Vector3(0.02, 0.02, 0.02)
+uv1_triplanar = true

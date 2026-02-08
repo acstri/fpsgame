@@ -4,8 +4,23 @@ class_name FireballProjectile
 @export_group("Lifetime")
 @export var max_lifetime: float = 4.0
 
-@export_group("FX (optional)")
-@export var mesh_path: NodePath = ^"MeshInstance3D"
+@export_group("VFX")
+@export var explosion_pulse_scene: PackedScene
+
+@export_group("Knockback")
+@export var knockback_enabled := true
+@export var knockback_force := 22.0        # increase for stronger push
+@export var knockback_upward := 0.8        # adds lift (0 = flat)
+@export var knockback_use_falloff := true  # weaker at edge of radius
+@export_range(0.0, 1.0, 0.05) var knockback_falloff_min := 0.35
+
+@export_group("Camera Shake")
+@export var shake_enabled := true
+@export var shake_amplitude := 1.2
+@export var shake_duration := 0.12
+@export var shake_frequency := 30.0
+@export var shake_pos_scale := 1.0
+@export var shake_rot_scale := 1.0
 
 var hit_mask: int = 5
 var damage: float = 0.0
@@ -16,7 +31,6 @@ var speed: float = 28.0
 var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
 
-# If true: AoE damage scales down with distance from explosion center.
 @export var use_falloff: bool = true
 @export_range(0.0, 1.0, 0.05) var falloff_min: float = 0.25
 
@@ -80,12 +94,15 @@ func _physics_process(delta: float) -> void:
 	queue_free()
 
 func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
-	# 1) Apply FULL damage to the directly hit enemy (if any)
+	_spawn_explosion_pulse(pos)
+	_do_camera_shake()
+
+	# 1) Full damage to directly hit enemy (if any)
 	var direct_collider = direct_hit.get("collider", null)
 	if direct_collider != null:
 		SpellUtil.apply_damage_from_hit(direct_hit, damage, is_crit, false)
 
-	# 2) Apply AoE damage to other enemies in radius
+	# 2) AoE damage + knockback to others in radius
 	var enemies := get_tree().get_nodes_in_group("enemy")
 	var r2 := explosion_radius * explosion_radius
 
@@ -94,22 +111,95 @@ func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 			continue
 		if not is_instance_valid(e):
 			continue
-		if e == direct_collider:
-			continue
 
 		var n := e as Node3D
 		var d2 := n.global_position.distance_squared_to(pos)
 		if d2 > r2:
 			continue
 
-		var falloff := 1.0
-		if use_falloff:
-			var t := clampf(sqrt(d2) / maxf(0.001, explosion_radius), 0.0, 1.0)
-			falloff = lerpf(1.0, falloff_min, t)
+		# AoE damage: skip the direct collider so it doesn't double-dip
+		if e != direct_collider:
+			var falloff := 1.0
+			if use_falloff:
+				var t := clampf(sqrt(d2) / maxf(0.001, explosion_radius), 0.0, 1.0)
+				falloff = lerpf(1.0, falloff_min, t)
 
-		var amount := damage * aoe_damage_mult * falloff
-		var fake_hit := {"collider": n, "position": pos}
-		SpellUtil.apply_damage_from_hit(fake_hit, amount, is_crit, false)
+			var amount := damage * aoe_damage_mult * falloff
+			var fake_hit := {"collider": n, "position": pos}
+			SpellUtil.apply_damage_from_hit(fake_hit, amount, is_crit, false)
+
+		# Knockback applies to everyone in radius (including direct target)
+		if knockback_enabled:
+			_apply_knockback(n, pos, d2)
+
+func _apply_knockback(target: Node3D, origin: Vector3, dist2: float) -> void:
+	var dir := (target.global_position - origin)
+	if dir.length_squared() < 0.0001:
+		dir = Vector3.UP
+	dir = dir.normalized()
+	dir.y += knockback_upward
+	dir = dir.normalized()
+
+	var strength := knockback_force
+	if knockback_use_falloff:
+		var t := clampf(sqrt(dist2) / maxf(0.001, explosion_radius), 0.0, 1.0)
+		var f := lerpf(1.0, knockback_falloff_min, t)
+		strength *= f
+
+	# Try common patterns without requiring changes to enemy core:
+	# 1) RigidBody3D impulse
+	if target is RigidBody3D:
+		(target as RigidBody3D).apply_central_impulse(dir * strength)
+		return
+
+	# 2) Dedicated method on enemy (optional)
+	if target.has_method("apply_knockback"):
+		target.call("apply_knockback", dir * strength)
+		return
+
+	# 3) CharacterBody3D velocity injection (common)
+	if target is CharacterBody3D:
+		var cb := target as CharacterBody3D
+		cb.velocity += dir * strength
+		return
+
+	# 4) Generic "velocity" property injection
+	if "velocity" in target:
+		target.velocity += dir * strength
+		return
+
+func _do_camera_shake() -> void:
+	if not shake_enabled:
+		return
+
+	# Look for a CameraShake node under the active camera.
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+
+	var shaker := cam.get_node_or_null("CameraShake")
+	if shaker == null:
+		return
+
+	if shaker.has_method("shake"):
+		shaker.call("shake", shake_amplitude, shake_duration, shake_frequency, shake_pos_scale, shake_rot_scale)
+
+func _spawn_explosion_pulse(pos: Vector3) -> void:
+	if explosion_pulse_scene == null:
+		return
+
+	var fx := explosion_pulse_scene.instantiate()
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	parent.add_child(fx)
+
+	if fx is Node3D:
+		(fx as Node3D).global_position = pos
+
+	# Match VFX start radius to gameplay explosion radius (your ExplosionPulse.gd supports this).
+	if fx.has_method("set_target_radius"):
+		fx.call("set_target_radius", explosion_radius)
 
 func _raycast(from: Vector3, to: Vector3) -> Dictionary:
 	var world: World3D = get_world_3d()

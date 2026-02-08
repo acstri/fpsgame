@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bba1rtjmy8a0l"]
 
 [ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://dh0j7rct0ytoi" path="res://Scripts/CameraShake.gd" id="2_glx4g"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
 [ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
 [ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/ChainLightning.gd" id="5_nn08x"]
@@ -37,6 +38,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 cull_mask = 524287
 current = true
 
+[node name="CameraShake" type="Node" parent="Head/WorldCam" unique_id=1819040865]
+script = ExtResource("2_glx4g")
+camera_path = NodePath("..")
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=148226516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 visible = false
@@ -55,11 +60,9 @@ script = ExtResource("5_5ixxa")
 [node name="PlayerHealth" type="Node" parent="." unique_id=1193666010]
 script = ExtResource("6_nn08x")
 
-[node name="SpellCaster" type="Node" parent="." unique_id=392683619 node_paths=PackedStringArray("hitscan")]
+[node name="SpellCaster" type="Node" parent="." unique_id=392683619]
 script = ExtResource("7_52ee3")
-hitscan = NodePath("ChainLightning")
 allow_runtime_switching = null
-active_spell_kind = null
 automatic = null
 
 [node name="ChainLightning" type="Node3D" parent="SpellCaster" unique_id=1392762653 node_paths=PackedStringArray("camera", "stats")]

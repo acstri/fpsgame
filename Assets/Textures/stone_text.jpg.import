@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://shvxfwqpumas"
-path.s3tc="res://.godot/imported/floo_text.png-f63d1d93a4559d8068adaee2c06c3de6.s3tc.ctex"
+uid="uid://bixwtwq6pqvhg"
+path.s3tc="res://.godot/imported/stone_text.jpg-9826d5f0adfe3580719e201c3e3e2053.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Textures/floo_text.png"
-dest_files=["res://.godot/imported/floo_text.png-f63d1d93a4559d8068adaee2c06c3de6.s3tc.ctex"]
+source_file="res://Assets/Textures/stone_text.jpg"
+dest_files=["res://.godot/imported/stone_text.jpg-9826d5f0adfe3580719e201c3e3e2053.s3tc.ctex"]
 
 [params]
 
