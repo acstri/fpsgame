@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bmg3pst3tbe74"]
+
+[ext_resource type="Script" uid="uid://q4rsgn2a42t4" path="res://Scripts/FireballProjectile.gd" id="1_yfbfy"]
+[ext_resource type="Texture2D" uid="uid://bi0jku56t0mrj" path="res://Assets/Textures/smoke_text.png" id="2_mxqeq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxqeq"]
+cull_mode = 1
+albedo_texture = ExtResource("2_mxqeq")
+emission_enabled = true
+emission = Color(1, 0.33333334, 0, 1)
+emission_energy_multiplier = 5.95
+uv1_triplanar_sharpness = 1.7411028
+
+[sub_resource type="SphereMesh" id="SphereMesh_smo0t"]
+material = SubResource("StandardMaterial3D_mxqeq")
+radial_segments = 4
+rings = 3
+
+[node name="FireballProjectile" type="Node3D" unique_id=1384196401]
+script = ExtResource("1_yfbfy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1945022683]
+mesh = SubResource("SphereMesh_smo0t")

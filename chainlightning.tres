@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://d1qrptn40fwle"]
+
+[ext_resource type="Script" uid="uid://cdwgpfk6al1jf" path="res://Scripts/SpellData.gd" id="1_go4me"]
+
+[resource]
+script = ExtResource("1_go4me")
+delivery_kind = &"chainlightning"
+damage = 7.0
+spell_range = 50.0
+cooldown = 2.0
+metadata/_custom_type_script = "uid://cdwgpfk6al1jf"

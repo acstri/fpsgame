@@ -28,3 +28,30 @@ layout_mode = 2
 
 [node name="MoveSpeedLabel" type="Label" parent="VBoxContainer" unique_id=1647687875]
 layout_mode = 2
+
+[node name="CritChanceLabel" type="Label" parent="VBoxContainer" unique_id=664449623]
+layout_mode = 2
+
+[node name="CritMultLabel" type="Label" parent="VBoxContainer" unique_id=108652207]
+layout_mode = 2
+
+[node name="JumpVelLabel" type="Label" parent="VBoxContainer" unique_id=1365852849]
+layout_mode = 2
+
+[node name="LifeRegenLabel" type="Label" parent="VBoxContainer" unique_id=1158994345]
+layout_mode = 2
+
+[node name="LifeStealLabel" type="Label" parent="VBoxContainer" unique_id=1443745830]
+layout_mode = 2
+
+[node name="EvasionLabel" type="Label" parent="VBoxContainer" unique_id=769785944]
+layout_mode = 2
+
+[node name="MaxHpLabel" type="Label" parent="VBoxContainer" unique_id=673449296]
+layout_mode = 2
+
+[node name="ProjectilesLabel" type="Label" parent="VBoxContainer" unique_id=541010005]
+layout_mode = 2
+
+[node name="MagnetLabel" type="Label" parent="VBoxContainer" unique_id=328768073]
+layout_mode = 2

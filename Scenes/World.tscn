@@ -15,11 +15,9 @@
 [ext_resource type="Resource" uid="uid://de6beud2jv2ye" path="res://Scripts/upgrades/data/damage_up.tres" id="8_0ao37"]
 [ext_resource type="Resource" uid="uid://xfgefhjvboio" path="res://Scripts/upgrades/data/jump_vel.tres" id="9_33kev"]
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
-[ext_resource type="Resource" uid="uid://d2k2mhs35wmmq" path="res://MagicMissile.tres" id="9_ti1bm"]
+[ext_resource type="Resource" uid="uid://icifdnnsrqsh" path="res://MagicMissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
-[ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/MagicMissile.gd" id="10_8l3nt"]
 [ext_resource type="Resource" uid="uid://etcrpyiheqjb" path="res://Scripts/upgrades/data/crit_chance.tres" id="10_g01fq"]
-[ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/MM_SpellProjectile.tscn" id="10_op4cu"]
 [ext_resource type="Resource" uid="uid://serm4imhucch" path="res://Scripts/upgrades/data/life_regen.tres" id="11_0bcf6"]
 [ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
 [ext_resource type="PackedScene" uid="uid://b2vd83os48jst" path="res://Scenes/StatBlock.tscn" id="11_r0dna"]
@@ -30,7 +28,9 @@
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="Script" uid="uid://rq6kh6hqs3pg" path="res://Scenes/DamageNumberSpawner.gd" id="17_0bcf6"]
 [ext_resource type="PackedScene" uid="uid://c08axm2ls4whl" path="res://Scenes/ui/DamageNumber3D.tscn" id="18_y1bqn"]
-[ext_resource type="Script" uid="uid://dysrr6gfma1s0" path="res://Scripts/debug/SmokeTest.gd" id="31_7dsfl"]
+[ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://ChainLightning.tres" id="25_0bcf6"]
+[ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://Fireball.tres" id="25_mq4nq"]
+[ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -93,7 +93,7 @@ script = ExtResource("1_5nsto")
 enemy_scene = ExtResource("2_gjpho")
 avoid_mask = 1
 avoid_radius = 0.6
-ground_body_path = NodePath("../../statics/FloorLayer")
+ground_body_path = NodePath("../../statics/LevelLayout")
 
 [node name="UpgradeManager" type="Node" parent="GameStates" unique_id=1077308573]
 script = ExtResource("4_mvfa8")
@@ -136,18 +136,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.0671177)
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
 
-[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("projectile_spell", "camera")]
-spell = ExtResource("9_ti1bm")
-automatic = null
-projectile_spell = NodePath("MagicMissile")
+[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("chainlightning", "magicmissile", "fireball", "stats", "camera")]
+chainlightning = NodePath("ChainLightning")
+magicmissile = NodePath("MagicMissile")
+fireball = NodePath("Fireball")
+allow_runtime_switching = true
+spell_chainlightning = ExtResource("25_0bcf6")
+spell_fireball = ExtResource("25_mq4nq")
+spell_magicmissile = ExtResource("9_ti1bm")
+automatic = true
+stats = NodePath("../PlayerStats")
 camera = NodePath("../Head/WorldCam")
 
-[node name="MagicMissile" type="Node3D" parent="Player/SpellCaster" index="1" unique_id=1372373660 node_paths=PackedStringArray("camera", "stats")]
-script = ExtResource("10_8l3nt")
+[node name="ChainLightning" parent="Player/SpellCaster" index="0" unique_id=1392762653]
+chain_damage_mult = 0.7
+beam_scene = ExtResource("26_0bcf6")
+
+[node name="Fireball" parent="Player/SpellCaster" index="1" unique_id=388899861 node_paths=PackedStringArray("camera", "stats")]
 camera = NodePath("../../Head/WorldCam")
 stats = NodePath("../../PlayerStats")
-projectile_scene = ExtResource("10_op4cu")
-spawn_distance_from_cam = 0.1
+projectile_speed = 8.0
+explosion_radius = 5.0
+
+[node name="MagicMissile" parent="Player/SpellCaster" index="2" unique_id=1813416411 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../PlayerStats")
 
 [node name="HandsOverlay" type="CanvasLayer" parent="Player" unique_id=1778965903]
 layer = -1
@@ -172,14 +185,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="statics" type="Node" parent="." unique_id=1329344165]
 
-[node name="FloorLayer" type="StaticBody3D" parent="statics" unique_id=865853195]
+[node name="LevelLayout" type="StaticBody3D" parent="statics" unique_id=865853195]
 collision_mask = 6
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/FloorLayer" unique_id=32640974]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/LevelLayout" unique_id=32640974]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021928787, 0.024451256, -0.013404846)
 mesh = SubResource("PlaneMesh_45d1s")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/FloorLayer" unique_id=427253245]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/LevelLayout" unique_id=427253245]
 shape = SubResource("BoxShape3D_uo7di")
 
 [node name="Tower" parent="statics" unique_id=2114612622 instance=ExtResource("9_kn06e")]
@@ -202,8 +215,5 @@ transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.977
 
 [node name="Walls4" parent="statics" unique_id=1141679315 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
-
-[node name="SmokeTest" type="Node" parent="." unique_id=1635923893]
-script = ExtResource("31_7dsfl")
 
 [editable path="Player"]

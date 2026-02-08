@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b1yicvwa7lffw"]
+
+[ext_resource type="Script" uid="uid://d2cmcm6jpdsft" path="res://Scenes/LightningBeam.gd" id="1_626mt"]
+
+[node name="LightningBeam" type="Node3D" unique_id=323529677]
+script = ExtResource("1_626mt")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=895507658]

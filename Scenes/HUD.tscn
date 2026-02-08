@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2jrr3wk2fery" path="res://Scripts/HUD.gd" id="1_sd512"]
 
-[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash")]
+[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash", "spell_label", "spell_stats_label", "cooldown_bar", "cooldown_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,10 @@ hp_label = NodePath("TopLeft/HPLabel")
 level_label = NodePath("Bottom/LevelLabel")
 xp_bar = NodePath("Bottom/XPBar")
 hurt_flash = NodePath("HurtFlash")
+spell_label = NodePath("TopLeft/SpellLabel")
+spell_stats_label = NodePath("TopLeft/SpellStatsLabel")
+cooldown_bar = NodePath("CooldownBar")
+cooldown_label = NodePath("CooldownBar/CooldownLabel")
 xp_show_percent = true
 
 [node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
@@ -22,6 +26,12 @@ offset_right = 40.0
 offset_bottom = 50.0
 
 [node name="HPLabel" type="Label" parent="TopLeft" unique_id=1879003467]
+layout_mode = 2
+
+[node name="SpellLabel" type="Label" parent="TopLeft" unique_id=1274156550]
+layout_mode = 2
+
+[node name="SpellStatsLabel" type="Label" parent="TopLeft" unique_id=1049068064]
 layout_mode = 2
 
 [node name="Bottom" type="VBoxContainer" parent="." unique_id=245589413]
@@ -65,3 +75,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
+
+[node name="CooldownBar" type="ProgressBar" parent="." unique_id=764879892]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_right = 250.0
+grow_vertical = 0
+max_value = 1.0
+show_percentage = false
+
+[node name="CooldownLabel" type="Label" parent="CooldownBar" unique_id=802093448]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 30.0
+horizontal_alignment = 1
+vertical_alignment = 1
