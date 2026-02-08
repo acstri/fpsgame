@@ -133,9 +133,40 @@ func _apply_effect(up: UpgradeData, stats: PlayerStats) -> bool:
 		"move_speed_up":
 			stats.add_move_speed_percent(up.effect_value)
 			return true
+		"range_up":
+			stats.add_range_percent(up.effect_value)
+			return true
+		"projectile_speed_up":
+			stats.add_projectile_speed_percent(up.effect_value)
+			return true
+		"projectile_up":
+			stats.add_extra_projectiles(int(round(up.effect_value)))
+			return true
+		"jump_vel_up":
+			stats.add_jump_percent(up.effect_value)
+			return true
+		"spread_down":
+			stats.add_spread_tighten_percent(up.effect_value)
+			return true
+		"crit_chance_up":
+			stats.add_crit_chance(up.effect_value)
+			return true
+		"crit_mult_up":
+			stats.add_crit_mult_percent(up.effect_value)
+			return true
+		"evasion_up":
+			stats.add_evasion(up.effect_value)
+			return true
+		"max_hp_up":
+			stats.add_max_hp_percent(up.effect_value)
+			return true
+		"life_regen_up":
+			stats.add_hp_regen_flat(up.effect_value)
+			return true
 		_:
 			push_warning("UpgradeService: Unknown effect_key: %s (upgrade=%s)" % [up.effect_key, _upgrade_label(up)])
 			return false
+
 
 func _weighted_pick_excluding(pool: Array[UpgradeData], exclude: Array[UpgradeData]) -> UpgradeData:
 	var total: float = 0.0

@@ -44,20 +44,26 @@ func try_cast() -> void:
 	_cd_left = maxf(0.01, spell.cooldown / maxf(0.001, fire_mult))
 
 	var dmg := spell.damage * (stats.damage_mult if stats != null else 1.0)
+	var rng := spell.spell_range * (stats.range_mult if stats != null else 1.0)
+	var spr := spell.spread_deg * (stats.spread_mult if stats != null else 1.0)
 
-	# Keep existing priority: projectile if present, else hitscan
+	var is_crit := false
+	if stats != null:
+		var r := stats.roll_crit(dmg)
+		dmg = float(r["damage"])
+		is_crit = bool(r["crit"])
+
 	if projectile_spell != null:
-		projectile_spell.cast(dmg, spell.spell_range, spell.spread_deg)
+		projectile_spell.cast(dmg, rng, spr, is_crit)
 		return
 
 	if hitscan != null:
-		hitscan.cast(dmg, spell.spell_range, spell.spread_deg)
+		hitscan.cast(dmg, rng, spr, is_crit)
 
 # --- wiring/validation ---
 
 func _autowire() -> void:
 	var owner_node := get_owner()
-
 
 	# Find spell nodes by type under the same owner/player if not assigned
 	if projectile_spell != null:

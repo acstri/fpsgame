@@ -7,6 +7,7 @@ class_name HUD
 @export var hp_label: Label
 @export var level_label: Label
 @export var xp_bar: ProgressBar
+@export var hurt_flash: ColorRect
 
 # Optional: if your XP bar needs max updates
 @export var xp_show_percent := false
@@ -14,6 +15,7 @@ class_name HUD
 var _health: PlayerHealth
 var _level_system: LevelSystem
 var _spell_caster: Node
+var _hurt_tween: Tween
 
 func _ready() -> void:
 	_autowire()
@@ -35,7 +37,7 @@ func _ready() -> void:
 
 	if _health != null:
 		_health.hp_changed.connect(_on_hp_changed)
-		_on_hp_changed(_health.hp, _health.max_hp)
+		_on_hp_changed(_health.hp, _health.get_max_hp())
 
 	_level_system = _find_child_by_type(player, LevelSystem) as LevelSystem
 	if _level_system == null:
@@ -54,6 +56,13 @@ func _ready() -> void:
 
 	# Initial paint (so it looks correct on frame 1)
 	_refresh_all()
+
+	var events := get_node_or_null("/root/Combat_Events")
+	if events != null and events.has_signal("hurt_flash"):
+		events.hurt_flash.connect(_on_hurt_flash)
+	else:
+		push_warning("HUD: Combat_Events missing or has no hurt_flash signal.")
+
 
 func _process(_delta: float) -> void:
 	# HUD should not crash if something is missing; it should just stop updating that section.
@@ -134,3 +143,28 @@ func _find_child_by_type(root: Node, t: Variant) -> Node:
 		if deep != null:
 			return deep
 	return null
+
+func _on_hurt_flash(is_player: bool) -> void:
+	if not is_player:
+		return
+	if hurt_flash == null:
+		push_warning("HUD: hurt_flash ColorRect not assigned.")
+		return
+
+	if _hurt_tween != null and is_instance_valid(_hurt_tween):
+		_hurt_tween.kill()
+
+	hurt_flash.visible = true
+	_set_hurt_alpha(0.0)
+
+	_hurt_tween = create_tween()
+	_hurt_tween.set_ignore_time_scale(true)
+	_hurt_tween.tween_method(_set_hurt_alpha, 0.0, 0.35, 0.05)
+	_hurt_tween.tween_method(_set_hurt_alpha, 0.35, 0.0, 0.18)
+
+func _set_hurt_alpha(a: float) -> void:
+	if hurt_flash == null:
+		return
+	var c := hurt_flash.color
+	c.a = clampf(a, 0.0, 1.0)
+	hurt_flash.color = c

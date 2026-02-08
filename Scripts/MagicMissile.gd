@@ -25,7 +25,7 @@ signal cast_finished()
 func _ready() -> void:
 	_autowire()
 
-func cast(damage: float, spellrange: float, spread_deg: float) -> void:
+func cast(damage: float, spellrange: float, spread_deg: float, is_crit: bool = false) -> void:
 	cast_started.emit()
 
 	_autowire()
@@ -39,8 +39,11 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 		cast_finished.emit()
 		return
 
+	var count: int = maxi(1, missiles_per_cast)
+
 	# Optional stat scaling
 	if stats != null:
+		count += stats.extra_projectiles
 		if "damage_mult" in stats:
 			damage *= stats.damage_mult
 		if "range_mult" in stats:
@@ -53,7 +56,6 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 	spawn_xform.origin += base_forward * spawn_distance_from_cam
 
 	var caster_node: Node = _get_exclude_node() if exclude_player else null
-	var count: int = maxi(1, missiles_per_cast)
 
 	for i in range(count):
 		var dir := SpellUtil.apply_spread(base_forward, spread_deg)
@@ -66,7 +68,8 @@ func cast(damage: float, spellrange: float, spread_deg: float) -> void:
 
 		var p := projectile_scene.instantiate()
 		if p.has_method("setup"):
-			p.callv("setup", [damage, dir, caster_node, projectile_speed, spellrange, hit_mask])
+			p.callv("setup", [damage, dir, caster_node, projectile_speed, spellrange, hit_mask, is_crit])
+
 
 		var parent := get_tree().current_scene
 		if parent == null:

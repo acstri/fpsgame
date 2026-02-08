@@ -7,5 +7,4 @@ script = ExtResource("1_0wd4u")
 title = "+1 Projectile"
 description = "Increases the amount of projectiles of spells by 1."
 effect_key = "projectile_up"
-effect_value = 0.01
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

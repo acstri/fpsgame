@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 [autoload]
 
 Upgrades="*uid://xfslssbcxm88"
+Combat_Events="*uid://bjsakqdryurn7"
 
 [global_group]
 

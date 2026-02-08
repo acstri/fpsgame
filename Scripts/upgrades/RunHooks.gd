@@ -153,7 +153,6 @@ func _find_child_by_type(root: Node, t: Variant) -> Node:
 	return null
 
 func _find_any_by_type(t: Variant) -> Node:
-	var nodes := get_tree().get_nodes_in_group("__dummy__") # placeholder to avoid warnings
 	# Instead of group scanning, walk scene tree from current scene
 	var scene := get_tree().current_scene
 	if scene == null:

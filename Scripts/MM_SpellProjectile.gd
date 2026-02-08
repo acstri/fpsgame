@@ -40,10 +40,12 @@ var _armed: bool = false
 var _speed: float = 0.0
 var _dir: Vector3 = Vector3.FORWARD
 var _target: Node3D = null
+var is_crit := false
+
 
 @onready var _tracer: GPUParticles3D = get_node_or_null(tracer_path) as GPUParticles3D
 
-func setup(p_damage: float, p_direction: Vector3, p_caster: Node, p_speed: float, p_max_distance: float, p_hit_mask: int) -> void:
+func setup(p_damage: float, p_direction: Vector3, p_caster: Node, p_speed: float, p_max_distance: float, p_hit_mask: int, p_is_crit: bool = false) -> void:
 	damage = p_damage
 	caster = p_caster
 	top_speed = p_speed
@@ -51,6 +53,7 @@ func setup(p_damage: float, p_direction: Vector3, p_caster: Node, p_speed: float
 	hit_mask = p_hit_mask
 	_dir = p_direction.normalized()
 	_configured = true
+	is_crit = p_is_crit
 
 func _ready() -> void:
 	_speed = start_speed
@@ -106,7 +109,7 @@ func _physics_process(delta: float) -> void:
 		global_position = hit["position"]
 
 	# Use shared utility to keep damage logic consistent across hitscan/projectiles
-	SpellUtil.apply_damage_from_hit(hit, damage)
+	SpellUtil.apply_damage_from_hit(hit, damage, is_crit)
 	queue_free()
 
 func _steer_toward(current_dir: Vector3, desired_dir: Vector3, delta: float) -> Vector3:

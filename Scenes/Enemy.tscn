@@ -5,12 +5,12 @@
 [ext_resource type="Script" uid="uid://cmxikjcajuyf6" path="res://Scripts/Dropper.gd" id="3_xeo28"]
 [ext_resource type="PackedScene" uid="uid://c0n1udr1xa4i8" path="res://Scenes/XPGem.tscn" id="4_1exfc"]
 [ext_resource type="Script" uid="uid://cl4nwx6vex266" path="res://Scripts/EnemyMeleeDamage.gd" id="4_kpr8r"]
+[ext_resource type="Script" uid="uid://fw6gptmp7dh1" path="res://Scenes/EnemyHurtFlash.gd" id="6_mo1ky"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1f0kj"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mo1ky"]
 albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_afpow"]
-material = SubResource("StandardMaterial3D_1f0kj")
 height = 1.5
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_287tu"]
@@ -27,13 +27,15 @@ stop_distance = 1.86
 
 [node name="Visuals" type="MeshInstance3D" parent="." unique_id=766435993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+layers = 4
+material_override = SubResource("StandardMaterial3D_mo1ky")
 mesh = SubResource("CapsuleMesh_afpow")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=648665732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 shape = SubResource("CapsuleShape3D_287tu")
 
-[node name="Health" type="Node" parent="." unique_id=1467536774]
+[node name="EnemyHealth" type="Node" parent="." unique_id=1467536774]
 script = ExtResource("1_hghv2")
 
 [node name="Dropper" type="Node" parent="." unique_id=2066269416]
@@ -51,3 +53,8 @@ shape = SubResource("CapsuleShape3D_kpr8r")
 
 [node name="AimPoint" type="Marker3D" parent="." unique_id=224235830]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="EnemyHurtFlash" type="Node" parent="." unique_id=2058248785 node_paths=PackedStringArray("health", "meshes")]
+script = ExtResource("6_mo1ky")
+health = NodePath("../EnemyHealth")
+meshes = [NodePath("../Visuals")]

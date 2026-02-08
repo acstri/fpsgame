@@ -7,5 +7,5 @@ script = ExtResource("1_a62sg")
 title = "Evasion +2%"
 description = "Increase your chance to evade attacks by 2%"
 effect_key = "evasion_up"
-effect_value = 0.02
+effect_value = 0.1
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

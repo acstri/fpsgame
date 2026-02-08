@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
 [ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
-[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/HitscanSpell.gd" id="5_nn08x"]
+[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/HitScanSpell.gd" id="5_nn08x"]
 [ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/PlayerHealth.gd" id="6_nn08x"]
 [ext_resource type="Script" uid="uid://d3kn4ba8eij1a" path="res://Scripts/SpellCaster.gd" id="7_52ee3"]
 
@@ -15,12 +15,14 @@ material = SubResource("StandardMaterial3D_6t5aa")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fkybt"]
 
-[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera") groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera", "stats", "level_system") groups=["player"]]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_v0iea")
 head = NodePath("Head")
 camera = NodePath("Head/WorldCam")
+stats = NodePath("PlayerStats")
+level_system = NodePath("LevelSystem")
 jump_velocity = 7.0
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
@@ -42,10 +44,10 @@ shape = SubResource("CapsuleShape3D_fkybt")
 [node name="LevelSystem" type="Node" parent="." unique_id=2075312957]
 script = ExtResource("4_dewec")
 
-[node name="Stats" type="Node" parent="." unique_id=114155298]
+[node name="PlayerStats" type="Node" parent="." unique_id=114155298]
 script = ExtResource("5_5ixxa")
 
-[node name="Health" type="Node" parent="." unique_id=1193666010]
+[node name="PlayerHealth" type="Node" parent="." unique_id=1193666010]
 script = ExtResource("6_nn08x")
 
 [node name="SpellCaster" type="Node" parent="." unique_id=392683619 node_paths=PackedStringArray("hitscan")]
@@ -56,5 +58,5 @@ hitscan = NodePath("HitscanSpell")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)
 script = ExtResource("5_nn08x")
 camera = NodePath("../../Head/WorldCam")
-stats = NodePath("../../Stats")
+stats = NodePath("../../PlayerStats")
 hit_mask = 5

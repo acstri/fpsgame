@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2jrr3wk2fery" path="res://Scripts/HUD.gd" id="1_sd512"]
 
-[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar")]
+[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,7 @@ script = ExtResource("1_sd512")
 hp_label = NodePath("TopLeft/HPLabel")
 level_label = NodePath("Bottom/LevelLabel")
 xp_bar = NodePath("Bottom/XPBar")
+hurt_flash = NodePath("HurtFlash")
 xp_show_percent = true
 
 [node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
@@ -54,3 +55,13 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="HurtFlash" type="ColorRect" parent="." unique_id=1759052652]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)

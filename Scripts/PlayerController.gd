@@ -63,7 +63,9 @@ func _physics_process(delta: float) -> void:
 			velocity.y = -0.1
 
 	if is_on_floor() and Input.is_action_just_pressed("jump"):
-		velocity.y = jump_velocity
+		var jmult := stats.jump_mult if stats != null else 1.0
+		velocity.y = jump_velocity * jmult
+
 
 	var input_vec := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var wish_dir := (transform.basis * Vector3(input_vec.x, 0.0, input_vec.y)).normalized()
