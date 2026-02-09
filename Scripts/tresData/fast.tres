@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyVariantData" format=3 uid="uid://m3cxiunnpn46"]
+
+[ext_resource type="Script" uid="uid://dgnfiu612ltsu" path="res://Scripts/EnemyVariantData.gd" id="1_5sssm"]
+[ext_resource type="Texture2D" uid="uid://ch0t86sovr111" path="res://Assets/Icons/skull.png" id="2_8brqs"]
+
+[resource]
+script = ExtResource("1_5sssm")
+id = "fast"
+hp_mult = 0.5
+move_speed_mult = 2.0
+melee_damage_mult = 0.5
+show_tag = true
+tag_texture = ExtResource("2_8brqs")
+metadata/_custom_type_script = "uid://dgnfiu612ltsu"

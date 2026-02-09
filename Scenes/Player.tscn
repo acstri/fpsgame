@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/MagicMissile.gd" id="9_miouo"]
 [ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/MM_SpellProjectile.tscn" id="10_o3h8g"]
 [ext_resource type="Script" uid="uid://4nqnf08ubyk7" path="res://Scripts/PlayerSpellSwitch.gd" id="11_1e7my"]
+[ext_resource type="PackedScene" uid="uid://drlshkarpltvq" path="res://Scripts/HandCastAnimator.tscn" id="13_miouo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
 albedo_color = Color(0, 0, 1, 1)
@@ -82,3 +83,6 @@ projectile_scene = ExtResource("10_o3h8g")
 
 [node name="SpellSwitch" type="Node" parent="." unique_id=967301249]
 script = ExtResource("11_1e7my")
+
+[node name="HandCastAnimator" parent="." unique_id=2019263904 instance=ExtResource("13_miouo")]
+spell_caster_path = NodePath("../SpellCaster")

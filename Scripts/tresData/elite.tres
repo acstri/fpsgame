@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyVariantData" format=3 uid="uid://dga1w48xt3bpp"]
+
+[ext_resource type="Script" uid="uid://dgnfiu612ltsu" path="res://Scripts/EnemyVariantData.gd" id="1_ndv1l"]
+[ext_resource type="Texture2D" uid="uid://dve8q350023bi" path="res://Assets/Icons/crown_a.png" id="2_88wqp"]
+
+[resource]
+script = ExtResource("1_ndv1l")
+id = "elite"
+weight = 10.0
+hp_mult = 2.0
+move_speed_mult = 1.5
+melee_damage_mult = 2.0
+xp_mult = 2.0
+show_tag = true
+tag_texture = ExtResource("2_88wqp")
+metadata/_custom_type_script = "uid://dgnfiu612ltsu"

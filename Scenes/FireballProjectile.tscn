@@ -14,7 +14,7 @@ uv1_triplanar_sharpness = 1.7411028
 
 [sub_resource type="SphereMesh" id="SphereMesh_smo0t"]
 material = SubResource("StandardMaterial3D_mxqeq")
-radial_segments = 7
+radial_segments = 5
 rings = 3
 
 [sub_resource type="Animation" id="Animation_mxqeq"]
@@ -95,6 +95,7 @@ autoplay = &"fire"
 light_color = Color(1, 0.38039216, 0, 1)
 light_energy = 4.859
 light_size = 0.265
+shadow_enabled = true
 omni_range = 3.5826623
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1282422329]

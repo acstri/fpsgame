@@ -8,6 +8,7 @@ class_name StatBlock
 @onready var move_speed_label: Label = $VBoxContainer/MoveSpeedLabel
 @onready var crit_chance_label: Label = $VBoxContainer/CritChanceLabel
 @onready var crit_mult_label: Label = $VBoxContainer/CritMultLabel
+@onready var jump_vel_label: Label = $VBoxContainer/JumpVelLabel
 @onready var life_regen_label: Label = $VBoxContainer/LifeRegenLabel
 @onready var max_hp_label: Label = $VBoxContainer/MaxHpLabel
 @onready var projectiles_label: Label = $VBoxContainer/ProjectilesLabel
@@ -28,7 +29,8 @@ func _update_text() -> void:
 	damage_label.text = "Damage: x%.2f" % stats.damage_mult
 	fire_rate_label.text = "Fire Rate: x%.2f" % stats.fire_rate_mult
 	move_speed_label.text = "Move Speed: x%.2f" % stats.move_speed_mult
-
+	jump_vel_label.text = "Jump Height: x%.2f" % stats.jump_mult
+	
 	# Crit chance is a percentage
 	crit_chance_label.text = "Crit Chance: %d%%" % int(round(stats.crit_chance * 100.0))
 
@@ -51,6 +53,7 @@ func _set_empty() -> void:
 	damage_label.text = "Damage: -"
 	fire_rate_label.text = "Fire Rate: -"
 	move_speed_label.text = "Move Speed: -"
+	jump_vel_label.text = "Jump Height: -"
 	crit_chance_label.text = "Crit Chance: -"
 	crit_mult_label.text = "Crit Damage: -"
 	life_regen_label.text = "Life Regen: -"

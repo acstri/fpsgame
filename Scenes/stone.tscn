@@ -4,6 +4,8 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_80wns"]
 albedo_texture = ExtResource("2_oaod5")
+uv1_scale = Vector3(0.105, 0.105, 0.105)
+uv1_triplanar = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_ju7bp"]
 material = SubResource("StandardMaterial3D_80wns")

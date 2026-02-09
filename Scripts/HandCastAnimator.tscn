@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://drlshkarpltvq"]
+
+[ext_resource type="Script" uid="uid://d1jcivhiu5btt" path="res://Scripts/HandCastAnimator.gd" id="1_7xpku"]
+
+[node name="HandCastAnimator" type="Node" unique_id=2019263904]
+script = ExtResource("1_7xpku")

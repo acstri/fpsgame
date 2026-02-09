@@ -1,6 +1,8 @@
 extends Node
 class_name SpellCaster
 
+signal spell_cast(kind: StringName, spell_data: SpellData)
+
 @export_group("Spell Nodes (optional overrides)")
 @export var chainlightning: ChainLightning
 @export var magicmissile: MagicMissile
@@ -130,6 +132,9 @@ func try_cast() -> void:
 
 	impl.call("cast", dmg, rng, spr, is_crit)
 
+	var kind := _get_spelldata_kind()
+	spell_cast.emit(kind, spell)
+
 # -------------------------
 # Cooldown telemetry for HUD
 # -------------------------
@@ -216,9 +221,6 @@ func _bind_impl_nodes() -> void:
 		_impl_chain = get_node(^"chainlightningSpell") as ChainLightning
 	if _impl_magicmissile == null and has_node(^"magicmissile"):
 		_impl_magicmissile = get_node(^"magicmissile") as MagicMissile
-	# If your node is named ProjectileSpell instead, use this instead:
-	# if _impl_magicmissile == null and has_node(^"ProjectileSpell"):
-	#	_impl_magicmissile = get_node(^"ProjectileSpell") as MagicMissile
 
 func _autowire() -> void:
 	var owner_node := get_owner()

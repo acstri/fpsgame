@@ -5,12 +5,16 @@
 [ext_resource type="Script" uid="uid://cmxikjcajuyf6" path="res://Scripts/Dropper.gd" id="3_xeo28"]
 [ext_resource type="PackedScene" uid="uid://c0n1udr1xa4i8" path="res://Scenes/XPGem.tscn" id="4_1exfc"]
 [ext_resource type="Script" uid="uid://cl4nwx6vex266" path="res://Scripts/EnemyMeleeDamage.gd" id="4_kpr8r"]
-[ext_resource type="Script" uid="uid://fw6gptmp7dh1" path="res://Scenes/EnemyHurtFlash.gd" id="6_mo1ky"]
+[ext_resource type="Script" uid="uid://fw6gptmp7dh1" path="res://Scripts/EnemyHurtFlash.gd" id="6_mo1ky"]
+[ext_resource type="Script" uid="uid://gjq77x5hvil3" path="res://Scripts/EnemyVariantApplier.gd" id="7_6bs3c"]
+[ext_resource type="Script" uid="uid://dgnfiu612ltsu" path="res://Scripts/EnemyVariantData.gd" id="8_uihya"]
+[ext_resource type="Resource" uid="uid://bm3lr13fgio1k" path="res://Scripts/tresData/normal.tres" id="9_esfq3"]
+[ext_resource type="Resource" uid="uid://dga1w48xt3bpp" path="res://Scripts/tresData/elite.tres" id="11_qlal6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mo1ky"]
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_afpow"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0o0ue"]
 height = 1.5
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_287tu"]
@@ -29,7 +33,7 @@ stop_distance = 1.86
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 layers = 4
 material_override = SubResource("StandardMaterial3D_mo1ky")
-mesh = SubResource("CapsuleMesh_afpow")
+mesh = SubResource("CapsuleMesh_0o0ue")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=648665732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
@@ -58,3 +62,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 script = ExtResource("6_mo1ky")
 health = NodePath("../EnemyHealth")
 meshes = [NodePath("../Visuals")]
+
+[node name="VariantApplier" type="Node" parent="." unique_id=1189141985]
+script = ExtResource("7_6bs3c")
+variants = Array[ExtResource("8_uihya")]([ExtResource("9_esfq3"), ExtResource("11_qlal6")])
+tag_height = 2.0

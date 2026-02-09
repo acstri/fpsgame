@@ -1,13 +1,12 @@
 [gd_scene format=3 uid="uid://se74irodpl8i"]
 
-[ext_resource type="Script" uid="uid://rq6kh6hqs3pg" path="res://Scenes/DamageNumberSpawner.gd" id="1_wgk1c"]
+[ext_resource type="Script" uid="uid://rq6kh6hqs3pg" path="res://Scripts/DamageNumberSpawner.gd" id="1_wgk1c"]
 
 [node name="DamageNumber" type="Control" unique_id=28945078]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("1_wgk1c")
-crit_scale = 2.0
 
 [node name="Label" type="Label" parent="." unique_id=1563763990]
 layout_mode = 0
