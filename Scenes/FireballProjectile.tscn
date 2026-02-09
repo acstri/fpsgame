@@ -9,7 +9,7 @@ cull_mode = 1
 albedo_texture = ExtResource("2_mxqeq")
 emission_enabled = true
 emission = Color(1, 0.33333334, 0, 1)
-emission_energy_multiplier = 5.95
+emission_energy_multiplier = 10.31
 uv1_triplanar_sharpness = 1.7411028
 
 [sub_resource type="SphereMesh" id="SphereMesh_smo0t"]
@@ -78,6 +78,9 @@ rings = 3
 [node name="FireballProjectile" type="Node3D" unique_id=1384196401]
 script = ExtResource("1_yfbfy")
 explosion_pulse_scene = ExtResource("2_smo0t")
+shake_amplitude = 6.0
+shake_duration = 1.0
+shake_max_distance_mult = 10.0
 aoe_damage_mult = 0.85
 falloff_min = 0.75
 
@@ -98,6 +101,6 @@ omni_range = 3.5826623
 transform = Transform3D(1, 1.1175871e-08, 0, -3.259629e-09, 1, 0, -3.7252903e-09, 0, 1, 0, 0, 0)
 amount = 20
 trail_enabled = true
-trail_lifetime = 1.4000000000000001
+trail_lifetime = 1.4
 process_material = SubResource("ParticleProcessMaterial_mxqeq")
 draw_pass_1 = SubResource("SphereMesh_yjn53")

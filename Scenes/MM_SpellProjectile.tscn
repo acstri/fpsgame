@@ -89,10 +89,11 @@ amount = 50
 preprocess = 2.22
 speed_scale = 4.6
 trail_enabled = true
-trail_lifetime = 1.6500000000000001
+trail_lifetime = 1.65
 process_material = SubResource("ParticleProcessMaterial_l6kp3")
 draw_pass_1 = SubResource("QuadMesh_dttlx")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1101547480]
 libraries/ = SubResource("AnimationLibrary_25ply")
 autoplay = &"fire"
+speed_scale = 2.164

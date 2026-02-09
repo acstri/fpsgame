@@ -21,4 +21,5 @@ points = PackedVector3Array(0.26377487, 0.3759308, 0.10799223, -0.4596041, -0.03
 mesh = SubResource("SphereMesh_ju7bp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1425687855]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_vssk1")

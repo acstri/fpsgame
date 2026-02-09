@@ -1,3 +1,8 @@
+# res://Scripts/FireballProjectile.gd
+# Camera shake now scales by distance from the explosion to the camera (approximation).
+# - At the center: full shake
+# - Far away: reduced or zero shake (configurable)
+
 extends Node3D
 class_name FireballProjectile
 
@@ -9,18 +14,25 @@ class_name FireballProjectile
 
 @export_group("Knockback")
 @export var knockback_enabled := true
-@export var knockback_force := 22.0        # increase for stronger push
-@export var knockback_upward := 0.8        # adds lift (0 = flat)
-@export var knockback_use_falloff := true  # weaker at edge of radius
+@export var knockback_force := 22.0
+@export var knockback_upward := 0.8
+@export var knockback_use_falloff := true
 @export_range(0.0, 1.0, 0.05) var knockback_falloff_min := 0.35
 
 @export_group("Camera Shake")
 @export var shake_enabled := true
+
+# Base shake values (at 0 distance)
 @export var shake_amplitude := 1.2
 @export var shake_duration := 0.12
 @export var shake_frequency := 30.0
 @export var shake_pos_scale := 1.0
 @export var shake_rot_scale := 1.0
+
+# NEW: distance scaling
+@export var shake_max_distance_mult := 4.0     # shake range = explosion_radius * this
+@export_range(0.0, 1.0, 0.05) var shake_min_scale := 0.0  # scale when at/after max distance
+@export var shake_use_smooth_falloff := true  # smoothstep vs linear
 
 var hit_mask: int = 5
 var damage: float = 0.0
@@ -28,6 +40,7 @@ var caster: Node = null
 var max_distance: float = 120.0
 var speed: float = 28.0
 
+@export_group("Damage")
 var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
 
@@ -95,14 +108,14 @@ func _physics_process(delta: float) -> void:
 
 func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 	_spawn_explosion_pulse(pos)
-	_do_camera_shake()
+	_do_camera_shake(pos)
 
 	# 1) Full damage to directly hit enemy (if any)
 	var direct_collider = direct_hit.get("collider", null)
 	if direct_collider != null:
 		SpellUtil.apply_damage_from_hit(direct_hit, damage, is_crit, false)
 
-	# 2) AoE damage + knockback to others in radius
+	# 2) AoE damage + knockback in radius
 	var enemies := get_tree().get_nodes_in_group("enemy")
 	var r2 := explosion_radius * explosion_radius
 
@@ -128,7 +141,6 @@ func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 			var fake_hit := {"collider": n, "position": pos}
 			SpellUtil.apply_damage_from_hit(fake_hit, amount, is_crit, false)
 
-		# Knockback applies to everyone in radius (including direct target)
 		if knockback_enabled:
 			_apply_knockback(n, pos, d2)
 
@@ -146,33 +158,27 @@ func _apply_knockback(target: Node3D, origin: Vector3, dist2: float) -> void:
 		var f := lerpf(1.0, knockback_falloff_min, t)
 		strength *= f
 
-	# Try common patterns without requiring changes to enemy core:
-	# 1) RigidBody3D impulse
 	if target is RigidBody3D:
 		(target as RigidBody3D).apply_central_impulse(dir * strength)
 		return
 
-	# 2) Dedicated method on enemy (optional)
 	if target.has_method("apply_knockback"):
 		target.call("apply_knockback", dir * strength)
 		return
 
-	# 3) CharacterBody3D velocity injection (common)
 	if target is CharacterBody3D:
 		var cb := target as CharacterBody3D
 		cb.velocity += dir * strength
 		return
 
-	# 4) Generic "velocity" property injection
 	if "velocity" in target:
 		target.velocity += dir * strength
 		return
 
-func _do_camera_shake() -> void:
+func _do_camera_shake(explosion_pos: Vector3) -> void:
 	if not shake_enabled:
 		return
 
-	# Look for a CameraShake node under the active camera.
 	var cam := get_viewport().get_camera_3d()
 	if cam == null:
 		return
@@ -180,9 +186,38 @@ func _do_camera_shake() -> void:
 	var shaker := cam.get_node_or_null("CameraShake")
 	if shaker == null:
 		return
+	if not shaker.has_method("shake"):
+		return
 
-	if shaker.has_method("shake"):
-		shaker.call("shake", shake_amplitude, shake_duration, shake_frequency, shake_pos_scale, shake_rot_scale)
+	# Approximation: distance from explosion to camera position
+	var d := cam.global_position.distance_to(explosion_pos)
+
+	# Shake range relative to explosion radius
+	var max_d := maxf(0.01, explosion_radius * maxf(0.1, shake_max_distance_mult))
+
+	# 0 = at center, 1 = at/after max distance
+	var t := clampf(d / max_d, 0.0, 1.0)
+
+	# Convert to scale where 1.0 is strongest and shake_min_scale is weakest
+	var shake_scale := 1.0 - t
+	if shake_use_smooth_falloff:
+		# smoothstep
+		shake_scale = shake_scale * shake_scale * (3.0 - 2.0 * shake_scale)
+
+	shake_scale = lerpf(shake_min_scale, 1.0, shake_scale)
+
+	# If scale is effectively zero, skip shake.
+	if shake_scale <= 0.001:
+		return
+
+	shaker.call(
+		"shake",
+		shake_amplitude * shake_scale,
+		shake_duration * lerpf(0.7, 1.0, shake_scale), # optional: slightly shorter when weak
+		shake_frequency,
+		shake_pos_scale,
+		shake_rot_scale
+	)
 
 func _spawn_explosion_pulse(pos: Vector3) -> void:
 	if explosion_pulse_scene == null:
@@ -197,7 +232,6 @@ func _spawn_explosion_pulse(pos: Vector3) -> void:
 	if fx is Node3D:
 		(fx as Node3D).global_position = pos
 
-	# Match VFX start radius to gameplay explosion radius (your ExplosionPulse.gd supports this).
 	if fx.has_method("set_target_radius"):
 		fx.call("set_target_radius", explosion_radius)
 

@@ -26,8 +26,8 @@
 [ext_resource type="Resource" uid="uid://b5wrv57imlu13" path="res://Scripts/upgrades/data/projectiles.tres" id="14_mq4nq"]
 [ext_resource type="Resource" uid="uid://bgw0qphqaux1w" path="res://Scripts/upgrades/data/evasion.tres" id="15_371b6"]
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
-[ext_resource type="Script" uid="uid://rq6kh6hqs3pg" path="res://Scenes/DamageNumberSpawner.gd" id="17_0bcf6"]
-[ext_resource type="PackedScene" uid="uid://c08axm2ls4whl" path="res://Scenes/ui/DamageNumber3D.tscn" id="18_y1bqn"]
+[ext_resource type="PackedScene" uid="uid://se74irodpl8i" path="res://Scenes/DamageNumber.tscn" id="17_ao4cr"]
+[ext_resource type="Script" uid="uid://b3vra038m6gwv" path="res://Scenes/DamageNumbersLayer.gd" id="22_ao4cr"]
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
 [ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
@@ -47,6 +47,7 @@ sky_material = SubResource("ProceduralSkyMaterial_kn06e")
 background_mode = 2
 sky = SubResource("Sky_7yo87")
 tonemap_mode = 2
+glow_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.43191856, 0.5734833, 0.64844275, 1)
 fog_density = 1.0
@@ -100,11 +101,6 @@ ground_mask = 1
 script = ExtResource("4_mvfa8")
 all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResource("7_w0bku"), ExtResource("6_b5aes"), ExtResource("9_33kev"), ExtResource("10_g01fq"), ExtResource("11_0bcf6"), ExtResource("12_y1bqn"), ExtResource("13_7dsfl"), ExtResource("14_mq4nq"), ExtResource("15_371b6"), ExtResource("16_g01fq")])
 
-[node name="DamageNumberSpawner" type="Node" parent="GameStates" unique_id=1977821100]
-script = ExtResource("17_0bcf6")
-damage_number_scene = ExtResource("18_y1bqn")
-use_world_parent = NodePath("../..")
-
 [node name="UI" type="Node" parent="." unique_id=1103826466]
 
 [node name="GameOverScreen" parent="UI" unique_id=1227436529 instance=ExtResource("1_y7y61")]
@@ -130,6 +126,11 @@ process_mode = 3
 process_mode = 3
 visible = false
 z_index = -1
+
+[node name="DamageNumbersLayer" type="CanvasLayer" parent="UI" unique_id=1812757444 node_paths=PackedStringArray("camera")]
+script = ExtResource("22_ao4cr")
+camera = NodePath("../../Player/Head/WorldCam")
+number_scene = ExtResource("17_ao4cr")
 
 [node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.0671177)
@@ -213,6 +214,9 @@ transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.939
 
 [node name="stone3" parent="statics" unique_id=1661196152 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(1.8574554, 0.5386019, 1.3084315, -1.4149505, 0.7070419, 1.717624, -2.0876527e-07, -2.1592185, 0.88881963, -34.348892, 8.306734, -35.05007)
+
+[node name="stone4" parent="statics" unique_id=1759254944 instance=ExtResource("32_ao4cr")]
+transform = Transform3D(0.9237408, -2.1417131, 0.10951519, 1.427948, 0.7032452, 1.7084014, -1.5999665, -0.6088815, 1.5879532, -57.348892, 8.306734, -7.0500717)
 
 [node name="Walls3" parent="statics" unique_id=1008833160 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.9779366, -7.31147, 2, -20.057621)
