@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://q4rsgn2a42t4" path="res://Scripts/FireballProjectile.gd" id="1_yfbfy"]
 [ext_resource type="Texture2D" uid="uid://bi0jku56t0mrj" path="res://Assets/Textures/smoke_text.png" id="2_mxqeq"]
 [ext_resource type="PackedScene" uid="uid://b2hckyvgkp3wa" path="res://Scenes/ImpactExplosion.tscn" id="2_smo0t"]
+[ext_resource type="AudioStream" uid="uid://ue728tunnjcw" path="res://Assets/Sounds/fireball_inair.mp3" id="3_u4w32"]
+[ext_resource type="AudioStream" uid="uid://bjv7s66dcxehh" path="res://Assets/Sounds/fireball_impact.mp3" id="4_1e0dh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxqeq"]
 cull_mode = 1
@@ -78,6 +80,14 @@ rings = 3
 [node name="FireballProjectile" type="Node3D" unique_id=1384196401]
 script = ExtResource("1_yfbfy")
 explosion_pulse_scene = ExtResource("2_smo0t")
+flight_loop_sfx = ExtResource("3_u4w32")
+flight_volume_db = 0.0
+flight_bus = "Sfx"
+flight_max_distance = 70.0
+impact_sfx = ExtResource("4_1e0dh")
+impact_volume_db = 0.0
+impact_bus = "Sfx"
+impact_max_distance = 70.0
 shake_amplitude = 6.0
 shake_duration = 1.0
 shake_max_distance_mult = 10.0

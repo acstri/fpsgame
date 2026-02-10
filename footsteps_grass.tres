@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="FootstepSurfaceSet" format=3 uid="uid://dvsamejkiw6pu"]
+
+[ext_resource type="Script" uid="uid://chgxf52cmoucj" path="res://Scripts/FootstepSurfaceSet.gd" id="1_7mhi0"]
+[ext_resource type="AudioStream" uid="uid://c43hhqabgqfyg" path="res://Assets/Sounds/footsteps_grass.mp3" id="1_h2dji"]
+
+[resource]
+script = ExtResource("1_7mhi0")
+clips = Array[AudioStream]([ExtResource("1_h2dji")])
+metadata/_custom_type_script = "uid://chgxf52cmoucj"

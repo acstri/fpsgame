@@ -17,15 +17,22 @@ signal cast_finished()
 @export_group("Explosion")
 @export var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
-# Note: aoe_damage_mult applies to ALL enemies in the radius, including the direct hit target.
 
 @export_group("Multi-shot")
 @export var fireballs_per_cast: int = 1
-@export var multi_cast_spread_deg: float = 6.0 # separation between fireballs
+@export var multi_cast_spread_deg: float = 6.0
 
 @export_group("Collision")
 @export_flags_3d_physics var hit_mask := 5
 @export var exclude_player := true
+
+@export_group("Audio - Cast")
+@export var cast_sfx: AudioStream
+@export_range(-60.0, 12.0, 0.1) var cast_volume_db := -6.0
+@export var cast_bus := "SFX"
+@export_range(0.1, 3.0, 0.01) var cast_pitch_min := 0.95
+@export_range(0.1, 3.0, 0.01) var cast_pitch_max := 1.10
+@export var cast_max_distance := 18.0
 
 func _ready() -> void:
 	_autowire()
@@ -42,6 +49,8 @@ func cast(damage: float, spellrange: float, spread_deg: float, is_crit: bool = f
 		push_warning("FireballSpell: projectile_scene not assigned.")
 		cast_finished.emit()
 		return
+
+	_play_cast_sfx()
 
 	var count: int = maxi(1, fireballs_per_cast)
 	if stats != null:
@@ -62,7 +71,7 @@ func cast(damage: float, spellrange: float, spread_deg: float, is_crit: bool = f
 
 		var yaw := 0.0
 		if count > 1:
-			var t := float(i) / float(count - 1) # 0..1
+			var t := float(i) / float(count - 1)
 			yaw = (t - 0.5) * multi_cast_spread_deg
 		dir = _yaw_offset(dir, yaw)
 
@@ -110,3 +119,26 @@ func _yaw_offset(dir: Vector3, yaw_deg: float) -> Vector3:
 		return dir.normalized()
 	var yaw := Basis(Vector3.UP, deg_to_rad(yaw_deg))
 	return (yaw * dir).normalized()
+
+func _play_cast_sfx() -> void:
+	if cast_sfx == null or camera == null:
+		return
+
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+
+	var p := AudioStreamPlayer3D.new()
+	p.stream = cast_sfx
+	p.bus = cast_bus
+	p.volume_db = cast_volume_db
+	p.max_distance = cast_max_distance
+	p.pitch_scale = randf_range(minf(cast_pitch_min, cast_pitch_max), maxf(cast_pitch_min, cast_pitch_max))
+
+	parent.add_child(p)
+	p.global_position = camera.global_position
+	p.play()
+	p.finished.connect(func():
+		if is_instance_valid(p):
+			p.queue_free()
+	)

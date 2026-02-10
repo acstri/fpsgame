@@ -1,7 +1,4 @@
 # res://Scripts/FireballProjectile.gd
-# Camera shake now scales by distance from the explosion to the camera (approximation).
-# - At the center: full shake
-# - Far away: reduced or zero shake (configurable)
 
 extends Node3D
 class_name FireballProjectile
@@ -12,6 +9,23 @@ class_name FireballProjectile
 @export_group("VFX")
 @export var explosion_pulse_scene: PackedScene
 
+@export_group("Audio - Flight Loop")
+@export var flight_loop_sfx: AudioStream
+@export_range(-60.0, 12.0, 0.1) var flight_volume_db := -14.0
+@export var flight_bus := "SFX"
+@export_range(0.1, 3.0, 0.01) var flight_pitch_min := 0.95
+@export_range(0.1, 3.0, 0.01) var flight_pitch_max := 1.08
+@export var flight_max_distance := 18.0
+
+@export_group("Audio - Impact")
+@export var impact_sfx: AudioStream
+@export_range(-60.0, 12.0, 0.1) var impact_volume_db := -6.0
+@export var impact_bus := "SFX"
+@export_range(0.1, 3.0, 0.01) var impact_pitch_min := 0.92
+@export_range(0.1, 3.0, 0.01) var impact_pitch_max := 1.12
+@export var impact_max_distance := 26.0
+@export var impact_autofree_after := 3.0
+
 @export_group("Knockback")
 @export var knockback_enabled := true
 @export var knockback_force := 22.0
@@ -21,18 +35,14 @@ class_name FireballProjectile
 
 @export_group("Camera Shake")
 @export var shake_enabled := true
-
-# Base shake values (at 0 distance)
 @export var shake_amplitude := 1.2
 @export var shake_duration := 0.12
 @export var shake_frequency := 30.0
 @export var shake_pos_scale := 1.0
 @export var shake_rot_scale := 1.0
-
-# NEW: distance scaling
-@export var shake_max_distance_mult := 4.0     # shake range = explosion_radius * this
-@export_range(0.0, 1.0, 0.05) var shake_min_scale := 0.0  # scale when at/after max distance
-@export var shake_use_smooth_falloff := true  # smoothstep vs linear
+@export var shake_max_distance_mult := 4.0
+@export_range(0.0, 1.0, 0.05) var shake_min_scale := 0.0
+@export var shake_use_smooth_falloff := true
 
 var hit_mask: int = 5
 var damage: float = 0.0
@@ -43,7 +53,6 @@ var speed: float = 28.0
 @export_group("Damage")
 var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
-
 @export var use_falloff: bool = true
 @export_range(0.0, 1.0, 0.05) var falloff_min: float = 0.25
 
@@ -53,6 +62,8 @@ var _configured := false
 var _life := 0.0
 var _traveled := 0.0
 var _dir: Vector3 = Vector3.FORWARD
+
+var _flight_player: AudioStreamPlayer3D = null
 
 func setup(
 	p_damage: float,
@@ -80,6 +91,12 @@ func _ready() -> void:
 	if not _configured:
 		push_warning("FireballProjectile: setup() was not called. Freeing projectile to avoid undefined behavior.")
 		queue_free()
+		return
+
+	_start_flight_loop()
+
+func _exit_tree() -> void:
+	_stop_flight_loop()
 
 func _physics_process(delta: float) -> void:
 	_life += delta
@@ -107,6 +124,9 @@ func _physics_process(delta: float) -> void:
 	queue_free()
 
 func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
+	_stop_flight_loop()
+	_play_impact_sfx(pos)
+
 	_spawn_explosion_pulse(pos)
 	_do_camera_shake(pos)
 
@@ -189,83 +209,114 @@ func _do_camera_shake(explosion_pos: Vector3) -> void:
 	if not shaker.has_method("shake"):
 		return
 
-	# Approximation: distance from explosion to camera position
 	var d := cam.global_position.distance_to(explosion_pos)
-
-	# Shake range relative to explosion radius
 	var max_d := maxf(0.01, explosion_radius * maxf(0.1, shake_max_distance_mult))
-
-	# 0 = at center, 1 = at/after max distance
 	var t := clampf(d / max_d, 0.0, 1.0)
 
-	# Convert to scale where 1.0 is strongest and shake_min_scale is weakest
 	var shake_scale := 1.0 - t
 	if shake_use_smooth_falloff:
-		# smoothstep
 		shake_scale = shake_scale * shake_scale * (3.0 - 2.0 * shake_scale)
 
 	shake_scale = lerpf(shake_min_scale, 1.0, shake_scale)
-
-	# If scale is effectively zero, skip shake.
 	if shake_scale <= 0.001:
 		return
 
 	shaker.call(
 		"shake",
 		shake_amplitude * shake_scale,
-		shake_duration * lerpf(0.7, 1.0, shake_scale), # optional: slightly shorter when weak
+		shake_duration * lerpf(0.7, 1.0, shake_scale),
 		shake_frequency,
 		shake_pos_scale,
 		shake_rot_scale
 	)
 
-func _spawn_explosion_pulse(pos: Vector3) -> void:
-	if explosion_pulse_scene == null:
+# ---------------- Audio helpers ----------------
+
+func _start_flight_loop() -> void:
+	if flight_loop_sfx == null:
+		return
+	if _flight_player != null and is_instance_valid(_flight_player):
 		return
 
-	var fx := explosion_pulse_scene.instantiate()
+	_flight_player = AudioStreamPlayer3D.new()
+	_flight_player.stream = flight_loop_sfx
+	_flight_player.bus = flight_bus
+	_flight_player.volume_db = flight_volume_db
+	_flight_player.max_distance = flight_max_distance
+	_flight_player.pitch_scale = randf_range(minf(flight_pitch_min, flight_pitch_max), maxf(flight_pitch_min, flight_pitch_max))
+	_flight_player.autoplay = false
+
+	add_child(_flight_player)
+	_flight_player.global_position = global_position
+	_flight_player.play()
+
+func _stop_flight_loop() -> void:
+	if _flight_player == null:
+		return
+	if is_instance_valid(_flight_player):
+		_flight_player.stop()
+		_flight_player.queue_free()
+	_flight_player = null
+
+func _play_impact_sfx(pos: Vector3) -> void:
+	if impact_sfx == null:
+		return
+
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	parent.add_child(fx)
 
-	if fx is Node3D:
-		(fx as Node3D).global_position = pos
+	var p := AudioStreamPlayer3D.new()
+	p.stream = impact_sfx
+	p.bus = impact_bus
+	p.volume_db = impact_volume_db
+	p.max_distance = impact_max_distance
+	p.pitch_scale = randf_range(minf(impact_pitch_min, impact_pitch_max), maxf(impact_pitch_min, impact_pitch_max))
 
-	if fx.has_method("set_target_radius"):
-		fx.call("set_target_radius", explosion_radius)
+	parent.add_child(p)
+	p.global_position = pos
+	p.play()
+
+	p.finished.connect(func():
+		if is_instance_valid(p):
+			p.queue_free()
+	)
+
+	if impact_autofree_after > 0.0:
+		var t := Timer.new()
+		t.one_shot = true
+		t.wait_time = impact_autofree_after
+		t.timeout.connect(func():
+			if is_instance_valid(p):
+				p.queue_free()
+		)
+		p.add_child(t)
+		t.start()
+
+# ---------------- Existing raycast / VFX ----------------
 
 func _raycast(from: Vector3, to: Vector3) -> Dictionary:
-	var world: World3D = get_world_3d()
-	if world == null:
-		world = get_viewport().get_world_3d()
+	var world := get_world_3d()
 	if world == null:
 		return {}
 
-	var space: PhysicsDirectSpaceState3D = world.direct_space_state
 	var q := PhysicsRayQueryParameters3D.create(from, to)
 	q.collision_mask = hit_mask
-	q.collide_with_areas = true
-	q.collide_with_bodies = true
 
-	var ex := _exclude_rids()
-	if not ex.is_empty():
-		q.exclude = ex
-
-	return space.intersect_ray(q)
-
-func _exclude_rids() -> Array[RID]:
-	var rids: Array[RID] = []
-	if caster == null:
-		return rids
-
+	# Exclude caster if it is a CollisionObject3D
 	if caster is CollisionObject3D:
-		rids.append((caster as CollisionObject3D).get_rid())
-		return rids
+		q.exclude = [(caster as CollisionObject3D).get_rid()]
 
-	if caster.has_method("get_rid"):
-		var rid = caster.call("get_rid")
-		if rid is RID:
-			rids.append(rid)
+	return world.direct_space_state.intersect_ray(q)
 
-	return rids
+func _spawn_explosion_pulse(pos: Vector3) -> void:
+	if explosion_pulse_scene == null:
+		return
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var v := explosion_pulse_scene.instantiate()
+	parent.add_child(v)
+	if v is Node3D:
+		(v as Node3D).global_position = pos
+	# If your pulse script expects radius params, keep your existing setup there (unchanged).

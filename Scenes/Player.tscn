@@ -10,9 +10,12 @@
 [ext_resource type="Script" uid="uid://34hcn530p33q" path="res://Scripts/FireballSpell.gd" id="7_ksbbd"]
 [ext_resource type="PackedScene" uid="uid://bmg3pst3tbe74" path="res://Scenes/FireballProjectile.tscn" id="8_glx4g"]
 [ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/MagicMissile.gd" id="9_miouo"]
+[ext_resource type="AudioStream" uid="uid://bo2wr6s8llyot" path="res://Assets/Sounds/fireball_cast.mp3" id="10_arntx"]
 [ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/MM_SpellProjectile.tscn" id="10_o3h8g"]
 [ext_resource type="Script" uid="uid://4nqnf08ubyk7" path="res://Scripts/PlayerSpellSwitch.gd" id="11_1e7my"]
 [ext_resource type="PackedScene" uid="uid://drlshkarpltvq" path="res://Scripts/HandCastAnimator.tscn" id="13_miouo"]
+[ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="14_1iu4k"]
+[ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="19_qidb7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
 albedo_color = Color(0, 0, 1, 1)
@@ -73,9 +76,14 @@ camera = NodePath("../../Head/WorldCam")
 stats = NodePath("../../PlayerStats")
 hit_mask = 5
 
-[node name="Fireball" type="Node3D" parent="SpellCaster" unique_id=388899861]
+[node name="Fireball" type="Node3D" parent="SpellCaster" unique_id=388899861 node_paths=PackedStringArray("camera", "stats")]
 script = ExtResource("7_ksbbd")
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../PlayerStats")
 projectile_scene = ExtResource("8_glx4g")
+cast_sfx = ExtResource("10_arntx")
+cast_volume_db = 0.0
+cast_bus = "Sfx"
 
 [node name="MagicMissile" type="Node3D" parent="SpellCaster" unique_id=1813416411]
 script = ExtResource("9_miouo")
@@ -86,3 +94,9 @@ script = ExtResource("11_1e7my")
 
 [node name="HandCastAnimator" parent="." unique_id=2019263904 instance=ExtResource("13_miouo")]
 spell_caster_path = NodePath("../SpellCaster")
+
+[node name="FootstepsSfx" type="Node3D" parent="." unique_id=925148658 node_paths=PackedStringArray("character")]
+script = ExtResource("14_1iu4k")
+character = NodePath("..")
+default_step_clips = Array[AudioStream]([ExtResource("19_qidb7")])
+volume_db = 0.0

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FootstepSurfaceSet" format=3 uid="uid://cklkbn8ft4gsu"]
+
+[ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="1_1yxg7"]
+[ext_resource type="Script" uid="uid://chgxf52cmoucj" path="res://Scripts/FootstepSurfaceSet.gd" id="1_6vv4y"]
+
+[resource]
+script = ExtResource("1_6vv4y")
+surface_id = &"stone"
+clips = Array[AudioStream]([ExtResource("1_1yxg7")])
+metadata/_custom_type_script = "uid://chgxf52cmoucj"

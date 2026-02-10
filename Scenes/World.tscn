@@ -35,7 +35,7 @@
 [ext_resource type="PackedScene" uid="uid://co01o5bii6vsr" path="res://Scenes/stone.tscn" id="32_ao4cr"]
 [ext_resource type="Material" uid="uid://fa4tvrn8ktbk" path="res://Assets/Materials/floor_mat.tres" id="33_irg3d"]
 [ext_resource type="Material" uid="uid://ctkut7vlmsdin" path="res://Assets/Materials/dirt_mat.tres" id="34_y8a40"]
-[ext_resource type="AudioStream" uid="uid://b7eq2baerhlme" path="res://Assets/Sounds/music/CASTLE RAVE.mp3" id="36_y8a40"]
+[ext_resource type="AudioStream" uid="uid://djwu15tmnmdif" path="res://Assets/Sounds/ambience.mp3" id="36_y8a40"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -259,6 +259,7 @@ bones/49/rotation = Quaternion(0.039439738, 0.014837562, -0.024118481, 0.9988206
 
 [node name="Tower" parent="statics" unique_id=2114612622 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.9722862, 0.40683544, 0, -0.40683544, 2.9722862, 0, 0, 0, 3, 3.415676, -1.26408, -30.695646)
+metadata/footstep_surface = "stone"
 
 [node name="Tower4" parent="statics" unique_id=296234923 instance=ExtResource("9_kn06e")]
 transform = Transform3D(0.033752978, 2.1516085, -2.0903215, -2.1951966, 1.4424477, 1.449294, 2.0444973, 1.5132496, 1.5906305, -5.111803, 9.903331, -41.374367)
@@ -288,13 +289,13 @@ transform = Transform3D(0.97790015, 0.18379733, 0.09964848, -0.20907243, 0.85968
 transform = Transform3D(0.6910332, 0.46712047, -0.55160826, -0.2090724, 0.8596801, 0.46608847, 0.6919262, -0.20675658, 0.69172955, 27.314594, 1.790432, 7.2252426)
 
 [node name="Walls2" parent="statics" unique_id=71518215 instance=ExtResource("9_uo7di")]
-transform = Transform3D(0.8585664, 0, 0.51270235, 0, 1, 0, -0.51270235, 0, 0.8585664, -10.833212, -0.68736935, 16.270557)
+transform = Transform3D(0.8585664, 0, 0.51270235, 0, 1, 0, -0.51270235, 0, 0.8585664, -10.833212, -0.68736935, 19.897503)
 
 [node name="stone" parent="statics" unique_id=2123473406 instance=ExtResource("32_ao4cr")]
-transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13, 4.120032, -34.273388)
+transform = Transform3D(0.47893697, -0.299911, -0.82502896, 0, 0.9398298, -0.34164292, 0.8778493, 0.16362542, 0.45011926, -7.968347, -0.11841297, -34.273388)
 
 [node name="stone2" parent="statics" unique_id=1425173398 instance=ExtResource("32_ao4cr")]
-transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13, 4.120032, -34.273388)
+transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13.038465, 3.081098, -35.321148)
 
 [node name="stone3" parent="statics" unique_id=1661196152 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(3.0534964, 1.4510151, -3.6518183, -4.538797, 1.446209, -2.219094, -0.5201004, -4.1018605, -2.0742092, -34.348892, 3.5504045, -35.05007)
@@ -542,9 +543,8 @@ use_collision = true
 size = Vector3(14, 0, 35)
 material = ExtResource("33_irg3d")
 
-[node name="bgmusic" type="AudioStreamPlayer" parent="." unique_id=921728940]
+[node name="ambience" type="AudioStreamPlayer" parent="." unique_id=921728940]
 stream = ExtResource("36_y8a40")
-volume_db = -11.0
 autoplay = true
 bus = &"Music"
 parameters/looping = true
