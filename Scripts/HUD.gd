@@ -14,10 +14,16 @@ class_name HUD
 @export var spell_label: Label
 @export var spell_stats_label: Label
 
-# NEW: Cooldown UI (optional)
+# Cooldown UI (optional)
 @export_group("Cooldown UI (optional)")
 @export var cooldown_bar: ProgressBar          # set max=1, value=0..1 (or let script do it)
 @export var cooldown_label: Label              # e.g. "CD: 0.42s"
+
+# Enemy counter UI (optional)
+@export_group("Enemy Counter (optional)")
+@export var enemy_count_label: Label
+@export var enemy_group_name := "enemy"
+@export_range(1.0, 60.0, 1.0) var enemy_count_update_hz := 10.0
 
 @export var xp_show_percent := false
 
@@ -25,6 +31,10 @@ var _health: PlayerHealth
 var _level_system: LevelSystem
 var _spell_caster: Node
 var _hurt_tween: Tween
+
+# Enemy count cache
+var _enemy_count_accum := 0.0
+var _last_enemy_count := -1
 
 # Cache to avoid rebuilding strings every frame
 var _last_spell_res_path := ""
@@ -75,8 +85,8 @@ func _ready() -> void:
 	else:
 		push_warning("HUD: Combat_Events missing or has no hurt_flash signal.")
 
-func _process(_delta: float) -> void:
-	_refresh_runtime()
+func _process(delta: float) -> void:
+	_refresh_runtime(delta)
 
 func _autowire() -> void:
 	if player != null:
@@ -103,12 +113,14 @@ func _refresh_all() -> void:
 	_refresh_xp()
 	_refresh_spell()
 	_refresh_cooldown()
+	_refresh_enemy_count(999.0) # force immediate
 
-func _refresh_runtime() -> void:
+func _refresh_runtime(delta: float) -> void:
 	_refresh_level()
 	_refresh_xp()
 	_refresh_spell()
 	_refresh_cooldown()
+	_refresh_enemy_count(delta)
 
 func _on_hp_changed(current: float, max_hp: float) -> void:
 	if hp_label == null:
@@ -217,7 +229,6 @@ func _set_spell_texts(header: String, stats_line: String) -> void:
 		spell_stats_label.text = stats_line
 
 func _refresh_cooldown() -> void:
-	# Optional: can be used without spell labels.
 	if cooldown_bar == null and cooldown_label == null:
 		return
 
@@ -225,7 +236,6 @@ func _refresh_cooldown() -> void:
 		_set_cooldown_ui(0.0, 0.0)
 		return
 
-	# Uses the getters we added to SpellCaster (safe checks)
 	var left := 0.0
 	var total := 0.0
 
@@ -237,7 +247,6 @@ func _refresh_cooldown() -> void:
 	_set_cooldown_ui(left, total)
 
 func _set_cooldown_ui(left: float, total: float) -> void:
-	# ratio: 1.0 right after casting, 0.0 when ready
 	var ratio := 0.0
 	if total > 0.0001:
 		ratio = clampf(left / total, 0.0, 1.0)
@@ -245,7 +254,6 @@ func _set_cooldown_ui(left: float, total: float) -> void:
 	if cooldown_bar != null:
 		cooldown_bar.max_value = 1.0
 		cooldown_bar.value = ratio
-		# Optional: hide when ready
 		cooldown_bar.visible = ratio > 0.001
 
 	if cooldown_label != null:
@@ -253,6 +261,31 @@ func _set_cooldown_ui(left: float, total: float) -> void:
 			cooldown_label.text = "Ready"
 		else:
 			cooldown_label.text = "CD: %.2fs" % left
+
+func _refresh_enemy_count(delta: float) -> void:
+	if enemy_count_label == null:
+		return
+
+	var hz := maxf(1.0, enemy_count_update_hz)
+	var interval := 1.0 / hz
+
+	_enemy_count_accum += delta
+	if _enemy_count_accum < interval:
+		return
+	_enemy_count_accum = 0.0
+
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	var n := 0
+	if enemy_group_name != "":
+		n = tree.get_nodes_in_group(enemy_group_name).size()
+
+	if n == _last_enemy_count:
+		return
+	_last_enemy_count = n
+	enemy_count_label.text = "Enemies: %d" % n
 
 func _find_child_by_type(root: Node, t: Variant) -> Node:
 	for c in root.get_children():

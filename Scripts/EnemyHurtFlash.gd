@@ -2,7 +2,7 @@ extends Node
 class_name EnemyHurtFlash
 
 @export var health: EnemyHealth
-@export var meshes: Array[MeshInstance3D] = []
+@export var meshes: Array[Node3D] = []
 
 @export var flash_strength := 1.5      # emission energy multiplier
 @export var flash_in := 0.04

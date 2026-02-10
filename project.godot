@@ -97,6 +97,7 @@ spell_cycle={
 [layer_names]
 
 3d_render/layer_1="World"
+3d_render/layer_16="Blood"
 3d_render/layer_20="Viewmodel"
 3d_physics/layer_1="World"
 3d_physics/layer_2="Player"

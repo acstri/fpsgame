@@ -6,6 +6,9 @@ class_name EnemyVariantApplier
 @export var force_variant_id: String = "" # blank = random
 @export var apply_on_ready: bool = true
 
+@export_group("Scaling")
+@export var apply_scale: bool = true
+
 @export_group("Tag (Sprite3D)")
 @export var tag_height: float = 2.35
 @export var tag_billboard: int = BaseMaterial3D.BILLBOARD_ENABLED
@@ -14,9 +17,21 @@ class_name EnemyVariantApplier
 
 var active_variant: EnemyVariantData = null
 
+var _base_enemy_scale: Vector3 = Vector3.ONE
+var _base_scale_cached := false
+
 func _ready() -> void:
+	_cache_base_scale()
 	if apply_on_ready:
 		apply_variant(_pick_variant())
+
+func _cache_base_scale() -> void:
+	if _base_scale_cached:
+		return
+	var enemy := get_parent()
+	if enemy is Node3D:
+		_base_enemy_scale = (enemy as Node3D).scale
+		_base_scale_cached = true
 
 func apply_variant(v: EnemyVariantData) -> void:
 	active_variant = v
@@ -27,6 +42,13 @@ func apply_variant(v: EnemyVariantData) -> void:
 	var enemy := get_parent()
 	if enemy == null:
 		return
+
+	_cache_base_scale()
+
+	# ---- Scale (root)
+	if apply_scale and enemy is Node3D:
+		var m := maxf(0.01, v.scale_mult)
+		(enemy as Node3D).scale = _base_enemy_scale * m
 
 	# ---- Move speed (Enemy.gd)
 	if enemy is Enemy:
@@ -91,7 +113,6 @@ func _pick_variant() -> EnemyVariantData:
 # ---------------- Tag helpers (deferred-safe) ----------------
 
 func _update_tag(v: EnemyVariantData) -> void:
-	# If the tag nodes already exist, apply immediately.
 	var enemy := get_parent()
 	if enemy == null:
 		return
@@ -101,7 +122,6 @@ func _update_tag(v: EnemyVariantData) -> void:
 		_apply_tag_to_sprite(sprite, v)
 		return
 
-	# Otherwise create them deferred; then apply.
 	call_deferred("_ensure_tag_nodes_and_apply", v)
 
 func _ensure_tag_nodes_and_apply(v: EnemyVariantData) -> void:
@@ -115,7 +135,6 @@ func _get_or_create_tag_sprite_deferred_safe() -> Sprite3D:
 	if enemy == null:
 		return null
 
-	# Re-check if created in the meantime
 	var existing := enemy.get_node_or_null("VariantTag/Sprite3D") as Sprite3D
 	if existing != null:
 		return existing
@@ -124,10 +143,8 @@ func _get_or_create_tag_sprite_deferred_safe() -> Sprite3D:
 	if marker == null:
 		marker = Marker3D.new()
 		marker.name = "VariantTag"
-		# parent can still be busy; defer add_child
 		enemy.add_child.call_deferred(marker)
 
-	# Make sure marker position is set (will apply once it enters tree)
 	marker.position = Vector3(0, tag_height, 0)
 
 	var sprite := Sprite3D.new()
@@ -137,13 +154,10 @@ func _get_or_create_tag_sprite_deferred_safe() -> Sprite3D:
 	sprite.no_depth_test = tag_no_depth_test
 	sprite.pixel_size = 0.01
 
-	# marker might not be in tree yet; defer add to marker
 	marker.add_child.call_deferred(sprite)
-
 	return sprite
 
 func _apply_tag_to_sprite(sprite: Sprite3D, v: EnemyVariantData) -> void:
-	# In case node exists but not fully inside tree yet, still safe to set properties.
 	if (not v.show_tag) or v.tag_texture == null:
 		sprite.visible = false
 		return

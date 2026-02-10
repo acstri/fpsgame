@@ -10,6 +10,11 @@ class_name EnemyVariantData
 @export_range(0.1, 10.0, 0.05) var melee_damage_mult: float = 1.0
 @export_range(0.0, 10.0, 0.05) var xp_mult: float = 1.0
 
+@export_group("Scaling")
+# Applied to the enemy root scale via EnemyVariantApplier (base_scale * scale_mult).
+# Set elite.tres scale_mult to e.g. 1.25 or 1.5.
+@export_range(0.25, 5.0, 0.05) var scale_mult: float = 1.0
+
 @export_group("Tag (Sprite3D)")
 @export var show_tag: bool = false
 @export var tag_texture: Texture2D

@@ -35,6 +35,7 @@
 [ext_resource type="PackedScene" uid="uid://co01o5bii6vsr" path="res://Scenes/stone.tscn" id="32_ao4cr"]
 [ext_resource type="Material" uid="uid://fa4tvrn8ktbk" path="res://Assets/Materials/floor_mat.tres" id="33_irg3d"]
 [ext_resource type="Material" uid="uid://ctkut7vlmsdin" path="res://Assets/Materials/dirt_mat.tres" id="34_y8a40"]
+[ext_resource type="AudioStream" uid="uid://b7eq2baerhlme" path="res://Assets/Sounds/music/CASTLE RAVE.mp3" id="36_y8a40"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -540,6 +541,13 @@ transform = Transform3D(-4.0378794e-08, 0.6090106, 0.79316187, 1.6740309e-08, 0.
 use_collision = true
 size = Vector3(14, 0, 35)
 material = ExtResource("33_irg3d")
+
+[node name="bgmusic" type="AudioStreamPlayer" parent="." unique_id=921728940]
+stream = ExtResource("36_y8a40")
+volume_db = -11.0
+autoplay = true
+bus = &"Music"
+parameters/looping = true
 
 [editable path="Player"]
 [editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam"]

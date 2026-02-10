@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b76lpn5rakwrr"]
+
+[ext_resource type="Texture2D" uid="uid://bufk7mj2hle61" path="res://Assets/Models/maxdamage_goblin-low-poly_gltf/gltf/maxdamage_goblin-low-poly_mesh_t_goblin_base.png" id="1_tnbac"]
+
+[resource]
+albedo_texture = ExtResource("1_tnbac")
+uv1_scale = Vector3(0.995, 0.995, 0.995)

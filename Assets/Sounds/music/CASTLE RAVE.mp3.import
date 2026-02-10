@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b7eq2baerhlme"
+path="res://.godot/imported/CASTLE RAVE.mp3-81437dcda5ecff61c05f37048105c7ce.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/music/CASTLE RAVE.mp3"
+dest_files=["res://.godot/imported/CASTLE RAVE.mp3-81437dcda5ecff61c05f37048105c7ce.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
