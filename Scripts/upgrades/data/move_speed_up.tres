@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_michx")
-title = "Move Speed +10%"
-description = "Move 10% faster."
+title = "Move Speed +"
+description = "Increase your Movement Speed."
 effect_key = "move_speed_up"
 effect_value = 0.1
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

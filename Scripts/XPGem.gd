@@ -3,6 +3,11 @@ class_name XPGem
 
 @export var value := 1
 
+@export_group("Pickup SFX")
+@export var pickup_sounds: Array[AudioStream] = []   # add 3 sounds in the inspector
+@export var randomize_pitch := true
+@export var pitch_range := Vector2(0.95, 1.05)
+
 @export_group("Attract")
 @export var attract_distance := 7.0
 @export var attract_speed := 9.0          # horizontal pull speed
@@ -62,6 +67,7 @@ func _physics_process(delta: float) -> void:
 			var desired_vx := (to_player / dist) * attract_speed
 			_vel.x = move_toward(_vel.x, desired_vx.x, attract_accel * delta)
 			_vel.z = move_toward(_vel.z, desired_vx.z, attract_accel * delta)
+
 	# If not attracting, gently damp horizontal drift so it doesn't slide forever
 	if not attracting:
 		_vel.x = move_toward(_vel.x, 0.0, 10.0 * delta)
@@ -136,9 +142,37 @@ func _on_body_entered(body: Node) -> void:
 		return
 	if not body.is_in_group("player"):
 		return
+
+	# Add XP first
 	if body.has_method("add_xp"):
 		body.add_xp(value)
+
+	# Play one of three pickup sounds immediately
+	_play_pickup_sound()
+
 	queue_free()
+
+func _play_pickup_sound() -> void:
+	if pickup_sounds.is_empty():
+		return
+
+	var stream := pickup_sounds[randi() % pickup_sounds.size()]
+	if stream == null:
+		return
+
+	var p := AudioStreamPlayer3D.new()
+	p.stream = stream
+	p.autoplay = false
+
+	# Keep it audible after the gem is freed
+	get_tree().current_scene.add_child(p)
+	p.global_position = global_position
+
+	if randomize_pitch:
+		p.pitch_scale = randf_range(pitch_range.x, pitch_range.y)
+
+	p.finished.connect(p.queue_free)
+	p.play()
 
 func set_value(v: int) -> void:
 	value = v

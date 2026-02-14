@@ -1,9 +1,8 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://fa4tvrn8ktbk"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kn06e"]
-load_path = "res://.godot/imported/tileable-img_0062-verydark.png-5a2498277c194578928fedad82ed18af.s3tc.ctex"
+[ext_resource type="Texture2D" uid="uid://shvxfwqpumas" path="res://Assets/Textures/floor_text.png" id="1_5num5"]
 
 [resource]
-albedo_texture = SubResource("CompressedTexture2D_kn06e")
+albedo_texture = ExtResource("1_5num5")
 uv1_scale = Vector3(0.045, 0.045, 0.045)
 uv1_triplanar = true

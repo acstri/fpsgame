@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_dqgyt")
-title = "Fire Rate +10%"
-description = "Cast 10% faster."
+title = "Cast Speed +"
+description = "Increase for Cast Speed"
 effect_key = "fire_rate_up"
 effect_value = 0.1
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

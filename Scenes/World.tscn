@@ -24,6 +24,9 @@
 [ext_resource type="Resource" uid="uid://b5wrv57imlu13" path="res://Scripts/upgrades/data/projectiles.tres" id="14_mq4nq"]
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="PackedScene" uid="uid://se74irodpl8i" path="res://Scenes/DamageNumber.tscn" id="17_ao4cr"]
+[ext_resource type="AudioStream" uid="uid://cqbda6qt4huil" path="res://Assets/Sounds/levelup1.mp3" id="18_5dli4"]
+[ext_resource type="AudioStream" uid="uid://iq401jlybq8b" path="res://Assets/Sounds/levelup2.mp3" id="19_uvb3s"]
+[ext_resource type="AudioStream" uid="uid://jrti5in6x4ju" path="res://Assets/Sounds/levelup3.mp3" id="20_crxrm"]
 [ext_resource type="Script" uid="uid://b3vra038m6gwv" path="res://Scripts/DamageNumbersLayer.gd" id="22_ao4cr"]
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
@@ -125,6 +128,8 @@ stats = NodePath("../../../Player/PlayerStats")
 
 [node name="UpgradeScreen" parent="UI" unique_id=847933536 instance=ExtResource("1_gjpho")]
 process_mode = 3
+level_up_sounds = Array[AudioStream]([ExtResource("18_5dli4"), ExtResource("19_uvb3s"), ExtResource("20_crxrm")])
+randomize_pitch = true
 
 [node name="ScreenFader" parent="UI" unique_id=243986901 instance=ExtResource("7_q2d71")]
 process_mode = 3
@@ -139,7 +144,7 @@ base_scale = 1.015
 crit_scale_mult = 1.515
 
 [node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -11.861946)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.560882)
 
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
@@ -278,16 +283,16 @@ transform = Transform3D(-2.8699284, 0.74233276, -0.4609294, 0.82444334, 2.824752
 transform = Transform3D(-1.8356111, 1.4084342, 1.9096717, 1.112338, 2.643411, -0.8803876, -2.0960047, 0.16938372, -2.1396427, 31.004925, -0.4508524, -43.058357)
 
 [node name="Tower3" parent="statics" unique_id=715385468 instance=ExtResource("9_kn06e")]
-transform = Transform3D(-0.36942947, -0.6387582, -2.9383698, 0.28189266, 3.922632, -0.5150976, 2.9637914, -0.4527098, -0.31726864, -19.554052, -2.8635216, 21.996616)
+transform = Transform3D(-0.36942947, -0.4790687, -2.9383698, 0.2818926, 2.9419742, -0.5150976, 2.9637914, -0.33953232, -0.31726864, -25.57179, -3.8594513, 25.21036)
 
 [node name="Tower7" parent="statics" unique_id=1538101111 instance=ExtResource("9_kn06e")]
-transform = Transform3D(0.33323655, 0.3988856, 2.971814, 0.17628291, 4.9725113, -0.26004, -2.9762192, 0.33918583, 0.31734085, -9.437527, -1.9752617, 9.466914)
+transform = Transform3D(0.33323666, 0.23933122, 2.9718132, 0.17628287, 2.9835052, -0.26003984, -2.9762187, 0.20351154, 0.3173411, -20.667078, -3.038084, 15.391805)
 
 [node name="Tower9" parent="statics" unique_id=1768136098 instance=ExtResource("9_kn06e")]
-transform = Transform3D(2.4290195, 0, -1.7606432, 0, 6, 0, 1.7606432, 0, 2.4290195, -3.4637566, -0.12756062, -3.8589735)
+transform = Transform3D(2.4290195, 0, -1.7606432, 0, 3, 0, 1.7606432, 0, 2.4290195, -12.421625, -0.12756062, 7.963952)
 
 [node name="Tower5" parent="statics" unique_id=566632445 instance=ExtResource("9_kn06e")]
-transform = Transform3D(2.9665349, -0.44390684, 0.0511655, 0.44322482, 2.8795009, -0.7155617, 0.056770533, 0.71513873, 2.912963, -31.442276, -1.8489828, 29.902988)
+transform = Transform3D(2.9665349, -0.44390684, 0.0511655, 0.44322482, 2.8795009, -0.7155617, 0.056770533, 0.71513873, 2.912963, -31.442276, -4.4486, 29.902988)
 
 [node name="Walls" parent="statics" unique_id=1348878863 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.97790015, 0.18379733, 0.09964848, -0.20907243, 0.85968024, 0.46608856, 0, -0.47662184, 0.8791084, 11, -0.11551857, -16)
@@ -557,7 +562,7 @@ bus = &"Music"
 parameters/looping = true
 
 [node name="PackAPunchMachine" parent="." unique_id=1184660181 instance=ExtResource("37_n1aqv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.940362, 30.855091, -3.9881654)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8061495, 15.615268, 8.063523)
 prompt_label_path = NodePath("Label")
 
 [editable path="Player"]

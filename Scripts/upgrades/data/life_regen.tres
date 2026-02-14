@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_nkbop")
-title = "Life Regen +1%"
-description = "Increase your Life Regeneration by 1%"
+title = "Life Regen +"
+description = "Increase your Life Regeneration."
 effect_key = "life_regen_up"
 effect_value = 0.5
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

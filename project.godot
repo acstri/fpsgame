@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="FPS mage game"
+config/name="Auto Mage"
 run/main_scene="uid://djxen2477lpsv"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/mouse_sensitivity=0.006625
+config/mouse_sensitivity=0.003
 config/start_spell_kind="fireball"
 
 [autoload]
@@ -23,6 +23,10 @@ Combat_Events="*uid://bjsakqdryurn7"
 PackAPunch="*uid://by7ahcb8buiku"
 EssenceWallet="*uid://d2evcgaxryl77"
 KillCounter="*uid://rsr5r15krxvx"
+
+[display]
+
+window/stretch/mode="viewport"
 
 [global_group]
 
