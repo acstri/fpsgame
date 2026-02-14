@@ -42,6 +42,9 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 
+	# Apply main-menu start spell lock BEFORE picking default spell
+	_apply_start_spell_lock()
+
 	if spell == null:
 		spell = _first_available_spelldata()
 
@@ -205,6 +208,41 @@ func _get_impl_from_spelldata() -> Node:
 		_:
 			push_warning("SpellCaster: unknown SpellData.delivery_kind '%s' (expected: chainlightning/fireball/magicmissile)" % String(kind))
 			return null
+
+# -------------------------
+# Start spell lock (menu)
+# -------------------------
+
+func _apply_start_spell_lock() -> void:
+	# Read what the menu wrote. Default fireball.
+	var start_kind := "fireball"
+	if ProjectSettings.has_setting("application/config/start_spell_kind"):
+		start_kind = String(ProjectSettings.get_setting("application/config/start_spell_kind"))
+
+	# Only allow fireball or magicmissile
+	var chosen: StringName = &"fireball" if start_kind != "magicmissile" else &"magicmissile"
+
+	# Disable switching and remove other SpellData slots.
+	allow_runtime_switching = false
+
+	if chosen == &"fireball":
+		spell = spell_fireball
+		spell_magicmissile = null
+	else:
+		spell = spell_magicmissile
+		spell_fireball = null
+
+	# ChainLightning always disabled in this mode
+	spell_chainlightning = null
+	_disable_chainlightning_impl()
+
+func _disable_chainlightning_impl() -> void:
+	if _impl_chain == null:
+		return
+	_impl_chain.set_process(false)
+	_impl_chain.set_physics_process(false)
+	if _impl_chain is Node3D:
+		(_impl_chain as Node3D).visible = false
 
 # -------------------------
 # Binding / wiring / validation

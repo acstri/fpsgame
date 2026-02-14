@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2jrr3wk2fery" path="res://Scripts/HUD.gd" id="1_sd512"]
 
-[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash", "spell_label", "spell_stats_label", "cooldown_bar", "cooldown_label", "enemy_count_label")]
+[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash", "spell_label", "spell_stats_label", "cooldown_bar", "cooldown_label", "enemy_count_label", "essence_label", "pap_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,6 +19,8 @@ spell_stats_label = NodePath("TopLeft/SpellStatsLabel")
 cooldown_bar = NodePath("CooldownBar")
 cooldown_label = NodePath("CooldownBar/CooldownLabel")
 enemy_count_label = NodePath("EnemyCountLabel")
+essence_label = NodePath("EssenceLabel")
+pap_label = NodePath("PAPLabel")
 xp_show_percent = true
 
 [node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
@@ -30,9 +32,11 @@ offset_bottom = 50.0
 layout_mode = 2
 
 [node name="SpellLabel" type="Label" parent="TopLeft" unique_id=1274156550]
+visible = false
 layout_mode = 2
 
 [node name="SpellStatsLabel" type="Label" parent="TopLeft" unique_id=1049068064]
+visible = false
 layout_mode = 2
 
 [node name="Bottom" type="VBoxContainer" parent="." unique_id=245589413]
@@ -106,3 +110,17 @@ offset_bottom = 23.0
 grow_horizontal = 2
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="EssenceLabel" type="Label" parent="." unique_id=1770543568]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 592.0
+offset_right = 154.0
+offset_bottom = 618.0
+
+[node name="PAPLabel" type="Label" parent="." unique_id=1135853880]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 563.0
+offset_right = 169.0
+offset_bottom = 586.0

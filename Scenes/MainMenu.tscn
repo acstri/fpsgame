@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://djxen2477lpsv"]
+
+[ext_resource type="Script" uid="uid://cqog4qrjkr7mq" path="res://Scenes/MainMenu.gd" id="1_tt5f1"]
+[ext_resource type="AudioStream" uid="uid://b7eq2baerhlme" path="res://Assets/Sounds/music/CASTLE RAVE.mp3" id="2_853f1"]
+
+[node name="MainMenu" type="Control" unique_id=1881635986 node_paths=PackedStringArray("play_button", "options_button", "quit_button", "options_panel", "back_button", "master_slider", "mouse_slider", "start_spell_option")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_tt5f1")
+play_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/PlayButton")
+options_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/OptionsButton")
+quit_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/QuitButton")
+options_panel = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel")
+back_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/BackButton")
+master_slider = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MaterRow/MasterSlider")
+mouse_slider = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MouseRow/MouseSlider")
+start_spell_option = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/StartSpellRow/StartSpellOption")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1164905707]
+
+[node name="Root" type="Control" parent="CanvasLayer" unique_id=1747316585]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Root" unique_id=542813182]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -117.0
+offset_top = -108.5
+offset_right = 117.0
+offset_bottom = 108.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Root/CenterContainer" unique_id=1156807853]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=413378333]
+layout_mode = 2
+text = "FPS Survivors aka Megabonk 2"
+
+[node name="Buttons" type="VBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=479441838]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons" unique_id=1454643569]
+layout_mode = 2
+text = "Play"
+
+[node name="OptionsButton" type="Button" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons" unique_id=1629068905]
+layout_mode = 2
+text = "Options"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons" unique_id=1491242639]
+layout_mode = 2
+text = "Quit"
+
+[node name="StartSpellRow" type="HBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons" unique_id=1339635792]
+layout_mode = 2
+
+[node name="StartSpellLabel" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/StartSpellRow" unique_id=455983471]
+layout_mode = 2
+text = "Start Spell: "
+
+[node name="StartSpellOption" type="OptionButton" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/StartSpellRow" unique_id=594826455]
+layout_mode = 2
+
+[node name="OptionsPanel" type="VBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=1586380282]
+layout_mode = 2
+
+[node name="MaterRow" type="HBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel" unique_id=1640301407]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MaterRow" unique_id=1695171966]
+layout_mode = 2
+
+[node name="MasterSlider" type="HSlider" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MaterRow" unique_id=1089681125]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="MouseRow" type="HBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel" unique_id=295229489]
+layout_mode = 2
+
+[node name="MouseLabel" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MouseRow" unique_id=2075279398]
+layout_mode = 2
+
+[node name="MouseSlider" type="HSlider" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MouseRow" unique_id=939956328]
+layout_mode = 2
+min_value = 0.001
+max_value = 0.01
+step = 0.0
+value = 0.003
+
+[node name="BackButton" type="Button" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel" unique_id=890066342]
+layout_mode = 2
+text = "Back"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1361172509]
+stream = ExtResource("2_853f1")
+autoplay = true
+bus = &"Music"
+parameters/looping = true

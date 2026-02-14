@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b523kwcij3gnq" path="res://Scripts/GameOverScreen.gd" id="1_d4r0f"]
 
-[node name="GameOverScreen" type="Control" unique_id=1227436529 node_paths=PackedStringArray("restart_button")]
+[node name="GameOverScreen" type="Control" unique_id=1227436529 node_paths=PackedStringArray("restart_button", "kills_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,6 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_d4r0f")
 restart_button = NodePath("PanelContainer/VBoxContainer/RestartButton")
+kills_label = NodePath("PanelContainer/VBoxContainer/KillsLabel")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=370442649]
 layout_mode = 1
@@ -32,6 +33,12 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1907396432]
 layout_mode = 2
 text = "RUN OVER"
+horizontal_alignment = 1
+
+[node name="KillsLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1761200757]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="RestartButton" type="Button" parent="PanelContainer/VBoxContainer" unique_id=438114959]
 layout_mode = 2

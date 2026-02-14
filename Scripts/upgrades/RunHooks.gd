@@ -134,7 +134,7 @@ func _on_player_died() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = true
 	if game_over_screen != null:
-		game_over_screen.visible = true
+		game_over_screen.show_game_over()
 
 func _on_restart() -> void:
 	Engine.time_scale = 1.0

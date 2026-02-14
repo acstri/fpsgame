@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_ejh8l")
-delivery_kind = &"magicmissile"
+spell_key = &"magicmissile"
 spread_deg = 20.0
-cooldown = 1.0
+delivery_kind = &"magicmissile"
 metadata/_custom_type_script = "uid://cdwgpfk6al1jf"

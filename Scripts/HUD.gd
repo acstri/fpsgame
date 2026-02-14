@@ -25,6 +25,11 @@ class_name HUD
 @export var enemy_group_name := "enemy"
 @export_range(1.0, 60.0, 1.0) var enemy_count_update_hz := 10.0
 
+# Pack-a-Punch / Essence UI (optional)
+@export_group("Pack-a-Punch UI (optional)")
+@export var essence_label: Label               # e.g. "Essence: 500"
+@export var pap_label: Label                   # e.g. "PaP: Fireball Mk II (T1)"
+
 @export var xp_show_percent := false
 
 var _health: PlayerHealth
@@ -43,6 +48,12 @@ var _last_spell_damage := INF
 var _last_spell_cd := INF
 var _last_spell_rng := INF
 var _last_spell_spr := INF
+
+# PaP/Essence cache
+var _last_essence := -1
+var _last_pap_kind := ""
+var _last_pap_tier := -999
+var _last_pap_name := ""
 
 func _ready() -> void:
 	_autowire()
@@ -85,6 +96,13 @@ func _ready() -> void:
 	else:
 		push_warning("HUD: Combat_Events missing or has no hurt_flash signal.")
 
+	# Optional: live update essence without polling (still safe if autoload missing)
+	var wallet := get_node_or_null("/root/EssenceWallet")
+	if wallet != null and wallet.has_signal("changed"):
+		wallet.changed.connect(_on_essence_changed)
+		_on_essence_changed(wallet.get_amount())
+
+
 func _process(delta: float) -> void:
 	_refresh_runtime(delta)
 
@@ -114,6 +132,8 @@ func _refresh_all() -> void:
 	_refresh_spell()
 	_refresh_cooldown()
 	_refresh_enemy_count(999.0) # force immediate
+	_refresh_essence()
+	_refresh_pap()
 
 func _refresh_runtime(delta: float) -> void:
 	_refresh_level()
@@ -121,6 +141,8 @@ func _refresh_runtime(delta: float) -> void:
 	_refresh_spell()
 	_refresh_cooldown()
 	_refresh_enemy_count(delta)
+	_refresh_essence()
+	_refresh_pap()
 
 func _on_hp_changed(current: float, max_hp: float) -> void:
 	if hp_label == null:
@@ -286,6 +308,66 @@ func _refresh_enemy_count(delta: float) -> void:
 		return
 	_last_enemy_count = n
 	enemy_count_label.text = "Enemies: %d" % n
+
+func _refresh_essence() -> void:
+	if essence_label == null:
+		return
+
+	var wallet := get_node_or_null("/root/EssenceWallet")
+	if wallet == null:
+		if _last_essence != -2:
+			_last_essence = -2
+			essence_label.text = "Essence: -"
+		return
+
+	var v := int(wallet.get_amount())
+	if v == _last_essence:
+		return
+	_last_essence = v
+	essence_label.text = "Essence: %d" % v
+
+
+func _refresh_pap() -> void:
+	if pap_label == null:
+		return
+	if not Engine.has_singleton("PackAPunch"):
+		if _last_pap_tier != -2:
+			_last_pap_tier = -2
+			pap_label.text = "PaP: -"
+		return
+
+	# Determine current kind from current SpellData.
+	var kind := ""
+	if _spell_caster != null and ("spell" in _spell_caster) and _spell_caster.spell != null:
+		var sd: Resource = _spell_caster.spell
+		# Preferred: SpellData.resource_name == "fireball"/"chainlightning"/"magicmissile"
+		if sd.resource_name != "":
+			kind = sd.resource_name.to_lower()
+		elif "spell_key" in sd:
+			kind = String(sd.spell_key)
+		elif "id" in sd:
+			kind = String(sd.id)
+
+	if kind == "":
+		if _last_pap_kind != "__none__":
+			_last_pap_kind = "__none__"
+			pap_label.text = "PaP: (no spell)"
+		return
+
+	var tier := int(PackAPunch.get_tier(StringName(kind)))
+	var display_name := String(PackAPunch.get_display_name(StringName(kind)))
+
+	if kind == _last_pap_kind and tier == _last_pap_tier and display_name == _last_pap_name:
+		return
+	_last_pap_kind = kind
+	_last_pap_tier = tier
+	_last_pap_name = display_name
+
+	pap_label.text = "PaP: %s (T%d)" % [display_name, tier]
+
+func _on_essence_changed(_new_amount: int) -> void:
+	_last_essence = -1
+	_refresh_essence()
 
 func _find_child_by_type(root: Node, t: Variant) -> Node:
 	for c in root.get_children():

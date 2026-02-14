@@ -76,8 +76,10 @@ _data = {
 
 [node name="MM_SpellProjectile" type="Node3D" unique_id=444858449]
 script = ExtResource("1_mlyel")
-arm_time = 2.0
+max_lifetime = 8.0
+arm_time = 1.0
 start_speed = 2.0
+turn_rate_deg = 1000.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1626659345]
 mesh = SubResource("CapsuleMesh_2liid")
@@ -88,7 +90,6 @@ material_override = SubResource("StandardMaterial3D_l6kp3")
 amount = 50
 preprocess = 2.22
 speed_scale = 4.6
-trail_enabled = true
 trail_lifetime = 1.65
 process_material = SubResource("ParticleProcessMaterial_l6kp3")
 draw_pass_1 = SubResource("QuadMesh_dttlx")

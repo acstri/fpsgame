@@ -28,6 +28,8 @@ var _yaw := 0.0
 var _pitch := 0.0
 
 func _ready() -> void:
+	if ProjectSettings.has_setting("application/config/mouse_sensitivity"):
+		mouse_sensitivity = float(ProjectSettings.get_setting("application/config/mouse_sensitivity"))
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	_autowire()

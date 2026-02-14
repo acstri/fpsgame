@@ -19,6 +19,7 @@
 [ext_resource type="AudioStream" uid="uid://du4jh8xavh5rb" path="res://Assets/Sounds/goblin_scream2.mp3" id="17_imorw"]
 [ext_resource type="AudioStream" uid="uid://bkw86ps0fvv1k" path="res://Assets/Sounds/goblin_scream3.mp3" id="18_0vprv"]
 [ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="19_imorw"]
+[ext_resource type="Script" uid="uid://cthqbjwptrnwm" path="res://Scenes/EssenceReward.gd" id="21_ovthj"]
 [ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="23_1vdrv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mo1ky"]
@@ -132,9 +133,9 @@ pool_spawn_radius = 1.0
 script = ExtResource("15_qlal6")
 health = NodePath("../EnemyHealth")
 death_clips = Array[AudioStream]([ExtResource("16_5yix0"), ExtResource("17_imorw"), ExtResource("18_0vprv")])
-volume_db = 6.0
 audio_bus = "Sfx"
 max_distance = 70.0
+unit_size = 10.0
 
 [node name="FootstepsSfx" type="Node3D" parent="." unique_id=1387611632 node_paths=PackedStringArray("character")]
 script = ExtResource("19_imorw")
@@ -142,5 +143,8 @@ character = NodePath("..")
 default_step_clips = Array[AudioStream]([ExtResource("23_1vdrv")])
 volume_db = 0.0
 max_distance = 70.0
+
+[node name="EssenceReward" type="Node" parent="." unique_id=1648984984]
+script = ExtResource("21_ovthj")
 
 [editable path="goblin"]

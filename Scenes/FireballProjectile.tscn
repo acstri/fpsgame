@@ -111,7 +111,6 @@ omni_range = 3.5826623
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1282422329]
 transform = Transform3D(1, 1.1175871e-08, 0, -3.259629e-09, 1, 0, -3.7252903e-09, 0, 1, 0, 0, 0)
 amount = 20
-trail_enabled = true
 trail_lifetime = 1.4
 process_material = SubResource("ParticleProcessMaterial_mxqeq")
 draw_pass_1 = SubResource("SphereMesh_yjn53")

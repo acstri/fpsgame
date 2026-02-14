@@ -21,15 +21,16 @@
 [ext_resource type="Resource" uid="uid://serm4imhucch" path="res://Scripts/upgrades/data/life_regen.tres" id="11_0bcf6"]
 [ext_resource type="PackedScene" uid="uid://chl2k1t6hoxl0" path="res://Scenes/ViewCam.tscn" id="11_7yo87"]
 [ext_resource type="PackedScene" uid="uid://b2vd83os48jst" path="res://Scenes/StatBlock.tscn" id="11_r0dna"]
+[ext_resource type="Resource" uid="uid://cl1uvsfe0mskq" path="res://Scripts/upgrades/data/life_steal.tres" id="12_y1bqn"]
+[ext_resource type="Resource" uid="uid://mgqyvqu7ou5o" path="res://Scripts/upgrades/data/magnet.tres" id="13_7dsfl"]
 [ext_resource type="Resource" uid="uid://b5wrv57imlu13" path="res://Scripts/upgrades/data/projectiles.tres" id="14_mq4nq"]
+[ext_resource type="Resource" uid="uid://bgw0qphqaux1w" path="res://Scripts/upgrades/data/evasion.tres" id="15_371b6"]
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="PackedScene" uid="uid://se74irodpl8i" path="res://Scenes/DamageNumber.tscn" id="17_ao4cr"]
 [ext_resource type="Script" uid="uid://b3vra038m6gwv" path="res://Scripts/DamageNumbersLayer.gd" id="22_ao4cr"]
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
 [ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
-[ext_resource type="AudioStream" uid="uid://lc6sk3t8urnq" path="res://Assets/Sounds/mm_cast.mp3" id="29_uvb3s"]
-[ext_resource type="AudioStream" uid="uid://c2etaa1d6yebb" path="res://Assets/Sounds/mm_shoot.mp3" id="31_d4o7i"]
 [ext_resource type="Texture2D" uid="uid://rglbv2qcc5dm" path="res://Assets/Textures/dirt_text.jpg" id="32_371b6"]
 [ext_resource type="PackedScene" uid="uid://co01o5bii6vsr" path="res://Scenes/stone.tscn" id="32_ao4cr"]
 [ext_resource type="Material" uid="uid://fa4tvrn8ktbk" path="res://Assets/Materials/floor_mat.tres" id="33_irg3d"]
@@ -95,15 +96,13 @@ health = NodePath("../../Player/PlayerHealth")
 [node name="Director" type="Node" parent="GameStates" unique_id=1563088560]
 script = ExtResource("1_5nsto")
 enemy_scene = ExtResource("2_gjpho")
-max_spawns_per_second = 8.0
-max_alive_enemies = 300
 avoid_mask = 1
 avoid_radius = 0.6
 ground_mask = 1
 
 [node name="UpgradeManager" type="Node" parent="GameStates" unique_id=1077308573]
 script = ExtResource("4_mvfa8")
-all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResource("7_w0bku"), ExtResource("6_b5aes"), ExtResource("9_33kev"), ExtResource("10_g01fq"), ExtResource("11_0bcf6"), ExtResource("14_mq4nq"), ExtResource("16_g01fq")])
+all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResource("7_w0bku"), ExtResource("6_b5aes"), ExtResource("9_33kev"), ExtResource("10_g01fq"), ExtResource("11_0bcf6"), ExtResource("12_y1bqn"), ExtResource("13_7dsfl"), ExtResource("14_mq4nq"), ExtResource("15_371b6"), ExtResource("16_g01fq")])
 
 [node name="UI" type="Node" parent="." unique_id=1103826466]
 
@@ -162,16 +161,12 @@ beam_scene = ExtResource("26_0bcf6")
 
 [node name="Fireball" parent="Player/SpellCaster" index="1" unique_id=388899861]
 projectile_speed = 8.0
-spawn_distance_from_cam = 0.3
 explosion_radius = 5.0
 aoe_damage_mult = 1.0
 
 [node name="MagicMissile" parent="Player/SpellCaster" index="2" unique_id=1813416411 node_paths=PackedStringArray("camera", "stats")]
 camera = NodePath("../../Head/WorldCam")
 stats = NodePath("../../PlayerStats")
-sfx_cast = ExtResource("29_uvb3s")
-sfx_charge_loop = ExtResource("29_uvb3s")
-sfx_flight_loop = ExtResource("31_d4o7i")
 
 [node name="HandCastAnimator" parent="Player" index="8" unique_id=2019263904]
 anim_player_path = NodePath("../HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms/AnimationPlayer")
@@ -557,9 +552,10 @@ bus = &"Music"
 parameters/looping = true
 
 [node name="PackAPunchMachine" parent="." unique_id=1184660181 instance=ExtResource("37_n1aqv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.940362, 30.855091, -3.9881654)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33192253, 0.31724954, -18.3828)
 prompt_label_path = NodePath("Label")
 
 [editable path="Player"]
 [editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam"]
 [editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms"]
+[editable path="PackAPunchMachine"]

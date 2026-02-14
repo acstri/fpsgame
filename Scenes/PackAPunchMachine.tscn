@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://btufsckmvxbdn"]
+
+[ext_resource type="Script" uid="uid://boi5vo3a3ilfs" path="res://Scripts/PackAPunchMachine.gd" id="1_pjlt5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8jinw"]
+albedo_color = Color(1, 1, 0, 1)
+metallic = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_veha2"]
+material = SubResource("StandardMaterial3D_8jinw")
+
+[sub_resource type="Animation" id="Animation_pjlt5"]
+resource_name = "1"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-6.2831855, -6.2831855, 0), Vector3(-12.566371, -12.566371, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8jinw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_veha2"]
+_data = {
+&"1": SubResource("Animation_pjlt5"),
+&"RESET": SubResource("Animation_8jinw")
+}
+
+[node name="PackAPunchMachine" type="Node3D" unique_id=1184660181]
+script = ExtResource("1_pjlt5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1612304156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.57590306, 0)
+mesh = SubResource("BoxMesh_veha2")
+
+[node name="Label" type="Label" parent="." unique_id=1477783389]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=820939539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.40625465, 0)
+light_color = Color(1, 1, 0, 1)
+light_energy = 5.188
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=70400900]
+libraries/ = SubResource("AnimationLibrary_veha2")
+autoplay = &"1"
