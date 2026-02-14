@@ -94,6 +94,7 @@ level_system = NodePath("../../Player/LevelSystem")
 stats = NodePath("../../Player/PlayerStats")
 upgrades = NodePath("../UpgradeManager")
 health = NodePath("../../Player/PlayerHealth")
+void_kill_y = -100.0
 
 [node name="Director" type="Node" parent="GameStates" unique_id=1563088560]
 script = ExtResource("1_5nsto")
@@ -562,7 +563,7 @@ bus = &"Music"
 parameters/looping = true
 
 [node name="PackAPunchMachine" parent="." unique_id=1184660181 instance=ExtResource("37_n1aqv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8061495, 15.615268, 8.063523)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.361374, 15.615268, 8.063523)
 prompt_label_path = NodePath("Label")
 
 [editable path="Player"]

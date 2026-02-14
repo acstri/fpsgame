@@ -99,3 +99,9 @@ func _has_prop(obj: Object, prop: StringName) -> bool:
 		if StringName(p.name) == prop:
 			return true
 	return false
+	
+func reset_run() -> void:
+	_tier_by_kind.clear()
+	# optional: notify listeners that tiers are back to 0
+	for kind in name_by_kind.keys():
+		tier_changed.emit(kind, 0)

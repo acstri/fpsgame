@@ -24,3 +24,7 @@ func spend(cost: int) -> bool:
 	_amount -= cost
 	changed.emit(_amount)
 	return true
+
+func reset() -> void:
+	_amount = 0
+	changed.emit(_amount)

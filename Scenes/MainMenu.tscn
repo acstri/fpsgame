@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cqog4qrjkr7mq" path="res://Scenes/MainMenu.gd" id="1_tt5f1"]
 [ext_resource type="AudioStream" uid="uid://b7eq2baerhlme" path="res://Assets/Sounds/music/CASTLE RAVE.mp3" id="2_853f1"]
 
-[node name="MainMenu" type="Control" unique_id=1881635986 node_paths=PackedStringArray("play_button", "options_button", "quit_button", "options_panel", "back_button", "master_slider", "mouse_slider", "start_spell_option")]
+[node name="MainMenu" type="Control" unique_id=1881635986 node_paths=PackedStringArray("play_button", "options_button", "quit_button", "options_panel", "back_button", "master_slider", "mouse_slider", "name_input", "name_warning_label", "start_spell_option")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_tt5f1")
@@ -14,6 +14,8 @@ options_panel = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Options
 back_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/BackButton")
 master_slider = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MaterRow/MasterSlider")
 mouse_slider = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel/MouseRow/MouseSlider")
+name_input = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/NameEdit")
+name_warning_label = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/NameHintLabel")
 start_spell_option = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/StartSpellRow/StartSpellOption")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1164905707]
@@ -45,7 +47,15 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=413378333]
 layout_mode = 2
-text = "FPS Survivors aka Megabonk 2"
+text = "Auto Mage aka Megabonk 2"
+
+[node name="NameHintLabel" type="Label" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=1448078142]
+layout_mode = 2
+text = "Enter a name to start!"
+horizontal_alignment = 1
+
+[node name="NameEdit" type="LineEdit" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=124931157]
+layout_mode = 2
 
 [node name="Buttons" type="VBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer" unique_id=479441838]
 layout_mode = 2

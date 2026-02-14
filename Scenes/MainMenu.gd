@@ -13,14 +13,17 @@ class_name MainMenu
 @export var master_slider: HSlider
 @export var mouse_slider: HSlider
 
+@export_group("Player Name Gate")
+@export var name_input: LineEdit
+@export var name_warning_label: Label # optional: "Enter a name to start"
+
 # New: start spell selector
-@export_group("Start Spell (optional)")
+@export_group("Start Spell")
 @export var start_spell_option: OptionButton
 
 const SETTINGS_PATH := "user://settings.cfg"
 const SECTION := "settings"
 
-# Values stored in config / ProjectSettings
 const KEY_MASTER := "master_volume"
 const KEY_MOUSE := "mouse_sensitivity"
 const KEY_START_SPELL := "start_spell_kind"
@@ -30,15 +33,29 @@ func _ready() -> void:
 
 	_autowire()
 
-	if play_button: play_button.pressed.connect(_on_play)
-	if options_button: options_button.pressed.connect(_on_options)
-	if quit_button: quit_button.pressed.connect(_on_quit)
-	if back_button: back_button.pressed.connect(_on_back)
+	if play_button:
+		play_button.pressed.connect(_on_play)
+	if options_button:
+		options_button.pressed.connect(_on_options)
+	if quit_button:
+		quit_button.pressed.connect(_on_quit)
+	if back_button:
+		back_button.pressed.connect(_on_back)
 
 	if master_slider:
 		master_slider.value_changed.connect(_on_master_changed)
 	if mouse_slider:
 		mouse_slider.value_changed.connect(_on_mouse_changed)
+
+	if name_input:
+		name_input.text_changed.connect(func(_t: String) -> void: _refresh_play_gate())
+		name_input.text_submitted.connect(func(_t: String) -> void: _on_play())
+
+		var profile := get_node_or_null("/root/Player_Profile")
+		if profile != null and "player_name" in profile:
+			name_input.text = str(profile.player_name)
+
+		name_input.grab_focus()
 
 	_setup_start_spell_option()
 
@@ -46,6 +63,7 @@ func _ready() -> void:
 	_apply_settings()
 
 	_show_main_buttons()
+	_refresh_play_gate()
 
 func _autowire() -> void:
 	if play_button == null:
@@ -65,6 +83,11 @@ func _autowire() -> void:
 	if start_spell_option == null:
 		start_spell_option = _find("StartSpellOption") as OptionButton
 
+	if name_input == null:
+		name_input = _find("NameInput") as LineEdit
+	if name_warning_label == null:
+		name_warning_label = _find("NameWarningLabel") as Label
+
 func _find(name: String) -> Node:
 	return find_child(name, true, false)
 
@@ -73,7 +96,6 @@ func _setup_start_spell_option() -> void:
 		return
 
 	start_spell_option.clear()
-	# id 0 -> fireball, id 1 -> magicmissile
 	start_spell_option.add_item("Fireball", 0)
 	start_spell_option.add_item("Magic Missile", 1)
 
@@ -93,12 +115,47 @@ func _show_options() -> void:
 	if quit_button: quit_button.visible = false
 	if options_panel: options_panel.visible = true
 
+func _refresh_play_gate() -> void:
+	var ok := _is_name_valid(_get_name_text())
+	if play_button:
+		play_button.disabled = not ok
+	if name_warning_label:
+		name_warning_label.visible = not ok
+		if not ok:
+			name_warning_label.text = "Enter a name to start"
+
+func _is_name_valid(raw: String) -> bool:
+	return raw.strip_edges().length() > 0
+
+func _get_name_text() -> String:
+	if name_input == null:
+		return ""
+	return name_input.text
+
+func _commit_name() -> void:
+	if name_input == null:
+		return
+
+	var profile := get_node_or_null("/root/Player_Profile")
+	if profile != null and profile.has_method("set_player_name"):
+		profile.set_player_name(name_input.text)
+
+	# write back sanitized value
+	if profile != null and "player_name" in profile:
+		name_input.text = str(profile.player_name)
+
 func _on_play() -> void:
+	_refresh_play_gate()
+	if play_button != null and play_button.disabled:
+		if name_input != null:
+			name_input.grab_focus()
+		return
+
+	_commit_name()
 	_save_settings()
 
-	# Reset run meta (if present)
 	var kc := get_node_or_null("/root/KillCounter")
-	if kc != null:
+	if kc != null and kc.has_method("reset"):
 		kc.reset()
 
 	get_tree().change_scene_to_file(game_scene_path)
@@ -122,7 +179,7 @@ func _load_settings() -> void:
 	var cfg := ConfigFile.new()
 	var err := cfg.load(SETTINGS_PATH)
 	if err != OK:
-		_apply_start_spell_setting() # still set defaults into ProjectSettings
+		_apply_start_spell_setting()
 		return
 
 	if master_slider:
@@ -175,7 +232,6 @@ func _get_start_spell_kind() -> String:
 	return "fireball" if start_spell_option.selected == 0 else "magicmissile"
 
 func _apply_start_spell_setting() -> void:
-	# Gameplay reads this on SpellCaster _ready()
 	ProjectSettings.set_setting("application/config/start_spell_kind", _get_start_spell_kind())
 	ProjectSettings.save()
 

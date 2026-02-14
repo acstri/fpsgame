@@ -8,8 +8,8 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxqeq"]
 cull_mode = 1
+albedo_color = Color(2.8165433, 2.8165433, 0, 1)
 albedo_texture = ExtResource("2_mxqeq")
-emission_enabled = true
 emission = Color(1, 0.33333334, 0, 1)
 emission_energy_multiplier = 10.31
 uv1_triplanar_sharpness = 1.7411028

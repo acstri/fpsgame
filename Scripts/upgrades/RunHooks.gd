@@ -13,8 +13,13 @@ class_name RunHooks
 @export var upgrades: UpgradeService
 @export var health: PlayerHealth
 
+@export_group("Death")
 @export var death_slowmo_scale := 0.2
 @export var death_slowmo_duration := 1.2
+
+@export_group("Void Kill")
+@export var enable_void_kill := true
+@export var void_kill_y: float = -50.0
 
 var _ended := false
 
@@ -34,9 +39,14 @@ func _ready() -> void:
 	upgrades.reset_run()
 
 func _exit_tree() -> void:
-	# Ensure globals aren't left behind if scene changes unexpectedly
 	Engine.time_scale = 1.0
 	get_tree().paused = false
+
+func _physics_process(_dt: float) -> void:
+	if _ended or not enable_void_kill:
+		return
+	if player != null and player.global_position.y < void_kill_y:
+		_kill_player_from_void()
 
 func _autowire() -> void:
 	# Player
@@ -111,6 +121,27 @@ func _on_upgrade_picked(up: UpgradeData) -> void:
 		return
 	upgrades.apply_upgrade(up, stats)
 
+func _kill_player_from_void() -> void:
+	if health == null:
+		return
+
+	# Prevent repeated triggers if falling continues
+	enable_void_kill = false
+
+	# Prefer explicit kill method if present
+	if health.has_method("kill"):
+		health.kill()
+		return
+
+	# Otherwise deal fatal damage if supported
+	if health.has_method("take_damage"):
+		health.take_damage(999999)
+		return
+
+	# Last resort: emit the signal (not ideal, but keeps flow)
+	if health.has_signal("died"):
+		health.died.emit()
+
 func _on_player_died() -> void:
 	if _ended:
 		return
@@ -139,7 +170,19 @@ func _on_player_died() -> void:
 func _on_restart() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
+
+	# Reset run-state singletons (autoloads persist across reload)
+	if has_node("/root/EssenceWallet") and EssenceWallet.has_method("reset"):
+		EssenceWallet.reset()
+
+	if has_node("/root/PackAPunch") and PackAPunch.has_method("reset_run"):
+		PackAPunch.reset_run()
+
+	if has_node("/root/KillCounter") and KillCounter.has_method("reset"):
+		KillCounter.reset()
+
 	get_tree().reload_current_scene()
+
 
 # --- helpers ---
 
@@ -153,7 +196,6 @@ func _find_child_by_type(root: Node, t: Variant) -> Node:
 	return null
 
 func _find_any_by_type(t: Variant) -> Node:
-	# Instead of group scanning, walk scene tree from current scene
 	var scene := get_tree().current_scene
 	if scene == null:
 		return null

@@ -14,7 +14,7 @@ config/name="Auto Mage"
 run/main_scene="uid://djxen2477lpsv"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/mouse_sensitivity=0.003
-config/start_spell_kind="fireball"
+config/start_spell_kind="magicmissile"
 
 [autoload]
 
@@ -23,6 +23,8 @@ Combat_Events="*uid://bjsakqdryurn7"
 PackAPunch="*uid://by7ahcb8buiku"
 EssenceWallet="*uid://d2evcgaxryl77"
 KillCounter="*uid://rsr5r15krxvx"
+Leaderboard_Client="*uid://rq2opp2uufg5"
+Player_Profile="*uid://dfdw1oe8461rm"
 
 [display]
 

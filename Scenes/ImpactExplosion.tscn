@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://ht1rhwd85oev" path="res://Scripts/ExplosionPulse.gd" id="1_106vn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jonn0"]
-albedo_color = Color(1, 0, 0, 1)
-emission_enabled = true
+albedo_color = Color(18.892157, 2.9752073, 0, 1)
 emission = Color(1, 0.96862745, 0.44705883, 1)
 emission_energy_multiplier = 3.07
 
