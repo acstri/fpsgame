@@ -1,3 +1,4 @@
+# File: Scripts/MagicMissile.gd
 extends Node3D
 class_name MagicMissile
 
@@ -29,10 +30,10 @@ signal cast_finished()
 @export var exclude_player := true
 
 @export_group("Audio")
-@export var audio_bus: StringName = &"SFX"   # fallback to Master if missing
-@export var sfx_cast: AudioStream            # one-shot
-@export var sfx_charge_loop: AudioStream     # looping
-@export var sfx_flight_loop: AudioStream     # looping
+@export var audio_bus: StringName = &"SFX"
+@export var sfx_cast: AudioStream
+@export var sfx_charge_loop: AudioStream
+@export var sfx_flight_loop: AudioStream
 @export_range(-60.0, 6.0, 0.5) var sfx_db := -6.0
 @export_range(0.25, 2.0, 0.01) var flight_pitch_min := 0.95
 @export_range(0.25, 2.0, 0.01) var flight_pitch_max := 1.05
@@ -108,33 +109,44 @@ func _cast_sequence(damage: float, spellrange: float, spread_deg: float, is_crit
 		else:
 			missile_is_crit = is_crit
 
-		var assigned_target: Node3D = null
+		var assigned_target: Node = null
 		if targets.size() > 0:
-			assigned_target = targets[i % targets.size()] if prefer_distinct_targets else targets[0]
+			var tnode: Node3D = targets[i % targets.size()] if prefer_distinct_targets else targets[0]
+			# Sanitize: avoid passing invalid/freed refs into callv()
+			if tnode != null and is_instance_valid(tnode):
+				assigned_target = tnode
+			else:
+				assigned_target = null
 
 		var p := projectile_scene.instantiate()
+		if p == null:
+			continue
+
+		# Ensure it enters the tree before/after setup either is fine here, but we keep your previous order.
 		if p.has_method("setup"):
 			var pitch := randf_range(flight_pitch_min, flight_pitch_max)
-			# Added params: flight_loop_stream, pitch, db, bus
 			p.callv("setup", [
-				missile_damage,
-				dir,
-				caster_node,
-				projectile_speed,
-				spellrange,
-				hit_mask,
-				missile_is_crit,
-				assigned_target,
-				sfx_flight_loop,
-				pitch,
-				sfx_db,
-				audio_bus
+				missile_damage,       # 1
+				dir,                 # 2
+				caster_node,         # 3
+				projectile_speed,    # 4
+				spellrange,          # 5
+				hit_mask,            # 6
+				missile_is_crit,     # 7
+				assigned_target,     # 8 (Node, safe)
+				sfx_flight_loop,     # 9
+				pitch,               # 10
+				sfx_db,              # 11
+				audio_bus            # 12
 			])
 			parent.add_child(p)
 			if p is Node3D:
 				(p as Node3D).global_transform = spawn_xform
 		else:
 			push_warning("MagicMissile: projectile has no setup() method.")
+			parent.add_child(p)
+			if p is Node3D:
+				(p as Node3D).global_transform = spawn_xform
 
 		if interval > 0.0 and i < count - 1:
 			await get_tree().create_timer(interval).timeout
@@ -220,5 +232,6 @@ func _start_charge_loop() -> void:
 		_charge_player.play()
 
 func _stop_charge_loop() -> void:
-	if _charge_player != null and is_instance_valid(_charge_player) and _charge_player.playing:
-		_charge_player.stop()
+	if _charge_player != null and is_instance_valid(_charge_player):
+		if _charge_player.playing:
+			_charge_player.stop()
