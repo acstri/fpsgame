@@ -1,4 +1,3 @@
-# File: Scripts/MM_SpellProjectile.gd
 extends Node3D
 class_name MM_SpellProjectile
 
@@ -51,7 +50,6 @@ var _target: Node3D = null
 @onready var _tracer: GPUParticles3D = get_node_or_null(tracer_path) as GPUParticles3D
 
 # setup(dmg, dir, caster, speed, max_dist, hit_mask, is_crit, preferred_target, flight_stream, pitch, db, bus)
-# NOTE: preferred_target is Node (not Node3D) to avoid callv conversion failures.
 func setup(
 	p_damage: float,
 	p_direction: Vector3,
@@ -60,7 +58,7 @@ func setup(
 	p_max_distance: float,
 	p_hit_mask: int,
 	p_is_crit: bool = false,
-	p_preferred_target: Node = null,
+	p_preferred_target: Node3D = null,
 	p_flight_loop_stream: AudioStream = null,
 	p_flight_pitch: float = 1.0,
 	p_flight_db: float = -6.0,
@@ -74,12 +72,7 @@ func setup(
 	_dir = p_direction.normalized()
 	is_crit = p_is_crit
 
-	# Safe cast
-	if p_preferred_target != null and is_instance_valid(p_preferred_target) and p_preferred_target is Node3D:
-		preferred_target = p_preferred_target as Node3D
-	else:
-		preferred_target = null
-
+	preferred_target = p_preferred_target
 	_target = preferred_target
 
 	flight_loop_stream = p_flight_loop_stream

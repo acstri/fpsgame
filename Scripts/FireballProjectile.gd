@@ -44,21 +44,18 @@ class_name FireballProjectile
 @export_range(0.0, 1.0, 0.05) var shake_min_scale := 0.0
 @export var shake_use_smooth_falloff := true
 
+var hit_mask: int = 5
+var damage: float = 0.0
+var caster: Node = null
+var max_distance: float = 120.0
+var speed: float = 28.0
+
 @export_group("Damage")
 var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
 @export var use_falloff: bool = true
 @export_range(0.0, 1.0, 0.05) var falloff_min: float = 0.25
 
-@export_group("Collision (Anti-tunneling)")
-@export var hit_radius: float = 0.25
-@export var extra_rays: int = 4
-
-var hit_mask: int = 5
-var damage: float = 0.0
-var caster: Node = null
-var max_distance: float = 120.0
-var speed: float = 28.0
 var is_crit := false
 
 var _configured := false
@@ -115,7 +112,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 
-	var hit := _sweep_cast(from, to)
+	var hit := _raycast(from, to)
 	if hit.is_empty():
 		global_position = to
 		return
@@ -125,51 +122,6 @@ func _physics_process(delta: float) -> void:
 
 	_explode(global_position, hit)
 	queue_free()
-
-# --- collision: multi-ray sweep to catch small/Area3D hitboxes ---
-func _sweep_cast(from: Vector3, to: Vector3) -> Dictionary:
-	var best: Dictionary = {}
-	var best_d2 := INF
-
-	var h0 := _raycast(from, to)
-	if not h0.is_empty():
-		best = h0
-		best_d2 = from.distance_squared_to(h0.get("position", to))
-
-	if extra_rays <= 0 or hit_radius <= 0.0:
-		return best
-
-	var d := (to - from)
-	if d.length_squared() < 0.000001:
-		return best
-	d = d.normalized()
-
-	var up := Vector3.UP
-	if abs(d.dot(up)) > 0.95:
-		up = Vector3.FORWARD
-	var right := d.cross(up).normalized()
-	up = right.cross(d).normalized()
-
-	var offsets := [
-		right * hit_radius,
-		-right * hit_radius,
-		up * hit_radius,
-		-up * hit_radius,
-	]
-
-	var count = min(extra_rays, offsets.size())
-	for i in range(count):
-		var off = offsets[i]
-		var h := _raycast(from + off, to + off)
-		if h.is_empty():
-			continue
-		var p: Vector3 = h.get("position", to)
-		var d2 := from.distance_squared_to(p)
-		if d2 < best_d2:
-			best = h
-			best_d2 = d2
-
-	return best
 
 func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 	_stop_flight_loop()
@@ -341,25 +293,19 @@ func _play_impact_sfx(pos: Vector3) -> void:
 		p.add_child(t)
 		t.start()
 
-# ---------------- Raycast / VFX ----------------
+# ---------------- Existing raycast / VFX ----------------
 
 func _raycast(from: Vector3, to: Vector3) -> Dictionary:
 	var world := get_world_3d()
-	if world == null:
-		world = get_viewport().get_world_3d()
 	if world == null:
 		return {}
 
 	var q := PhysicsRayQueryParameters3D.create(from, to)
 	q.collision_mask = hit_mask
-	q.collide_with_areas = true
-	q.collide_with_bodies = true
 
-	var ex: Array[RID] = []
+	# Exclude caster if it is a CollisionObject3D
 	if caster is CollisionObject3D:
-		ex.append((caster as CollisionObject3D).get_rid())
-	if not ex.is_empty():
-		q.exclude = ex
+		q.exclude = [(caster as CollisionObject3D).get_rid()]
 
 	return world.direct_space_state.intersect_ray(q)
 
@@ -373,3 +319,4 @@ func _spawn_explosion_pulse(pos: Vector3) -> void:
 	parent.add_child(v)
 	if v is Node3D:
 		(v as Node3D).global_position = pos
+	# If your pulse script expects radius params, keep your existing setup there (unchanged).

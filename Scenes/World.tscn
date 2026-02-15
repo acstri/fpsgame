@@ -59,9 +59,9 @@ fog_density = 1.0
 fog_depth_curve = 0.59460354
 fog_depth_begin = 5.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_5dli4"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_45d1s"]
 material = ExtResource("33_irg3d")
-size = Vector3(70, 10, 70)
+size = Vector2(70, 70)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uo7di"]
 size = Vector3(70, 0, 70)
@@ -86,9 +86,9 @@ shadow_enabled = true
 [node name="RunHooks" type="Node" parent="GameStates" unique_id=629901134 node_paths=PackedStringArray("player", "upgrade_screen", "game_over_screen", "screen_fader", "director", "level_system", "stats", "upgrades", "health")]
 script = ExtResource("5_p70al")
 player = NodePath("../../Player")
-upgrade_screen = NodePath("../../UI/Canv_Fade/UpgradeScreen")
-game_over_screen = NodePath("../../UI/Canv_Fade/GameOverScreen")
-screen_fader = NodePath("../../UI/Canv_Fade/ScreenFader")
+upgrade_screen = NodePath("../../UI/UpgradeScreen")
+game_over_screen = NodePath("../../UI/GameOverScreen")
+screen_fader = NodePath("../../UI/ScreenFader")
 director = NodePath("../Director")
 level_system = NodePath("../../Player/LevelSystem")
 stats = NodePath("../../Player/PlayerStats")
@@ -111,27 +111,31 @@ all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResourc
 
 [node name="UI" type="Node" parent="." unique_id=1103826466]
 
-[node name="Canv_HUD" type="CanvasLayer" parent="UI" unique_id=1025217641]
+[node name="GameOverScreen" parent="UI" unique_id=1227436529 instance=ExtResource("1_y7y61")]
+process_mode = 3
 
-[node name="HUD" parent="UI/Canv_HUD" unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
+[node name="HUD" parent="UI" unique_id=1975167068 node_paths=PackedStringArray("player") instance=ExtResource("1_45d1s")]
 mouse_filter = 2
-player = NodePath("../../../Player")
+player = NodePath("../../Player")
 
-[node name="EnemyIndicator" parent="UI/Canv_HUD/HUD" index="9" unique_id=1935920187]
-player_path = NodePath("../../../../Player")
-camera_path = NodePath("../../../../Player/Head/WorldCam")
-max_arrows = 10
-color_curve_power = 3.0
-alpha_curve_power = 3.0
-
-[node name="StatBlock" parent="UI/Canv_HUD/HUD" unique_id=1916233769 node_paths=PackedStringArray("stats") instance=ExtResource("11_r0dna")]
+[node name="StatBlock" parent="UI/HUD" unique_id=1916233769 node_paths=PackedStringArray("stats") instance=ExtResource("11_r0dna")]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 1
-stats = NodePath("../../../../Player/PlayerStats")
+stats = NodePath("../../../Player/PlayerStats")
+
+[node name="UpgradeScreen" parent="UI" unique_id=847933536 instance=ExtResource("1_gjpho")]
+process_mode = 3
+level_up_sounds = Array[AudioStream]([ExtResource("18_5dli4"), ExtResource("19_uvb3s"), ExtResource("20_crxrm")])
+randomize_pitch = true
+
+[node name="ScreenFader" parent="UI" unique_id=243986901 instance=ExtResource("7_q2d71")]
+process_mode = 3
+visible = false
+z_index = -1
 
 [node name="DamageNumbersLayer" type="CanvasLayer" parent="UI" unique_id=1812757444 node_paths=PackedStringArray("camera")]
 script = ExtResource("22_ao4cr")
@@ -139,22 +143,6 @@ camera = NodePath("../../Player/Head/WorldCam")
 number_scene = ExtResource("17_ao4cr")
 base_scale = 1.015
 crit_scale_mult = 1.515
-
-[node name="Canv_Fade" type="CanvasLayer" parent="UI" unique_id=467776662]
-layer = 5
-
-[node name="ScreenFader" parent="UI/Canv_Fade" unique_id=243986901 instance=ExtResource("7_q2d71")]
-process_mode = 3
-visible = false
-z_index = -1
-
-[node name="GameOverScreen" parent="UI/Canv_Fade" unique_id=1227436529 instance=ExtResource("1_y7y61")]
-process_mode = 3
-
-[node name="UpgradeScreen" parent="UI/Canv_Fade" unique_id=847933536 instance=ExtResource("1_gjpho")]
-process_mode = 3
-level_up_sounds = Array[AudioStream]([ExtResource("18_5dli4"), ExtResource("19_uvb3s"), ExtResource("20_crxrm")])
-randomize_pitch = true
 
 [node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.560882)
@@ -424,8 +412,8 @@ transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 48.165787, 
 collision_mask = 6
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ground/LevelLayout" unique_id=32640974]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.01910019, -5.0078964, -0.022239685)
-mesh = SubResource("BoxMesh_5dli4")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021928787, 0.024451256, -0.013404846)
+mesh = SubResource("PlaneMesh_45d1s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ground/LevelLayout" unique_id=427253245]
 shape = SubResource("BoxShape3D_uo7di")
@@ -551,9 +539,9 @@ size = Vector3(35, 0, 140)
 material = ExtResource("33_irg3d")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="ground" unique_id=1639586597 groups=["ground"]]
-transform = Transform3D(1, 0, 0, 0, 0.97437, -0.22495103, 0, 0.22495103, 0.97437, 17.5, 2.8046207, -52.346542)
+transform = Transform3D(1, 0, 0, 0, 0.97437, -0.22495103, 0, 0.22495103, 0.97437, 17.5, 4.138647, -52.038555)
 use_collision = true
-size = Vector3(35, 2.7402344, 36.800537)
+size = Vector3(35, 0, 36.800537)
 material = ExtResource("33_irg3d")
 
 [node name="CSGBox3D8" type="CSGBox3D" parent="ground" unique_id=1623027872 groups=["ground"]]
@@ -578,7 +566,6 @@ parameters/looping = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.361374, 15.615268, 8.063523)
 prompt_label_path = NodePath("Label")
 
-[editable path="UI/Canv_HUD/HUD"]
 [editable path="Player"]
 [editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam"]
 [editable path="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms"]

@@ -16,7 +16,7 @@ billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_kx8t4"]
 material = SubResource("StandardMaterial3D_yvbpi")
-size = Vector2(0.2, 0.2)
+size = Vector2(0.1, 0.1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_l0f23"]
 emission_shape_scale = Vector3(0.4, 0.4, 0.4)
