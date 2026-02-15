@@ -79,7 +79,7 @@ rings = 3
 
 [node name="FireballProjectile" type="Node3D" unique_id=1384196401]
 script = ExtResource("1_yfbfy")
-max_lifetime = 10.0
+max_lifetime = 999.0
 explosion_pulse_scene = ExtResource("2_smo0t")
 flight_loop_sfx = ExtResource("3_u4w32")
 flight_volume_db = 0.0

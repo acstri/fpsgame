@@ -14,7 +14,7 @@ config/name="Auto Mage"
 run/main_scene="uid://djxen2477lpsv"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/mouse_sensitivity=0.003
-config/start_spell_kind="magicmissile"
+config/start_spell_kind="fireball"
 
 [autoload]
 
