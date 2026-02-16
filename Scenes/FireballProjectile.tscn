@@ -79,7 +79,6 @@ rings = 3
 
 [node name="FireballProjectile" type="Node3D" unique_id=1384196401]
 script = ExtResource("1_yfbfy")
-max_lifetime = 999.0
 explosion_pulse_scene = ExtResource("2_smo0t")
 flight_loop_sfx = ExtResource("3_u4w32")
 flight_volume_db = 0.0
@@ -89,6 +88,7 @@ impact_sfx = ExtResource("4_1e0dh")
 impact_volume_db = 0.0
 impact_bus = "Sfx"
 impact_max_distance = 70.0
+knockback_force = 5.0
 shake_amplitude = 6.0
 shake_duration = 1.0
 shake_max_distance_mult = 10.0

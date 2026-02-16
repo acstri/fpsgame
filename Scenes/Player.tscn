@@ -34,6 +34,7 @@ camera = NodePath("Head/WorldCam")
 stats = NodePath("PlayerStats")
 level_system = NodePath("LevelSystem")
 jump_velocity = 7.0
+slide_max_duration = 30.0
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
 

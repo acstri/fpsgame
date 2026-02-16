@@ -16,8 +16,12 @@ class_name HUD
 
 # Cooldown UI (optional)
 @export_group("Cooldown UI (optional)")
-@export var cooldown_bar: ProgressBar          # set max=1, value=0..1 (or let script do it)
+@export var cooldown_bar: ProgressBar          # set max=1, value=0..1
 @export var cooldown_label: Label              # e.g. "CD: 0.42s"
+
+# Crosshair (optional)
+@export_group("Crosshair (optional)")
+@export var crosshair: Crosshair               # if null, will try get_node("Crosshair")
 
 # Enemy counter UI (optional)
 @export_group("Enemy Counter (optional)")
@@ -27,8 +31,8 @@ class_name HUD
 
 # Pack-a-Punch / Essence UI (optional)
 @export_group("Pack-a-Punch UI (optional)")
-@export var essence_label: Label               # e.g. "Essence: 500"
-@export var pap_label: Label                   # e.g. "PaP: Fireball Mk II (T1)"
+@export var essence_label: Label
+@export var pap_label: Label
 
 @export var xp_show_percent := false
 
@@ -67,6 +71,9 @@ func _ready() -> void:
 		set_process(false)
 		return
 
+	if crosshair == null:
+		crosshair = get_node_or_null("Crosshair") as Crosshair
+
 	_health = _find_child_by_type(player, PlayerHealth) as PlayerHealth
 	if _health == null:
 		_health = player.get_node_or_null("Health") as PlayerHealth
@@ -96,12 +103,11 @@ func _ready() -> void:
 	else:
 		push_warning("HUD: Combat_Events missing or has no hurt_flash signal.")
 
-	# Optional: live update essence without polling (still safe if autoload missing)
+	# Optional: live update essence without polling
 	var wallet := get_node_or_null("/root/EssenceWallet")
 	if wallet != null and wallet.has_signal("changed"):
 		wallet.changed.connect(_on_essence_changed)
 		_on_essence_changed(wallet.get_amount())
-
 
 func _process(delta: float) -> void:
 	_refresh_runtime(delta)
@@ -131,7 +137,7 @@ func _refresh_all() -> void:
 	_refresh_xp()
 	_refresh_spell()
 	_refresh_cooldown()
-	_refresh_enemy_count(999.0) # force immediate
+	_refresh_enemy_count(999.0)
 	_refresh_essence()
 	_refresh_pap()
 
@@ -251,7 +257,7 @@ func _set_spell_texts(header: String, stats_line: String) -> void:
 		spell_stats_label.text = stats_line
 
 func _refresh_cooldown() -> void:
-	if cooldown_bar == null and cooldown_label == null:
+	if cooldown_bar == null and cooldown_label == null and crosshair == null:
 		return
 
 	if _spell_caster == null:
@@ -271,8 +277,14 @@ func _refresh_cooldown() -> void:
 func _set_cooldown_ui(left: float, total: float) -> void:
 	var ratio := 0.0
 	if total > 0.0001:
-		ratio = clampf(left / total, 0.0, 1.0)
+		ratio = 1.0 - clampf(left / total, 0.0, 1.0)
 
+	if crosshair != null:
+		crosshair.set_cooldown_ratio(ratio if left > 0.0 else 0.0)
+
+
+
+	# Existing bar/label (optional)
 	if cooldown_bar != null:
 		cooldown_bar.max_value = 1.0
 		cooldown_bar.value = ratio
@@ -283,6 +295,10 @@ func _set_cooldown_ui(left: float, total: float) -> void:
 			cooldown_label.text = "Ready"
 		else:
 			cooldown_label.text = "CD: %.2fs" % left
+
+	# New: crosshair arc (optional)
+	if crosshair != null and is_instance_valid(crosshair):
+		crosshair.set_cooldown_ratio(ratio)
 
 func _refresh_enemy_count(delta: float) -> void:
 	if enemy_count_label == null:
@@ -326,7 +342,6 @@ func _refresh_essence() -> void:
 	_last_essence = v
 	essence_label.text = "Essence: %d" % v
 
-
 func _refresh_pap() -> void:
 	if pap_label == null:
 		return
@@ -336,11 +351,9 @@ func _refresh_pap() -> void:
 			pap_label.text = "PaP: -"
 		return
 
-	# Determine current kind from current SpellData.
 	var kind := ""
 	if _spell_caster != null and ("spell" in _spell_caster) and _spell_caster.spell != null:
 		var sd: Resource = _spell_caster.spell
-		# Preferred: SpellData.resource_name == "fireball"/"chainlightning"/"magicmissile"
 		if sd.resource_name != "":
 			kind = sd.resource_name.to_lower()
 		elif "spell_key" in sd:

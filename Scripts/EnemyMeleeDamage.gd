@@ -5,12 +5,22 @@ class_name EnemyMeleeDamage
 @export var hit_cooldown := 0.7
 @export var target_group := "player"
 
+@export_group("Spawn Lockout")
+@export var require_parent_enemy_active := true
+
 var _cooldown := 0.0
 
 func _ready() -> void:
 	monitoring = true
 
 func _physics_process(delta: float) -> void:
+	# Don't deal damage while the parent enemy is in spawn/cooldown phase.
+	if require_parent_enemy_active:
+		var p := get_parent()
+		if p != null and p.has_method("is_active"):
+			if not p.call("is_active"):
+				return
+
 	_cooldown = maxf(0.0, _cooldown - delta)
 	if _cooldown > 0.0:
 		return
