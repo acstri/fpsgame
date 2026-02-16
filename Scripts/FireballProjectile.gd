@@ -1,5 +1,4 @@
 # res://Scripts/FireballProjectile.gd
-
 extends Node3D
 class_name FireballProjectile
 
@@ -45,10 +44,11 @@ class_name FireballProjectile
 @export var shake_use_smooth_falloff := true
 
 @export_group("Damage")
-var explosion_radius: float = 3.5
+@export var explosion_radius: float = 3.5
 @export_range(0.0, 5.0, 0.05) var aoe_damage_mult: float = 0.65
 @export var use_falloff: bool = true
 @export_range(0.0, 1.0, 0.05) var falloff_min: float = 0.25
+@export var aoe_can_crit: bool = false # NEW: prevents AoE crit by default
 
 @export_group("Collision (Anti-tunneling)")
 @export var hit_radius: float = 0.25
@@ -95,7 +95,6 @@ func _ready() -> void:
 		push_warning("FireballProjectile: setup() was not called. Freeing projectile to avoid undefined behavior.")
 		queue_free()
 		return
-
 	_start_flight_loop()
 
 func _exit_tree() -> void:
@@ -178,8 +177,11 @@ func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 	_spawn_explosion_pulse(pos)
 	_do_camera_shake(pos)
 
+	# Determine which "enemy node" was directly hit, so we can skip it in AoE even if collider is a child.
+	var direct_collider: Object = direct_hit.get("collider", null)
+	var direct_enemy_node: Node = _resolve_enemy_node_from_collider(direct_collider)
+
 	# 1) Full damage to directly hit enemy (if any)
-	var direct_collider = direct_hit.get("collider", null)
 	if direct_collider != null:
 		SpellUtil.apply_damage_from_hit(direct_hit, damage, is_crit, false)
 
@@ -198,19 +200,40 @@ func _explode(pos: Vector3, direct_hit: Dictionary) -> void:
 		if d2 > r2:
 			continue
 
-		# AoE damage: skip the direct collider so it doesn't double-dip
-		if e != direct_collider:
+		# Skip the direct-hit enemy (root), not the raw collider (often a child hitbox)
+		if direct_enemy_node == null or e != direct_enemy_node:
 			var falloff := 1.0
 			if use_falloff:
 				var t := clampf(sqrt(d2) / maxf(0.001, explosion_radius), 0.0, 1.0)
 				falloff = lerpf(1.0, falloff_min, t)
 
 			var amount := damage * aoe_damage_mult * falloff
+
+			# Optional: AoE crit disabled by default (prevents "spiky" double hits)
+			var aoe_is_crit := is_crit and aoe_can_crit
+
 			var fake_hit := {"collider": n, "position": pos}
-			SpellUtil.apply_damage_from_hit(fake_hit, amount, is_crit, false)
+			SpellUtil.apply_damage_from_hit(fake_hit, amount, aoe_is_crit, false)
 
 		if knockback_enabled:
 			_apply_knockback(n, pos, d2)
+
+func _resolve_enemy_node_from_collider(collider: Object) -> Node:
+	# Goal: return the node that lives in the "enemy" group for this collider, if any.
+	if collider == null:
+		return null
+	if collider is Node:
+		var n := collider as Node
+		# If collider itself is the enemy root
+		if n.is_in_group("enemy"):
+			return n
+		# Walk up parents to find the group node
+		var p := n.get_parent()
+		while p != null:
+			if p.is_in_group("enemy"):
+				return p
+			p = p.get_parent()
+	return null
 
 func _apply_knockback(target: Node3D, origin: Vector3, dist2: float) -> void:
 	var dir := (target.global_position - origin)

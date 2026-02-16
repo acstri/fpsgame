@@ -43,7 +43,7 @@ stop_distance = 1.86
 
 [node name="goblin" parent="." unique_id=121988945 instance=ExtResource("2_esfq3")]
 
-[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(121988945, 619496070) index="0" unique_id=908949870]
+[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(121988945, 715674557) index="0" unique_id=1077642962]
 bones/0/position = Vector3(0.00964207, 0.0059996992, -0.41972688)
 bones/0/rotation = Quaternion(-0.6602842, 0.059940048, -0.00027178414, 0.74862)
 bones/1/rotation = Quaternion(-0.08401134, 0.012768163, -0.004706342, 0.99637187)
@@ -79,7 +79,7 @@ bones/45/rotation = Quaternion(-0.30393818, 0.061671723, -0.0301152, 0.9502165)
 bones/46/rotation = Quaternion(0.7151474, -0.03532467, -0.015969463, 0.69789785)
 bones/47/rotation = Quaternion(0.2331901, -0.12465674, 0.026226189, 0.96405154)
 
-[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=1509609637]
+[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=704629848]
 layers = 4
 
 [node name="Visuals" type="MeshInstance3D" parent="." unique_id=766435993]

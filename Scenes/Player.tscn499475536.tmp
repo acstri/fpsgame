@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://bba1rtjmy8a0l"]
+
+[ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://dh0j7rct0ytoi" path="res://Scripts/CameraShake.gd" id="2_glx4g"]
+[ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
+[ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
+[ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/ChainLightning.gd" id="5_nn08x"]
+[ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/PlayerHealth.gd" id="6_nn08x"]
+[ext_resource type="Script" uid="uid://d3kn4ba8eij1a" path="res://Scripts/SpellCaster.gd" id="7_52ee3"]
+[ext_resource type="Script" uid="uid://34hcn530p33q" path="res://Scripts/FireballSpell.gd" id="7_ksbbd"]
+[ext_resource type="PackedScene" uid="uid://bmg3pst3tbe74" path="res://Scenes/FireballProjectile.tscn" id="8_glx4g"]
+[ext_resource type="Script" uid="uid://d3md8maumdf58" path="res://Scripts/MagicMissile.gd" id="9_miouo"]
+[ext_resource type="AudioStream" uid="uid://bo2wr6s8llyot" path="res://Assets/Sounds/fireball_cast.mp3" id="10_arntx"]
+[ext_resource type="PackedScene" uid="uid://ddvujrt0dep5a" path="res://Scenes/MM_SpellProjectile.tscn" id="10_o3h8g"]
+[ext_resource type="Script" uid="uid://4nqnf08ubyk7" path="res://Scripts/PlayerSpellSwitch.gd" id="11_1e7my"]
+[ext_resource type="PackedScene" uid="uid://drlshkarpltvq" path="res://Scripts/HandCastAnimator.tscn" id="13_miouo"]
+[ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="14_1iu4k"]
+[ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="19_qidb7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vgqql"]
+material = SubResource("StandardMaterial3D_6t5aa")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fkybt"]
+
+[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera", "stats", "level_system") groups=["player"]]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_v0iea")
+head = NodePath("Head")
+camera = NodePath("Head/WorldCam")
+stats = NodePath("PlayerStats")
+level_system = NodePath("LevelSystem")
+mouse_sensitivity = null
+pitch_min_deg = null
+pitch_max_deg = null
+walk_speed = null
+sprint_speed = null
+jump_velocity = 7.0
+gravity = null
+ground_accel = null
+ground_decel = null
+air_accel = null
+max_air_speed = null
+sprint_action = null
+sprint_cancels_on_no_input = null
+slide_action = null
+slide_min_speed = null
+slide_base_duration = null
+slide_duration_per_speed = null
+slide_max_duration = null
+slide_friction = null
+slide_steer = null
+slide_boost = null
+slide_end_speed = null
+slide_cooldown = null
+slide_slope_accel = null
+slide_slope_max_speed = null
+slide_slope_min_angle_deg = null
+
+[node name="Head" type="Node3D" parent="." unique_id=419456813]
+
+[node name="WorldCam" type="Camera3D" parent="Head" unique_id=1011416034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+cull_mask = 524287
+current = true
+
+[node name="CameraShake" type="Node" parent="Head/WorldCam" unique_id=1819040865]
+script = ExtResource("2_glx4g")
+camera_path = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=148226516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_vgqql")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1190013678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_fkybt")
+
+[node name="LevelSystem" type="Node" parent="." unique_id=2075312957]
+script = ExtResource("4_dewec")
+
+[node name="PlayerStats" type="Node" parent="." unique_id=114155298]
+script = ExtResource("5_5ixxa")
+
+[node name="PlayerHealth" type="Node" parent="." unique_id=1193666010]
+script = ExtResource("6_nn08x")
+
+[node name="SpellCaster" type="Node" parent="." unique_id=392683619]
+script = ExtResource("7_52ee3")
+allow_runtime_switching = null
+automatic = null
+
+[node name="ChainLightning" type="Node3D" parent="SpellCaster" unique_id=1392762653 node_paths=PackedStringArray("camera", "stats")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)
+script = ExtResource("5_nn08x")
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../PlayerStats")
+hit_mask = 5
+
+[node name="Fireball" type="Node3D" parent="SpellCaster" unique_id=388899861 node_paths=PackedStringArray("camera", "stats")]
+script = ExtResource("7_ksbbd")
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../PlayerStats")
+projectile_scene = ExtResource("8_glx4g")
+cast_sfx = ExtResource("10_arntx")
+cast_volume_db = 0.0
+cast_bus = "Sfx"
+
+[node name="MagicMissile" type="Node3D" parent="SpellCaster" unique_id=1813416411]
+script = ExtResource("9_miouo")
+projectile_scene = ExtResource("10_o3h8g")
+
+[node name="SpellSwitch" type="Node" parent="." unique_id=967301249]
+script = ExtResource("11_1e7my")
+
+[node name="HandCastAnimator" parent="." unique_id=2019263904 instance=ExtResource("13_miouo")]
+spell_caster_path = NodePath("../SpellCaster")
+
+[node name="FootstepsSfx" type="Node3D" parent="." unique_id=925148658 node_paths=PackedStringArray("character")]
+script = ExtResource("14_1iu4k")
+character = NodePath("..")
+default_step_clips = Array[AudioStream]([ExtResource("19_qidb7")])
+volume_db = 0.0

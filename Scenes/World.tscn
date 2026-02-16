@@ -55,7 +55,7 @@ glow_enabled = true
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.43191856, 0.5734833, 0.64844275, 1)
-fog_density = 1.0
+fog_density = 0.315
 fog_depth_curve = 0.59460354
 fog_depth_begin = 5.0
 
@@ -120,7 +120,8 @@ player = NodePath("../../../Player")
 [node name="EnemyIndicator" parent="UI/Canv_HUD/HUD" index="9" unique_id=1935920187]
 player_path = NodePath("../../../../Player")
 camera_path = NodePath("../../../../Player/Head/WorldCam")
-max_arrows = 10
+show_only_if_behind = false
+radius_far = 160.0
 color_curve_power = 3.0
 alpha_curve_power = 3.0
 
@@ -436,6 +437,33 @@ use_collision = true
 size = Vector3(35, 19.995, 35)
 material = ExtResource("34_y8a40")
 
+[node name="AirPiece" type="CSGSphere3D" parent="ground" unique_id=1503800613]
+transform = Transform3D(0.80413246, -0.5918299, 0.05575469, -0.5907742, -0.8060515, -0.03559521, 0.06600748, -0.0043151975, -0.99780977, -30.904575, 37.219128, -52.5)
+use_collision = true
+radius = 10.0
+radial_segments = 7
+rings = 4
+smooth_faces = false
+material = ExtResource("34_y8a40")
+
+[node name="AirPiece2" type="CSGSphere3D" parent="ground" unique_id=1612823290]
+transform = Transform3D(0.1866759, -0.9169756, -0.35257316, 0.9260926, 0.28402507, -0.24835941, 0.32787913, -0.28015262, 0.9022247, -40.901882, 29.339401, -61.840763)
+use_collision = true
+radius = 3.0
+radial_segments = 7
+rings = 4
+smooth_faces = false
+material = ExtResource("34_y8a40")
+
+[node name="AirPiece3" type="CSGSphere3D" parent="ground" unique_id=1817171765]
+transform = Transform3D(-0.34115434, 0.91151005, -0.2297023, 0.92609274, 0.28402513, -0.24835944, -0.16114086, -0.29745466, -0.94103897, -24.53708, 43.86827, -42.946)
+use_collision = true
+radius = 2.0
+radial_segments = 7
+rings = 4
+smooth_faces = false
+material = ExtResource("34_y8a40")
+
 [node name="CSGBox3D6" type="CSGBox3D" parent="ground" unique_id=940270754]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.5, 2.94, 52.621548)
 use_collision = true
@@ -519,6 +547,18 @@ transform = Transform3D(-4.3490306e-08, -0.10044852, 0.9949423, -4.3907447e-09, 
 use_collision = true
 size = Vector3(35, 19.995, 70.41748)
 material = ExtResource("34_y8a40")
+
+[node name="CSGBox3D25" type="CSGBox3D" parent="ground" unique_id=1386985143]
+transform = Transform3D(0.97437, -0.022732716, 0.22379947, 0, 0.9948807, 0.10105629, -0.22495103, -0.09846622, 0.969382, 111.032936, 4.790497, 34.863655)
+use_collision = true
+size = Vector3(35, 19.995, 70.41748)
+material = ExtResource("34_y8a40")
+
+[node name="CSGBox3D26" type="CSGBox3D" parent="ground" unique_id=1379812494]
+transform = Transform3D(0.97437, -0.022732716, 0.22379947, 0, 0.9948807, 0.10105629, -0.22495103, -0.09846622, 0.969382, 110.805214, 14.768444, 33.879654)
+use_collision = true
+size = Vector3(35, 0.001, 70.41748)
+material = ExtResource("33_irg3d")
 
 [node name="CSGBox3D14" type="CSGBox3D" parent="ground" unique_id=1798773505]
 transform = Transform3D(-4.3490306e-08, -0.10044852, 0.9949423, -4.3907447e-09, 0.9949423, 0.10044852, -1, 0, -4.371139e-08, -0.1195367, 12.404634, 52.63)

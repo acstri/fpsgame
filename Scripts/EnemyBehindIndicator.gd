@@ -6,32 +6,33 @@ class_name EnemyBehindIndicator
 @export var camera_path: NodePath
 
 @export_group("Enemy Detection")
-@export var enemy_group: StringName = &"enemies"
+@export var enemy_group: StringName = &"enemy"
 @export var max_distance: float = 50.0
 @export var max_arrows: int = 6
 
 @export_group("Filter")
 @export var show_only_if_behind: bool = true
 @export var behind_deadzone_deg: float = 10.0
+@export var behind_coverage_deg: float = 240.0 # NEW: 180=half circle, 240/300 wider, 360 full
 
 @export_group("Visual: Radius by Distance")
-@export var radius_close: float = 70.0   # when enemy is close (arrow near center)
-@export var radius_far: float = 120.0    # when enemy is far (arrow farther out)
-@export var radius_curve_power: float = 1.0  # 1=linear, >1 biases toward close radius longer
+@export var radius_close: float = 70.0
+@export var radius_far: float = 120.0
+@export var radius_curve_power: float = 1.0
 
 @export_group("Visual: Arrow Shape")
 @export var arrow_length: float = 18.0
 @export var arrow_width: float = 12.0
 
 @export_group("Visual: Color by Distance")
-@export var color_far: Color = Color(1, 1, 1, 1)   # far = white
-@export var color_close: Color = Color(1, 0, 0, 1) # close = red
-@export var color_curve_power: float = 1.5         # >1 becomes red more aggressively when close
+@export var color_far: Color = Color(1, 1, 1, 1)
+@export var color_close: Color = Color(1, 0, 0, 1)
+@export var color_curve_power: float = 1.5
 
 @export_group("Transparency by Distance")
 @export var alpha_near: float = 1.0
 @export var alpha_far: float = 0.05
-@export var alpha_curve_power: float = 1.5         # >1 fades faster with distance
+@export var alpha_curve_power: float = 1.5
 
 var _player: Node3D
 var _camera: Camera3D
@@ -64,7 +65,16 @@ func _draw() -> void:
 	if enemies.is_empty():
 		return
 
-	var behind_deadzone_rad := deg_to_rad(clampf(behind_deadzone_deg, 0.0, 89.0))
+	var deadzone_rad := deg_to_rad(clampf(behind_deadzone_deg, 0.0, 89.0))
+	var coverage_deg := clampf(behind_coverage_deg, 0.0, 360.0)
+	var half_cov_rad := deg_to_rad(coverage_deg) * 0.5
+
+	# If coverage <= 180, we can keep a deadzone near the left/right boundary.
+	# If coverage > 180, deadzone would incorrectly remove large parts, so disable it.
+	var use_deadzone := coverage_deg <= 180.0
+	var half_cov_effective := half_cov_rad
+	if use_deadzone:
+		half_cov_effective = maxf(0.0, minf(half_cov_rad, PI * 0.5 - deadzone_rad))
 
 	var candidates: Array = []
 	for e in enemies:
@@ -85,11 +95,22 @@ func _draw() -> void:
 		if show_only_if_behind and not is_behind:
 			continue
 
-		# 0 = behind, + right, - left
+		# angle around the "behind axis"
+		# 0 = directly behind, + right, - left
 		var ang := atan2(local.x, local.z)
 
-		if show_only_if_behind and abs(ang) > (PI * 0.5 - behind_deadzone_rad):
-			continue
+		# Coverage filter:
+		# - 180deg -> accepts [-90, +90]
+		# - 240deg -> accepts [-120, +120]
+		# - 360deg -> accepts [-180, +180] (full surround, while still requiring local.z>0 if show_only_if_behind)
+		if show_only_if_behind:
+			if abs(ang) > half_cov_effective:
+				continue
+		else:
+			# If not behind-only, still use coverage as a general clamp around behind-axis.
+			# This keeps behavior predictable and avoids "everything on screen" spam.
+			if abs(ang) > half_cov_rad:
+				continue
 
 		candidates.append([dist, ang])
 
@@ -100,12 +121,9 @@ func _draw() -> void:
 		var dist: float = candidates[i][0]
 		var ang: float = candidates[i][1]
 
-		# Distance normalization:
-		# t=0 close, t=1 far
 		var t_far := clampf(dist / max_distance, 0.0, 1.0)
 		var t_close := 1.0 - t_far
 
-		# Radius: far => larger radius, close => smaller radius
 		var tr := pow(t_far, radius_curve_power)
 		var r := lerpf(radius_close, radius_far, tr)
 
@@ -113,11 +131,9 @@ func _draw() -> void:
 		var dir := Vector2(sin(ang), cos(ang)).normalized()
 		var pos := center + dir * r
 
-		# Alpha: farther => more transparent
 		var ta := pow(t_far, alpha_curve_power)
 		var alpha := lerpf(alpha_near, alpha_far, ta)
 
-		# Color: closer => more red
 		var tc := pow(t_close, color_curve_power)
 		var col := color_far.lerp(color_close, tc)
 		col.a *= clampf(alpha, 0.0, 1.0)
