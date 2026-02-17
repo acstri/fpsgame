@@ -19,9 +19,6 @@ level_label = NodePath("Bottom/LevelLabel")
 xp_bar = NodePath("Bottom/XPBar")
 hurt_flash = NodePath("HurtFlash")
 crosshair = NodePath("Crosshair")
-enemy_group_name = null
-enemy_count_update_hz = null
-xp_show_percent = null
 
 [node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
 layout_mode = 1
@@ -137,3 +134,5 @@ offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("5_c3eba")
 show_frame_time = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=373967351]

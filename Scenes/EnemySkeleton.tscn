@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://hsm6ohs6eyri"]
-
-[ext_resource type="PackedScene" uid="uid://d2b8eaa661f8s" path="res://Assets/Models/Skeleton_GameReady.glb" id="1_7a4qb"]
-
-[node name="Skeleton_GameReady" unique_id=1255711364 instance=ExtResource("1_7a4qb")]

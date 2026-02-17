@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://bba1rtjmy8a0l"]
 
 [ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
+[ext_resource type="AudioStream" uid="uid://do86ididdh3w3" path="res://Assets/Sounds/wind.mp3" id="2_1iu4k"]
 [ext_resource type="Script" uid="uid://dh0j7rct0ytoi" path="res://Scripts/CameraShake.gd" id="2_glx4g"]
+[ext_resource type="Material" uid="uid://c0oklrallvw82" path="res://SpeedLines.tres" id="2_m0x7a"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
 [ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
 [ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/ChainLightning.gd" id="5_nn08x"]
@@ -15,7 +17,14 @@
 [ext_resource type="Script" uid="uid://4nqnf08ubyk7" path="res://Scripts/PlayerSpellSwitch.gd" id="11_1e7my"]
 [ext_resource type="PackedScene" uid="uid://drlshkarpltvq" path="res://Scripts/HandCastAnimator.tscn" id="13_miouo"]
 [ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="14_1iu4k"]
+[ext_resource type="Script" uid="uid://chgxf52cmoucj" path="res://Scripts/FootstepSurfaceSet.gd" id="16_ulo2v"]
+[ext_resource type="Resource" uid="uid://dvsamejkiw6pu" path="res://footsteps_grass.tres" id="17_1iu4k"]
 [ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="19_qidb7"]
+[ext_resource type="Script" uid="uid://dhwxwo6b1usr2" path="res://SpeedLines.gd" id="21_5v66d"]
+[ext_resource type="Script" uid="uid://ct6o1r8a0q85s" path="res://Scenes/HurtFX.gd" id="22_x63xi"]
+[ext_resource type="AudioStream" uid="uid://cpu7rdqoyv3i0" path="res://Assets/Sounds/hurt1.mp3" id="23_70hv0"]
+[ext_resource type="AudioStream" uid="uid://dyhjf7ld2lcty" path="res://Assets/Sounds/hurt2.mp3" id="24_8flut"]
+[ext_resource type="AudioStream" uid="uid://dptqtu8chqrpg" path="res://Assets/Sounds/hurt3.mp3" id="25_u7x0b"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
 albedo_color = Color(0, 0, 1, 1)
@@ -33,8 +42,14 @@ head = NodePath("Head")
 camera = NodePath("Head/WorldCam")
 stats = NodePath("PlayerStats")
 level_system = NodePath("LevelSystem")
-jump_velocity = 7.0
-slide_max_duration = 30.0
+air_accel = 5.0
+max_air_speed = 100.0
+jump_velocity_per_speed = 0.18
+jump_velocity_max_bonus = 4.0
+slide_buffer_time = 0.5
+speed_lines_material = ExtResource("2_m0x7a")
+wind_stream = ExtResource("2_1iu4k")
+wind_bus = "Sfx"
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
 
@@ -95,9 +110,27 @@ script = ExtResource("11_1e7my")
 
 [node name="HandCastAnimator" parent="." unique_id=2019263904 instance=ExtResource("13_miouo")]
 spell_caster_path = NodePath("../SpellCaster")
+anim_player_path = NodePath("")
 
 [node name="FootstepsSfx" type="Node3D" parent="." unique_id=925148658 node_paths=PackedStringArray("character")]
 script = ExtResource("14_1iu4k")
 character = NodePath("..")
+surface_sets = Array[ExtResource("16_ulo2v")]([ExtResource("17_1iu4k")])
 default_step_clips = Array[AudioStream]([ExtResource("19_qidb7")])
 volume_db = 0.0
+
+[node name="SpeedLines" type="ColorRect" parent="." unique_id=1738702982]
+material = ExtResource("2_m0x7a")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("21_5v66d")
+
+[node name="HurtFX" type="Node" parent="." unique_id=467966412 node_paths=PackedStringArray("head", "camera")]
+script = ExtResource("22_x63xi")
+head = NodePath("../Head")
+camera = NodePath("../Head/WorldCam")
+hurt_sounds = Array[AudioStream]([ExtResource("23_70hv0"), ExtResource("24_8flut"), ExtResource("25_u7x0b")])

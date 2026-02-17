@@ -14,7 +14,7 @@ config/name="Auto Mage"
 run/main_scene="uid://djxen2477lpsv"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/mouse_sensitivity=0.003
-config/start_spell_kind="magicmissile"
+config/start_spell_kind="fireball"
 
 [autoload]
 
@@ -118,6 +118,7 @@ grapple={
 [layer_names]
 
 3d_render/layer_1="World"
+3d_render/layer_5="spells"
 3d_render/layer_16="Blood"
 3d_render/layer_20="Viewmodel"
 3d_physics/layer_1="World"

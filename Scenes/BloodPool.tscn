@@ -8,4 +8,4 @@ script = ExtResource("1_yp3il")
 
 [node name="Decal" type="Decal" parent="." unique_id=654741442]
 texture_albedo = ExtResource("1_wmbx1")
-cull_mask = 1048313
+cull_mask = 1048289

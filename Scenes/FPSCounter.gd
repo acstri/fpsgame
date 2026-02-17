@@ -7,10 +7,6 @@ class_name FPSCounter
 var _accum := 0.0
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_preset(Control.PRESET_TOP_LEFT)
-	offset_left = 10
-	offset_top = 10
 	text = "FPS: --"
 
 func _process(delta: float) -> void:

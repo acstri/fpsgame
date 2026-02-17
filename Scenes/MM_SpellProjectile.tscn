@@ -82,10 +82,12 @@ start_speed = 2.0
 turn_rate_deg = 1000.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1626659345]
+layers = 16
 mesh = SubResource("CapsuleMesh_2liid")
 
 [node name="Tracer" type="GPUParticles3D" parent="." unique_id=62759998]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005008653)
+layers = 16
 material_override = SubResource("StandardMaterial3D_l6kp3")
 amount = 50
 preprocess = 2.22

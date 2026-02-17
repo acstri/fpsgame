@@ -4,10 +4,10 @@
 
 [node name="goblin" type="Node3D" unique_id=1002270875]
 
-[node name="goblin" parent="." unique_id=2078510105 instance=ExtResource("1_dl46o")]
+[node name="goblin" parent="." unique_id=1360326188 instance=ExtResource("1_dl46o")]
 transform = Transform3D(150, 0, 0, 0, 150, 0, 0, 0, 150, 0, 0, 0)
 
-[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(2078510105, 608865017) index="0" unique_id=793003939]
+[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(1360326188, 1305455057) index="0" unique_id=655732095]
 bones/0/position = Vector3(0.00964207, 0.0059997067, -0.41972688)
 bones/0/rotation = Quaternion(-0.6602842, 0.059940055, -0.00027178563, 0.74862)
 bones/1/rotation = Quaternion(-0.08401135, 0.012768163, -0.0047063422, 0.9963719)
@@ -40,10 +40,10 @@ bones/45/rotation = Quaternion(-0.30393818, 0.061671726, -0.030115202, 0.9502165
 bones/46/rotation = Quaternion(0.7151473, -0.035324667, -0.015969465, 0.69789785)
 bones/47/rotation = Quaternion(0.23319007, -0.12465672, 0.026226182, 0.9640515)
 
-[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=364845312]
+[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=2107607659]
 layers = 4
 
-[node name="AnimationPlayer" parent="goblin" index="2" unique_id=1817021624]
+[node name="AnimationPlayer" parent="goblin" index="2" unique_id=2131657204]
 autoplay = &"mixamo_com"
 speed_scale = 1.6
 

@@ -2102,6 +2102,17 @@ _subresources={
 "use_external/fallback_path": "res://Assets/Materials/goblin_mat.tres",
 "use_external/path": "uid://b76lpn5rakwrr"
 }
+},
+"meshes": {
+"goblin_goblin_Goblin_Goblin_Mesh_goblin_matmesh": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "",
+"save_to_file/path": ""
+}
 }
 }
 gltf/naming_version=2

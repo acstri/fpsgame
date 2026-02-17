@@ -7,6 +7,7 @@
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_tt5f1")
+game_scene_path = "uid://bou3w56xm8geo"
 play_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/PlayButton")
 options_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/OptionsButton")
 quit_button = NodePath("CanvasLayer/Root/CenterContainer/VBoxContainer/Buttons/QuitButton")

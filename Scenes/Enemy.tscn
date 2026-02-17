@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdmqacb0kdcj6" path="res://Scripts/Enemy.gd" id="1_1f0kj"]
 [ext_resource type="Script" uid="uid://dpexa3r6alfst" path="res://Scripts/EnemHealth.gd" id="1_hghv2"]
-[ext_resource type="PackedScene" uid="uid://dt8qccdvo8d1i" path="res://goblin.tscn" id="2_esfq3"]
+[ext_resource type="PackedScene" uid="uid://cgr4u4hf52yqp" path="res://Assets/Models/goblin.gltf" id="2_ovthj"]
 [ext_resource type="Script" uid="uid://cmxikjcajuyf6" path="res://Scripts/Dropper.gd" id="3_xeo28"]
 [ext_resource type="PackedScene" uid="uid://c0n1udr1xa4i8" path="res://Scenes/XPGem.tscn" id="4_1exfc"]
 [ext_resource type="Script" uid="uid://cl4nwx6vex266" path="res://Scripts/EnemyMeleeDamage.gd" id="4_kpr8r"]
@@ -35,48 +35,57 @@ height = 1.5
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpr8r"]
 radius = 1.0
 
-[node name="Enemy" type="CharacterBody3D" unique_id=949816573 groups=["enemy"]]
+[node name="Enemy" type="CharacterBody3D" unique_id=949816573 node_paths=PackedStringArray("health") groups=["enemy"]]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_1f0kj")
 stop_distance = 1.8
 max_climb_height_above_player = 10.0
-anim_player_path = NodePath("goblin/goblin/AnimationPlayer")
+anim_player_path = NodePath("goblin/AnimationPlayer")
+health = NodePath("EnemyHealth")
 
-[node name="goblin" parent="." unique_id=1002270875 instance=ExtResource("2_esfq3")]
+[node name="goblin" parent="." unique_id=1360326188 instance=ExtResource("2_ovthj")]
+transform = Transform3D(150, 0, 0, 0, 150, 0, 0, 0, 150, 0, 0, 0)
 
-[node name="Skeleton3D" parent="goblin/goblin/Armature" parent_id_path=PackedInt32Array(1002270875, 2078510105, 608865017) index="0" unique_id=793003939]
-bones/0/position = Vector3(0.008547717, 0.0023624303, -0.41372907)
-bones/0/rotation = Quaternion(-0.66352564, 0.046476953, 0.0117739085, 0.7466157)
-bones/1/rotation = Quaternion(-0.08250776, 0.02053057, -0.0049170568, 0.9963668)
-bones/2/rotation = Quaternion(0.08732428, 0.043661598, -0.011384575, 0.9951576)
-bones/3/rotation = Quaternion(0.087317795, 0.04370127, -0.011253281, 0.99515796)
-bones/4/rotation = Quaternion(0.06809974, -0.018809717, -0.012502098, 0.99742293)
-bones/5/rotation = Quaternion(-0.19047225, -0.109586455, 0.01212744, 0.97548145)
-bones/7/rotation = Quaternion(0.4947441, 0.5101795, -0.47865012, 0.5155961)
-bones/8/rotation = Quaternion(0.50918746, 0.06595094, 0.094640814, 0.8528902)
-bones/9/rotation = Quaternion(-0.11868201, 0.28794745, 0.36088192, 0.87907064)
-bones/10/rotation = Quaternion(0.13830115, -0.36355445, 0.1925709, 0.90089816)
-bones/15/rotation = Quaternion(0.27061838, -0.011611647, -0.096870966, 0.9577301)
-bones/16/rotation = Quaternion(0.18286303, -5.700259e-07, -0.01965823, 0.9829419)
-bones/17/rotation = Quaternion(0.09182391, -4.6630697e-07, -0.009871344, 0.99572635)
-bones/19/rotation = Quaternion(0.2699171, -0.01716423, -0.09842714, 0.9576859)
-bones/20/rotation = Quaternion(0.18276039, -3.8160204e-07, -0.021797061, 0.9829158)
-bones/21/rotation = Quaternion(0.09170319, 5.278765e-07, -0.010937237, 0.9957264)
-bones/23/rotation = Quaternion(0.5234723, -0.48048335, 0.45972893, 0.532693)
-bones/24/rotation = Quaternion(0.4911561, -0.0013561249, -0.20310351, 0.8470613)
-bones/25/rotation = Quaternion(-0.072080106, -0.31215972, -0.22563224, 0.9200277)
-bones/26/rotation = Quaternion(0.1578713, 0.42950484, -0.1930078, 0.86795753)
-bones/31/rotation = Quaternion(0.3117889, 0.014160824, 0.09069814, 0.94570667)
-bones/35/rotation = Quaternion(0.31114757, 0.020768048, 0.09287486, 0.94558454)
-bones/39/rotation = Quaternion(0.050280154, 0.32956263, 0.9427848, -0.0041468847)
-bones/40/rotation = Quaternion(-0.4106563, -0.03047958, -0.0018799471, 0.9112787)
-bones/41/rotation = Quaternion(0.6395839, 0.07008474, 0.024469083, 0.7651288)
-bones/42/rotation = Quaternion(0.23278542, 0.11688284, -0.027945638, 0.9650743)
-bones/44/rotation = Quaternion(-0.08525268, 0.09360791, 0.9900629, 0.06119572)
-bones/45/rotation = Quaternion(-0.27194005, 0.04659656, -0.024074653, 0.9608839)
-bones/46/rotation = Quaternion(0.7420396, -0.03345726, -0.011199945, 0.669427)
-bones/47/rotation = Quaternion(0.23942843, -0.12524207, 0.024351208, 0.96249443)
+[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(1360326188, 1305455057) index="0" unique_id=655732095]
+bones/0/position = Vector3(0.00964207, 0.0059997067, -0.41972688)
+bones/0/rotation = Quaternion(-0.6602842, 0.059940055, -0.00027178563, 0.74862)
+bones/1/rotation = Quaternion(-0.08401135, 0.012768163, -0.0047063422, 0.9963719)
+bones/2/rotation = Quaternion(0.08330213, 0.026996395, -0.009086356, 0.9961172)
+bones/3/rotation = Quaternion(0.08331836, 0.027004547, -0.008947542, 0.9961169)
+bones/4/rotation = Quaternion(0.07785399, -0.016193543, -0.009483571, 0.99678814)
+bones/5/rotation = Quaternion(-0.17790586, -0.09131985, -0.0035953969, 0.9797945)
+bones/7/rotation = Quaternion(0.49264282, 0.5113068, -0.46635073, 0.52762234)
+bones/8/rotation = Quaternion(0.5445204, 0.032673717, 0.14611585, 0.82527584)
+bones/9/rotation = Quaternion(-0.10372315, 0.2872446, 0.31539547, 0.8984752)
+bones/10/rotation = Quaternion(0.15208583, -0.315463, 0.16601504, 0.9218417)
+bones/15/rotation = Quaternion(0.21761347, -0.007876869, -0.09171381, 0.97168463)
+bones/16/rotation = Quaternion(0.1829006, -5.8524483e-07, -0.019662276, 0.9829348)
+bones/17/rotation = Quaternion(0.09184284, -4.5263212e-07, -0.0098733865, 0.99572456)
+bones/19/rotation = Quaternion(0.21694116, -0.013510442, -0.09296152, 0.97165436)
+bones/20/rotation = Quaternion(0.18279797, -4.1980238e-07, -0.021801524, 0.9829087)
+bones/21/rotation = Quaternion(0.09172209, 5.7311127e-07, -0.01093951, 0.99572456)
+bones/23/rotation = Quaternion(0.5161694, -0.48926485, 0.47216403, 0.5208168)
+bones/24/rotation = Quaternion(0.5224173, 0.0030188202, -0.16050038, 0.83744293)
+bones/25/rotation = Quaternion(-0.06961109, -0.31179914, -0.2179039, 0.9222004)
+bones/26/rotation = Quaternion(0.17748153, 0.4203853, -0.18880233, 0.8695575)
+bones/31/rotation = Quaternion(0.35595083, 0.017300352, 0.09329365, 0.9296752)
+bones/35/rotation = Quaternion(0.35529026, 0.023795526, 0.0957789, 0.92953163)
+bones/39/rotation = Quaternion(0.061390296, 0.2899175, 0.9550787, 0.0019163218)
+bones/40/rotation = Quaternion(-0.537946, 0.005090654, -5.041581e-05, 0.84296393)
+bones/41/rotation = Quaternion(0.652431, 0.07656595, 0.032177784, 0.7532835)
+bones/42/rotation = Quaternion(0.23286857, 0.11689096, -0.027921047, 0.965054)
+bones/44/rotation = Quaternion(-0.07790132, 0.16858095, 0.98089796, 0.057889856)
+bones/45/rotation = Quaternion(-0.30393818, 0.061671726, -0.030115202, 0.9502165)
+bones/46/rotation = Quaternion(0.7151473, -0.035324667, -0.015969465, 0.69789785)
+bones/47/rotation = Quaternion(0.23319007, -0.12465672, 0.026226182, 0.9640515)
+
+[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=2107607659]
+layers = 4
+
+[node name="AnimationPlayer" parent="goblin" index="2" unique_id=2131657204]
+autoplay = &"mixamo_com"
+speed_scale = 1.6
 
 [node name="Visuals" type="MeshInstance3D" parent="." unique_id=766435993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
@@ -148,4 +157,3 @@ script = ExtResource("21_ovthj")
 enemy_health_path = NodePath("../EnemyHealth")
 
 [editable path="goblin"]
-[editable path="goblin/goblin"]
