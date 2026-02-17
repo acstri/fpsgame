@@ -16,12 +16,12 @@ class_name HUD
 
 # Cooldown UI (optional)
 @export_group("Cooldown UI (optional)")
-@export var cooldown_bar: ProgressBar          # set max=1, value=0..1
-@export var cooldown_label: Label              # e.g. "CD: 0.42s"
+@export var cooldown_bar: ProgressBar
+@export var cooldown_label: Label
 
 # Crosshair (optional)
 @export_group("Crosshair (optional)")
-@export var crosshair: Crosshair               # if null, will try get_node("Crosshair")
+@export var crosshair: Crosshair
 
 # Enemy counter UI (optional)
 @export_group("Enemy Counter (optional)")
@@ -38,79 +38,35 @@ class_name HUD
 
 var _health: PlayerHealth
 var _level_system: LevelSystem
-var _spell_caster: Node
+var _spell_caster: SpellCaster
 var _hurt_tween: Tween
 
 # Enemy count cache
 var _enemy_count_accum := 0.0
 var _last_enemy_count := -1
 
-# Cache to avoid rebuilding strings every frame
-var _last_spell_res_path := ""
-var _last_spell_kind := ""
-var _last_spell_damage := INF
-var _last_spell_cd := INF
-var _last_spell_rng := INF
-var _last_spell_spr := INF
-
 # PaP/Essence cache
 var _last_essence := -1
-var _last_pap_kind := ""
+var _last_pap_kind: StringName = StringName()
 var _last_pap_tier := -999
 var _last_pap_name := ""
 
 func _ready() -> void:
 	_autowire()
-
 	if not _validate_ui():
-		set_process(false)
-		return
-
-	if player == null:
-		push_error("HUD: player not found (assign export or add player to group 'player').")
-		set_process(false)
 		return
 
 	if crosshair == null:
 		crosshair = get_node_or_null("Crosshair") as Crosshair
 
-	_health = _find_child_by_type(player, PlayerHealth) as PlayerHealth
-	if _health == null:
-		_health = player.get_node_or_null("Health") as PlayerHealth
-
-	if _health != null:
-		_health.hp_changed.connect(_on_hp_changed)
-		_on_hp_changed(_health.hp, _health.get_max_hp())
-
-	_level_system = _find_child_by_type(player, LevelSystem) as LevelSystem
-	if _level_system == null:
-		_level_system = player.get_node_or_null("LevelSystem") as LevelSystem
-
-	_spell_caster = player.get_node_or_null("SpellCaster")
-	if _spell_caster == null:
-		_spell_caster = player.get_node_or_null("MagicMissileCaster")
-
-	if _health == null:
-		push_error("HUD: PlayerHealth not found under player.")
-	if _level_system == null:
-		push_error("HUD: LevelSystem not found under player.")
+	_bind_player_refs()
+	_bind_events()
 
 	_refresh_all()
 
-	var events := get_node_or_null("/root/Combat_Events")
-	if events != null and events.has_signal("hurt_flash"):
-		events.hurt_flash.connect(_on_hurt_flash)
-	else:
-		push_warning("HUD: Combat_Events missing or has no hurt_flash signal.")
-
-	# Optional: live update essence without polling
-	var wallet := get_node_or_null("/root/EssenceWallet")
-	if wallet != null and wallet.has_signal("changed"):
-		wallet.changed.connect(_on_essence_changed)
-		_on_essence_changed(wallet.get_amount())
-
 func _process(delta: float) -> void:
-	_refresh_runtime(delta)
+	_refresh_cooldown()
+	_refresh_enemy_count(delta)
 
 func _autowire() -> void:
 	if player != null:
@@ -132,21 +88,69 @@ func _validate_ui() -> bool:
 		ok = false
 	return ok
 
-func _refresh_all() -> void:
-	_refresh_level()
-	_refresh_xp()
-	_refresh_spell()
-	_refresh_cooldown()
-	_refresh_enemy_count(999.0)
-	_refresh_essence()
-	_refresh_pap()
+func _bind_player_refs() -> void:
+	if player == null:
+		push_error("HUD: player not assigned and group 'player' not found.")
+		return
 
-func _refresh_runtime(delta: float) -> void:
-	_refresh_level()
-	_refresh_xp()
-	_refresh_spell()
-	_refresh_cooldown()
-	_refresh_enemy_count(delta)
+	_health = NodeUtil.find_child_by_type(player, PlayerHealth) as PlayerHealth
+	if _health == null:
+		_health = player.get_node_or_null("PlayerHealth") as PlayerHealth
+
+	_level_system = NodeUtil.find_child_by_type(player, LevelSystem) as LevelSystem
+	if _level_system == null:
+		_level_system = player.get_node_or_null("LevelSystem") as LevelSystem
+
+	_spell_caster = player.get_node_or_null("SpellCaster") as SpellCaster
+	if _spell_caster == null:
+		_spell_caster = player.get_node_or_null("MagicMissileCaster") as SpellCaster
+
+	if _health != null:
+		var cb_hp := Callable(self, "_on_hp_changed")
+		if not _health.hp_changed.is_connected(cb_hp):
+			_health.hp_changed.connect(cb_hp)
+		_on_hp_changed(_health.hp, _health.get_max_hp())
+	else:
+		push_error("HUD: PlayerHealth not found under player.")
+
+	if _level_system != null:
+		var cb_xp := Callable(self, "_on_xp_changed")
+		var cb_lv := Callable(self, "_on_level_up")
+
+		if not _level_system.xp_changed.is_connected(cb_xp):
+			_level_system.xp_changed.connect(cb_xp)
+		if not _level_system.level_up.is_connected(cb_lv):
+			_level_system.level_up.connect(cb_lv)
+
+		_on_level_up(_level_system.level)
+		_on_xp_changed(_level_system.xp, _level_system.xp_required)
+	else:
+		push_error("HUD: LevelSystem not found under player.")
+
+	if _spell_caster != null:
+		var cb_sc := Callable(self, "_on_spell_changed")
+		if not _spell_caster.spell_changed.is_connected(cb_sc):
+			_spell_caster.spell_changed.connect(cb_sc)
+		_on_spell_changed(_spell_caster._get_spelldata_kind(), _spell_caster.spell)
+	else:
+		push_warning("HUD: SpellCaster not found under player.")
+
+func _bind_events() -> void:
+	var events := get_node_or_null("/root/Combat_Events")
+	if events != null and events.has_signal("hurt_flash"):
+		events.hurt_flash.connect(_on_hurt_flash)
+
+	var wallet := get_node_or_null("/root/EssenceWallet")
+	if wallet != null and wallet.has_signal("changed"):
+		wallet.changed.connect(_on_essence_changed)
+		_on_essence_changed(wallet.get_amount())
+
+	var pap := get_node_or_null("/root/PackAPunch")
+	if pap != null and pap.has_signal("tier_changed"):
+		pap.tier_changed.connect(_on_pap_tier_changed)
+
+func _refresh_all() -> void:
+	_refresh_spell_panel(_spell_caster.spell if _spell_caster != null else null)
 	_refresh_essence()
 	_refresh_pap()
 
@@ -155,98 +159,49 @@ func _on_hp_changed(current: float, max_hp: float) -> void:
 		return
 	hp_label.text = "HP: %d / %d" % [int(round(current)), int(round(max_hp))]
 
-func _refresh_level() -> void:
-	if _level_system == null or level_label == null:
+func _on_level_up(new_level: int) -> void:
+	if level_label == null:
 		return
-	if "level" in _level_system:
-		level_label.text = "Lv " + str(_level_system.level)
-	else:
-		level_label.text = "Lv"
+	level_label.text = "Lv " + str(new_level)
 
-func _refresh_xp() -> void:
-	if _level_system == null or xp_bar == null:
+func _on_xp_changed(current: int, required: int) -> void:
+	if xp_bar == null:
 		return
-
-	var xp := 0.0
-	var xp_to_next := 1.0
-
-	if "xp" in _level_system:
-		xp = float(_level_system.xp)
-	elif "current_xp" in _level_system:
-		xp = float(_level_system.current_xp)
-
-	if "xp_to_next" in _level_system:
-		xp_to_next = max(1.0, float(_level_system.xp_to_next))
-	elif "xp_required" in _level_system:
-		xp_to_next = max(1.0, float(_level_system.xp_required))
-
-	xp_bar.max_value = xp_to_next
-	xp_bar.value = clamp(xp, 0.0, xp_to_next)
+	xp_bar.max_value = max(1, required)
+	xp_bar.value = clamp(current, 0, required)
 
 	if xp_show_percent and xp_bar.has_method("set_text"):
-		xp_bar.set_text(str(int((xp / xp_to_next) * 100.0)) + "%")
+		var pct := 0.0
+		if required > 0:
+			pct = (float(current) / float(required)) * 100.0
+		xp_bar.set_text(str(int(pct)) + "%")
 
-func _refresh_spell() -> void:
+func _on_spell_changed(_kind: StringName, spell_data: SpellData) -> void:
+	_refresh_spell_panel(spell_data)
+	_refresh_pap()
+
+func _refresh_spell_panel(sd: SpellData) -> void:
 	if spell_label == null and spell_stats_label == null:
 		return
-	if _spell_caster == null or not ("spell" in _spell_caster):
-		_set_spell_texts("", "")
-		return
 
-	var sd: Resource = _spell_caster.spell
 	if sd == null:
 		_set_spell_texts("Spell: (none)", "")
 		return
 
-	var kind := ""
-	var dmg := 0.0
-	var cd := 0.0
-	var rng := 0.0
-	var spr := 0.0
+	var kind := sd.spell_key
+	if kind == StringName():
+		kind = sd.delivery_kind
 
-	if "delivery_kind" in sd:
-		kind = String(sd.delivery_kind)
-	if "damage" in sd:
-		dmg = float(sd.damage)
-	if "cooldown" in sd:
-		cd = float(sd.cooldown)
-	if "spell_range" in sd:
-		rng = float(sd.spell_range)
-	if "spread_deg" in sd:
-		spr = float(sd.spread_deg)
-
-	var res_path := sd.resource_path
-
-	if res_path == _last_spell_res_path \
-	and kind == _last_spell_kind \
-	and is_equal_approx(dmg, _last_spell_damage) \
-	and is_equal_approx(cd, _last_spell_cd) \
-	and is_equal_approx(rng, _last_spell_rng) \
-	and is_equal_approx(spr, _last_spell_spr):
-		return
-
-	_last_spell_res_path = res_path
-	_last_spell_kind = kind
-	_last_spell_damage = dmg
-	_last_spell_cd = cd
-	_last_spell_rng = rng
-	_last_spell_spr = spr
-
-	var title := ""
-	if res_path != "":
-		title = res_path.get_file().get_basename()
-	else:
-		title = kind if kind != "" else "(spell)"
-
+	var title := String(kind) if kind != StringName() else "(spell)"
 	var header := "Spell: " + title
 	var stats_line := "DMG %d | CD %.2f | RNG %d | SPR %.1f" % [
-		int(round(dmg)),
-		cd,
-		int(round(rng)),
-		spr
+		int(round(sd.damage)),
+		sd.cooldown,
+		int(round(sd.spell_range)),
+		sd.spread_deg
 	]
-	if kind != "":
-		stats_line += "  (" + kind + ")"
+	if kind != StringName():
+		stats_line += "  (" + String(kind) + ")"
 
 	_set_spell_texts(header, stats_line)
 
@@ -259,32 +214,19 @@ func _set_spell_texts(header: String, stats_line: String) -> void:
 func _refresh_cooldown() -> void:
 	if cooldown_bar == null and cooldown_label == null and crosshair == null:
 		return
-
 	if _spell_caster == null:
 		_set_cooldown_ui(0.0, 0.0)
 		return
-
-	var left := 0.0
-	var total := 0.0
-
-	if _spell_caster.has_method("get_cooldown_left"):
-		left = float(_spell_caster.call("get_cooldown_left"))
-	if _spell_caster.has_method("get_cooldown_total"):
-		total = float(_spell_caster.call("get_cooldown_total"))
-
-	_set_cooldown_ui(left, total)
+	_set_cooldown_ui(_spell_caster.get_cooldown_left(), _spell_caster.get_cooldown_total())
 
 func _set_cooldown_ui(left: float, total: float) -> void:
 	var ratio := 0.0
 	if total > 0.0001:
 		ratio = 1.0 - clampf(left / total, 0.0, 1.0)
 
-	if crosshair != null:
+	if crosshair != null and is_instance_valid(crosshair):
 		crosshair.set_cooldown_ratio(ratio if left > 0.0 else 0.0)
 
-
-
-	# Existing bar/label (optional)
 	if cooldown_bar != null:
 		cooldown_bar.max_value = 1.0
 		cooldown_bar.value = ratio
@@ -295,10 +237,6 @@ func _set_cooldown_ui(left: float, total: float) -> void:
 			cooldown_label.text = "Ready"
 		else:
 			cooldown_label.text = "CD: %.2fs" % left
-
-	# New: crosshair arc (optional)
-	if crosshair != null and is_instance_valid(crosshair):
-		crosshair.set_cooldown_ratio(ratio)
 
 func _refresh_enemy_count(delta: float) -> void:
 	if enemy_count_label == null:
@@ -312,13 +250,9 @@ func _refresh_enemy_count(delta: float) -> void:
 		return
 	_enemy_count_accum = 0.0
 
-	var tree := get_tree()
-	if tree == null:
-		return
-
 	var n := 0
 	if enemy_group_name != "":
-		n = tree.get_nodes_in_group(enemy_group_name).size()
+		n = get_tree().get_nodes_in_group(enemy_group_name).size()
 
 	if n == _last_enemy_count:
 		return
@@ -331,9 +265,7 @@ func _refresh_essence() -> void:
 
 	var wallet := get_node_or_null("/root/EssenceWallet")
 	if wallet == null:
-		if _last_essence != -2:
-			_last_essence = -2
-			essence_label.text = "Essence: -"
+		essence_label.text = "Essence: -"
 		return
 
 	var v := int(wallet.get_amount())
@@ -345,30 +277,24 @@ func _refresh_essence() -> void:
 func _refresh_pap() -> void:
 	if pap_label == null:
 		return
-	if not Engine.has_singleton("PackAPunch"):
-		if _last_pap_tier != -2:
-			_last_pap_tier = -2
-			pap_label.text = "PaP: -"
+
+	var pap := get_node_or_null("/root/PackAPunch")
+	if pap == null:
+		pap_label.text = "PaP: -"
 		return
 
-	var kind := ""
-	if _spell_caster != null and ("spell" in _spell_caster) and _spell_caster.spell != null:
-		var sd: Resource = _spell_caster.spell
-		if sd.resource_name != "":
-			kind = sd.resource_name.to_lower()
-		elif "spell_key" in sd:
-			kind = String(sd.spell_key)
-		elif "id" in sd:
-			kind = String(sd.id)
+	var kind: StringName = StringName()
+	if _spell_caster != null and _spell_caster.spell != null:
+		kind = _spell_caster.spell.spell_key
+		if kind == StringName():
+			kind = _spell_caster.spell.delivery_kind
 
-	if kind == "":
-		if _last_pap_kind != "__none__":
-			_last_pap_kind = "__none__"
-			pap_label.text = "PaP: (no spell)"
+	if kind == StringName():
+		pap_label.text = "PaP: (no spell)"
 		return
 
-	var tier := int(PackAPunch.get_tier(StringName(kind)))
-	var display_name := String(PackAPunch.get_display_name(StringName(kind)))
+	var tier := int(PackAPunch.get_tier(kind))
+	var display_name := String(PackAPunch.get_display_name(kind))
 
 	if kind == _last_pap_kind and tier == _last_pap_tier and display_name == _last_pap_name:
 		return
@@ -382,20 +308,14 @@ func _on_essence_changed(_new_amount: int) -> void:
 	_last_essence = -1
 	_refresh_essence()
 
-func _find_child_by_type(root: Node, t: Variant) -> Node:
-	for c in root.get_children():
-		if is_instance_of(c, t):
-			return c
-		var deep := _find_child_by_type(c, t)
-		if deep != null:
-			return deep
-	return null
+func _on_pap_tier_changed(_kind: StringName, _new_tier: int) -> void:
+	_last_pap_tier = -999
+	_refresh_pap()
 
 func _on_hurt_flash(is_player: bool) -> void:
 	if not is_player:
 		return
 	if hurt_flash == null:
-		push_warning("HUD: hurt_flash ColorRect not assigned.")
 		return
 
 	if _hurt_tween != null and is_instance_valid(_hurt_tween):

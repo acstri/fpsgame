@@ -64,11 +64,10 @@ func apply_damage(amount: float) -> void:
 
 	hp = maxf(0.0, hp - amount)
 	_invuln = invuln_time
-	
+
 	var events := get_node_or_null("/root/Combat_Events")
 	if events != null and events.has_signal("hurt_flash"):
 		events.emit_signal("hurt_flash", true)
-
 
 	var mx := get_max_hp()
 	hp_changed.emit(hp, mx)
@@ -89,12 +88,10 @@ func heal(amount: float) -> void:
 		hp_changed.emit(hp, mx)
 
 func get_max_hp() -> float:
-	# base_max_hp scaled by stats
 	var mult := stats.max_hp_mult if stats != null else 1.0
 	return maxf(1.0, base_max_hp * mult)
 
 func _on_stats_changed() -> void:
-	# When max HP changes, clamp current HP and update HUD
 	var mx := get_max_hp()
 	if mx != _max_hp_cached:
 		_max_hp_cached = mx
@@ -109,15 +106,6 @@ func _autowire() -> void:
 	if owner_node == null:
 		return
 
-	stats = _find_child_by_type(owner_node, PlayerStats) as PlayerStats
+	stats = NodeUtil.find_child_by_type(owner_node, PlayerStats) as PlayerStats
 	if stats == null:
 		stats = owner_node.get_node_or_null("PlayerStats") as PlayerStats
-
-func _find_child_by_type(root: Node, t: Variant) -> Node:
-	for c in root.get_children():
-		if is_instance_of(c, t):
-			return c
-		var deep := _find_child_by_type(c, t)
-		if deep != null:
-			return deep
-	return null

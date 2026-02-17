@@ -2,6 +2,7 @@ extends Node
 class_name SpellCaster
 
 signal spell_cast(kind: StringName, spell_data: SpellData)
+signal spell_changed(kind: StringName, spell_data: SpellData)
 
 @export_group("Spell Nodes (optional overrides)")
 @export var chainlightning: ChainLightning
@@ -28,7 +29,7 @@ var _cd_left := 0.0
 var _cd_total := 0.0
 var _ready_ok := false
 
-# Cached implementation refs (never nulled)
+# Cached implementation refs (never nulled unless missing)
 var _impl_chain: ChainLightning
 var _impl_fireball: FireballSpell
 var _impl_magicmissile: MagicMissile
@@ -53,7 +54,9 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 
+	_normalize_spelldata_identity(spell)
 	_ensure_spelldata_kind_is_valid()
+	spell_changed.emit(_get_spelldata_kind(), spell)
 
 func _physics_process(delta: float) -> void:
 	if not _ready_ok:
@@ -73,7 +76,9 @@ func set_spell(new_spell: SpellData) -> void:
 	if new_spell == null:
 		return
 	spell = new_spell
+	_normalize_spelldata_identity(spell)
 	_ensure_spelldata_kind_is_valid()
+	spell_changed.emit(_get_spelldata_kind(), spell)
 
 func set_spell_by_kind(kind: StringName) -> void:
 	if not allow_runtime_switching:
@@ -102,6 +107,10 @@ func cycle_spell() -> void:
 		if sd != null:
 			set_spell(sd)
 			return
+
+# Optional convenience for other scripts
+func get_current_spelldata() -> SpellData:
+	return spell
 
 # -------------------------
 # Casting
@@ -180,9 +189,26 @@ func _first_available_spelldata() -> SpellData:
 func _get_spelldata_kind() -> StringName:
 	if spell == null:
 		return StringName()
-	if "delivery_kind" in spell:
+
+	# Primary: spell_key
+	if spell.spell_key != StringName():
+		return spell.spell_key
+
+	# Temporary compatibility: delivery_kind
+	if spell.delivery_kind != StringName():
 		return spell.delivery_kind
+
 	return StringName()
+
+func _normalize_spelldata_identity(sd: SpellData) -> void:
+	if sd == null:
+		return
+
+	# Keep both fields aligned for compatibility; prefer spell_key.
+	if sd.spell_key == StringName() and sd.delivery_kind != StringName():
+		sd.spell_key = sd.delivery_kind
+	elif sd.delivery_kind == StringName() and sd.spell_key != StringName():
+		sd.delivery_kind = sd.spell_key
 
 func _ensure_spelldata_kind_is_valid() -> void:
 	if spell == null:
@@ -190,11 +216,11 @@ func _ensure_spelldata_kind_is_valid() -> void:
 
 	var kind := _get_spelldata_kind()
 	if kind == StringName():
-		push_warning("SpellCaster: SpellData.delivery_kind is empty on %s" % spell.resource_path)
+		push_warning("SpellCaster: SpellData spell_key/delivery_kind is empty on %s" % spell.resource_path)
 		return
 
 	if _get_impl_from_spelldata() == null:
-		push_warning("SpellCaster: SpellData.delivery_kind '%s' has no matching implementation node." % String(kind))
+		push_warning("SpellCaster: SpellData kind '%s' has no matching implementation node." % String(kind))
 
 func _get_impl_from_spelldata() -> Node:
 	var kind := _get_spelldata_kind()
@@ -206,7 +232,7 @@ func _get_impl_from_spelldata() -> Node:
 		&"magicmissile":
 			return _impl_magicmissile
 		_:
-			push_warning("SpellCaster: unknown SpellData.delivery_kind '%s' (expected: chainlightning/fireball/magicmissile)" % String(kind))
+			push_warning("SpellCaster: unknown spell kind '%s' (expected: chainlightning/fireball/magicmissile)" % String(kind))
 			return null
 
 # -------------------------
@@ -264,13 +290,13 @@ func _autowire() -> void:
 	var owner_node := get_owner()
 
 	if stats == null and owner_node != null:
-		stats = _find_child_by_type(owner_node, PlayerStats) as PlayerStats
+		stats = NodeUtil.find_child_by_type(owner_node, PlayerStats) as PlayerStats
 		if stats == null:
 			stats = owner_node.get_node_or_null("PlayerStats") as PlayerStats
 
 	if camera == null:
 		if owner_node != null:
-			camera = _find_child_by_type(owner_node, Camera3D) as Camera3D
+			camera = NodeUtil.find_child_by_type(owner_node, Camera3D) as Camera3D
 		if camera == null:
 			camera = get_viewport().get_camera_3d()
 
@@ -307,12 +333,3 @@ func _validate_refs() -> bool:
 		ok = false
 
 	return ok
-
-func _find_child_by_type(root: Node, t: Variant) -> Node:
-	for c in root.get_children():
-		if is_instance_of(c, t):
-			return c
-		var deep := _find_child_by_type(c, t)
-		if deep != null:
-			return deep
-	return null

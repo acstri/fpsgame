@@ -31,7 +31,6 @@ func can_upgrade(kind: StringName) -> bool:
 
 func get_next_cost(kind: StringName) -> int:
 	var t := get_tier(kind)
-	# t=0 -> upgrading to 1 uses costs[0]
 	if t >= max_tier:
 		return 0
 	var idx = clamp(t, 0, tier_costs.size() - 1)
@@ -53,39 +52,58 @@ func get_display_name(kind: StringName) -> String:
 			return str(arr[t])
 	return "%s T%d" % [String(kind), t]
 
+# New typed API (preferred)
+func apply_upgrade(sd: SpellData) -> SpellData:
+	if sd == null:
+		return null
+
+	# Determine kind from spell_key (fallback to delivery_kind for compatibility)
+	var kind := sd.spell_key
+	if kind == StringName():
+		kind = sd.delivery_kind
+	if kind == StringName():
+		push_warning("PackAPunchService: SpellData has empty spell_key/delivery_kind; cannot apply upgrade.")
+		return sd
+
+	var t := get_tier(kind)
+	var upgraded := sd.duplicate(true) as SpellData
+	if upgraded == null:
+		return sd
+
+	# Keep identity aligned
+	if upgraded.spell_key == StringName() and upgraded.delivery_kind != StringName():
+		upgraded.spell_key = upgraded.delivery_kind
+	elif upgraded.delivery_kind == StringName() and upgraded.spell_key != StringName():
+		upgraded.delivery_kind = upgraded.spell_key
+
+	upgraded.damage = float(upgraded.damage) * _get_arr(damage_mult_by_tier, t, 1.0)
+	upgraded.cooldown = float(upgraded.cooldown) * _get_arr(cooldown_mult_by_tier, t, 1.0)
+	upgraded.spell_range = float(upgraded.spell_range) * _get_arr(range_mult_by_tier, t, 1.0)
+	upgraded.spread_deg = float(upgraded.spread_deg) * _get_arr(spread_mult_by_tier, t, 1.0)
+
+	if typeof(upgraded.extras) != TYPE_DICTIONARY:
+		upgraded.extras = {}
+	upgraded.extras["pap_tier"] = t
+	upgraded.extras["pap_name"] = get_display_name(kind)
+
+	return upgraded
+
+# Back-compat wrapper (kept so older callers still work)
 func apply_upgrade_to_spelldata(kind: StringName, base_data: Resource) -> Resource:
-	# This assumes SpellData is a Resource with fields:
-	# damage, cooldown, range, spread, delivery_kind
-	# and optionally something like extras/meta Dictionary.
 	if base_data == null:
 		return null
 
-	var t := get_tier(kind)
+	var sd := base_data as SpellData
+	if sd != null:
+		# Ensure kind is set on the data if caller provided it.
+		if sd.spell_key == StringName() and kind != StringName():
+			sd.spell_key = kind
+		if sd.delivery_kind == StringName() and kind != StringName():
+			sd.delivery_kind = kind
+		return apply_upgrade(sd)
+
+	# If some non-SpellData resource is passed, keep old behavior minimal:
 	var upgraded := base_data.duplicate(true)
-
-	# Safe field access (no hard dependency if you rename fields)
-	if upgraded.has_method("set"):
-		# damage
-		if _has_prop(upgraded, "damage"):
-			upgraded.damage = float(upgraded.damage) * _get_arr(damage_mult_by_tier, t, 1.0)
-		# cooldown (multiply by <1 to reduce cooldown)
-		if _has_prop(upgraded, "cooldown"):
-			upgraded.cooldown = float(upgraded.cooldown) * _get_arr(cooldown_mult_by_tier, t, 1.0)
-		# range
-		if _has_prop(upgraded, "range"):
-			upgraded.range = float(upgraded.range) * _get_arr(range_mult_by_tier, t, 1.0)
-		# spread
-		if _has_prop(upgraded, "spread"):
-			upgraded.spread = float(upgraded.spread) * _get_arr(spread_mult_by_tier, t, 1.0)
-
-	# Optional metadata (only if your SpellData has extras/meta)
-	if _has_prop(upgraded, "extras") and typeof(upgraded.extras) == TYPE_DICTIONARY:
-		upgraded.extras["pap_tier"] = t
-		upgraded.extras["pap_name"] = get_display_name(kind)
-	elif _has_prop(upgraded, "meta") and typeof(upgraded.meta) == TYPE_DICTIONARY:
-		upgraded.meta["pap_tier"] = t
-		upgraded.meta["pap_name"] = get_display_name(kind)
-
 	return upgraded
 
 func _get_arr(arr: Array, tier: int, fallback) -> Variant:
@@ -93,15 +111,7 @@ func _get_arr(arr: Array, tier: int, fallback) -> Variant:
 		return arr[tier]
 	return fallback
 
-func _has_prop(obj: Object, prop: StringName) -> bool:
-	# Works for Resources too
-	for p in obj.get_property_list():
-		if StringName(p.name) == prop:
-			return true
-	return false
-	
 func reset_run() -> void:
 	_tier_by_kind.clear()
-	# optional: notify listeners that tiers are back to 0
 	for kind in name_by_kind.keys():
 		tier_changed.emit(kind, 0)

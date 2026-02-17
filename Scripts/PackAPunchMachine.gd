@@ -11,7 +11,6 @@ class_name PackAPunchMachine
 @export var player_path: NodePath = ^"../Player"
 @export var prompt_label_path: NodePath = ^"PromptLabel3D"
 
-
 var _player: Node = null
 var _prompt: Node = null
 var _in_range := false
@@ -48,9 +47,16 @@ func _try_pack_a_punch() -> void:
 		_flash("SpellCaster not found", 1.0)
 		return
 
-	var kind := _get_current_spell_kind(spell_caster)
-	if kind == &"":
+	var sd := spell_caster.spell
+	if sd == null:
 		_flash("No spell equipped", 1.0)
+		return
+
+	var kind := sd.spell_key
+	if kind == StringName():
+		kind = sd.delivery_kind
+	if kind == StringName():
+		_flash("Spell missing spell_key", 1.0)
 		return
 
 	if not PackAPunch.can_upgrade(kind):
@@ -66,32 +72,30 @@ func _try_pack_a_punch() -> void:
 		_flash(fail_text + " (" + str(cost) + ")", 1.0)
 		return
 
-
 	PackAPunch.upgrade(kind)
 
-	_apply_upgraded_spelldata_to_slot(spell_caster, kind)
+	# Apply upgraded SpellData and also update the matching slot so switching doesn't revert.
+	var upgraded := PackAPunch.apply_upgrade(sd) as SpellData
+	if upgraded == null:
+		_flash("Upgrade failed", 1.0)
+		return
+
+	_apply_upgraded_spelldata_to_slots(spell_caster, kind, upgraded)
+	spell_caster.set_spell(upgraded)
 
 	_flash("Upgraded to " + PackAPunch.get_display_name(kind), 1.25)
 
-func _apply_upgraded_spelldata_to_slot(spell_caster: Object, kind: StringName) -> void:
-	if spell_caster == null:
-		return
-
-	if not _has_prop(spell_caster, &"spell"):
-		return
-
-	var current_sd: Resource = spell_caster.get("spell")
-	if current_sd == null:
-		return
-
-	var upgraded := PackAPunch.apply_upgrade_to_spelldata(kind, current_sd)
-	spell_caster.set("spell", upgraded)
-
-
-	# If SpellCaster uses the slot resources as authoritative, it should pick this up on next switch.
-	# If it caches current spell internally, refresh if such a method exists (no refactor required).
-	if spell_caster.has_method("refresh_current_spelldata"):
-		spell_caster.call("refresh_current_spelldata")
+func _apply_upgraded_spelldata_to_slots(spell_caster: SpellCaster, kind: StringName, upgraded: SpellData) -> void:
+	# Keep the authored SpellData slot in sync so cycling spells doesn't revert.
+	match kind:
+		&"fireball":
+			spell_caster.spell_fireball = upgraded
+		&"chainlightning":
+			spell_caster.spell_chainlightning = upgraded
+		&"magicmissile":
+			spell_caster.spell_magicmissile = upgraded
+		_:
+			pass
 
 func _update_prompt_default() -> void:
 	if _prompt == null:
@@ -107,9 +111,16 @@ func _update_prompt_default() -> void:
 		_set_prompt_text(prompt_text)
 		return
 
-	var kind := _get_current_spell_kind(spell_caster)
-	if kind == &"":
+	var sd := spell_caster.spell
+	if sd == null:
 		_set_prompt_text(prompt_text + "\n(No spell equipped)")
+		return
+
+	var kind := sd.spell_key
+	if kind == StringName():
+		kind = sd.delivery_kind
+	if kind == StringName():
+		_set_prompt_text(prompt_text + "\n(Spell missing spell_key)")
 		return
 
 	var t := PackAPunch.get_tier(kind)
@@ -150,51 +161,10 @@ func _set_prompt_text(t: String) -> void:
 		(_prompt as Label3D).text = t
 	elif _prompt.has_method("set_text"):
 		_prompt.call("set_text", t)
-	elif _has_prop(_prompt, &"text"):
+	elif "text" in _prompt:
 		_prompt.set("text", t)
 
-func _find_spell_caster(player: Node) -> Object:
+func _find_spell_caster(player: Node) -> SpellCaster:
 	if player == null:
 		return null
-	return player.get_node_or_null("SpellCaster")
-
-func _get_current_spell_kind(spell_caster: Object) -> StringName:
-	# Your HUD uses: if _spell_caster != null and ("spell" in _spell_caster): sd = _spell_caster.spell
-	if spell_caster == null:
-		return &""
-
-	if _has_prop(spell_caster, &"spell"):
-		var sd: Resource = spell_caster.get("spell")
-		return _kind_from_spelldata(sd)
-
-	if spell_caster.has_method("get_current_spelldata"):
-		var sd2 = spell_caster.call("get_current_spelldata")
-		return _kind_from_spelldata(sd2)
-
-	return &""
-
-func _kind_from_spelldata(sd: Variant) -> StringName:
-	if sd == null:
-		return &""
-	if sd is Resource:
-		var r := sd as Resource
-
-		# Recommended: set SpellData.resource_name to "fireball"/"chainlightning"/"magicmissile"
-		if r.resource_name != "":
-			return StringName(r.resource_name.to_lower())
-
-		# fallback identifiers if you have them
-		if _has_prop(r, &"spell_key"):
-			return StringName(str(r.get("spell_key")).to_lower())
-		if _has_prop(r, &"id"):
-			return StringName(str(r.get("id")).to_lower())
-
-	return &""
-
-func _has_prop(obj: Object, prop: StringName) -> bool:
-	if obj == null:
-		return false
-	for p in obj.get_property_list():
-		if StringName(p.name) == prop:
-			return true
-	return false
+	return player.get_node_or_null("SpellCaster") as SpellCaster

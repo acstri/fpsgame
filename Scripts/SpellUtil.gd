@@ -20,46 +20,25 @@ static func apply_spread(direction: Vector3, degrees: float) -> Vector3:
 	var b: Basis = Basis.looking_at(direction.normalized(), Vector3.UP)
 	return (b * Vector3(x, y, -z)).normalized()
 
-
 static func apply_damage_from_hit(hit: Dictionary, amount: float, is_crit: bool = false, is_player_target: bool = false) -> bool:
 	var collider: Object = hit.get("collider")
 	if collider == null:
 		return false
 
-
-	# Preferred: Enemy has child node "Health" with apply_damage(amount, hit)
+	# Contract: damageable targets expose a child node named "Health" with apply_damage(amount, hit?)
 	if collider is Node:
 		var n := collider as Node
 
-		var h := n.get_node_or_null("Health")
-		if h != null and h.has_method("apply_damage"):
-			_call_apply_damage(h, amount, hit)
-			_emit_damage_number(hit, amount, is_crit, is_player_target)
-			return true
+		var health := n.get_node_or_null("Health")
+		if health == null and n.get_parent() != null:
+			health = n.get_parent().get_node_or_null("Health")
 
-		var p := n.get_parent()
-		if p != null:
-			var hp := p.get_node_or_null("Health")
-			if hp != null and hp.has_method("apply_damage"):
-				_call_apply_damage(hp, amount, hit)
-				_emit_damage_number(hit, amount, is_crit, is_player_target)
-				return true
-
-	# Fallback: direct apply_damage on collider/parent if present
-	if collider.has_method("apply_damage"):
-		_call_apply_damage(collider, amount, hit)
-		_emit_damage_number(hit, amount, is_crit, is_player_target)
-		return true
-
-	if collider is Node:
-		var parent := (collider as Node).get_parent()
-		if parent != null and parent.has_method("apply_damage"):
-			_call_apply_damage(parent, amount, hit)
+		if health != null and health.has_method("apply_damage"):
+			_call_apply_damage(health, amount, hit)
 			_emit_damage_number(hit, amount, is_crit, is_player_target)
 			return true
 
 	return false
-
 
 static func _call_apply_damage(obj: Object, amount: float, hit: Dictionary) -> void:
 	var arg_count := _apply_damage_arg_count(obj)
@@ -67,7 +46,6 @@ static func _call_apply_damage(obj: Object, amount: float, hit: Dictionary) -> v
 		obj.callv("apply_damage", [amount, hit])
 	else:
 		obj.callv("apply_damage", [amount])
-
 
 static func _apply_damage_arg_count(obj: Object) -> int:
 	for m in obj.get_method_list():
@@ -77,7 +55,6 @@ static func _apply_damage_arg_count(obj: Object) -> int:
 	return 1
 
 static func _emit_damage_number(hit: Dictionary, amount: float, is_crit: bool, is_player_target: bool) -> void:
-	# Safe lookup: does not require CombatEvents to exist at compile time.
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree == null:
 		return

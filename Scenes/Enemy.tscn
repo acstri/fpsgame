@@ -42,12 +42,12 @@ script = ExtResource("1_1f0kj")
 stop_distance = 1.8
 max_climb_height_above_player = 10.0
 anim_player_path = NodePath("goblin/AnimationPlayer")
-health = NodePath("EnemyHealth")
+health = NodePath("Health")
 
 [node name="goblin" parent="." unique_id=1360326188 instance=ExtResource("2_ovthj")]
 transform = Transform3D(150, 0, 0, 0, 150, 0, 0, 0, 150, 0, 0, 0)
 
-[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(1360326188, 1305455057) index="0" unique_id=655732095]
+[node name="Skeleton3D" parent="goblin/Armature" parent_id_path=PackedInt32Array(1360326188, 74974364) index="0" unique_id=349092908]
 bones/0/position = Vector3(0.00964207, 0.0059997067, -0.41972688)
 bones/0/rotation = Quaternion(-0.6602842, 0.059940055, -0.00027178563, 0.74862)
 bones/1/rotation = Quaternion(-0.08401135, 0.012768163, -0.0047063422, 0.9963719)
@@ -80,10 +80,10 @@ bones/45/rotation = Quaternion(-0.30393818, 0.061671726, -0.030115202, 0.9502165
 bones/46/rotation = Quaternion(0.7151473, -0.035324667, -0.015969465, 0.69789785)
 bones/47/rotation = Quaternion(0.23319007, -0.12465672, 0.026226182, 0.9640515)
 
-[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=2107607659]
+[node name="Goblin_Goblin_Mesh_goblin_mat" parent="goblin/Armature/Skeleton3D" index="0" unique_id=2123227863]
 layers = 4
 
-[node name="AnimationPlayer" parent="goblin" index="2" unique_id=2131657204]
+[node name="AnimationPlayer" parent="goblin" index="2" unique_id=334807466]
 autoplay = &"mixamo_com"
 speed_scale = 1.6
 
@@ -98,7 +98,7 @@ mesh = SubResource("CapsuleMesh_0o0ue")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03577113, 0.82325375, 0.24271095)
 shape = SubResource("CapsuleShape3D_287tu")
 
-[node name="EnemyHealth" type="Node" parent="." unique_id=1467536774]
+[node name="Health" type="Node" parent="." unique_id=1467536774]
 script = ExtResource("1_hghv2")
 
 [node name="Dropper" type="Node" parent="." unique_id=2066269416]
@@ -119,7 +119,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="EnemyHurtFlash" type="Node" parent="." unique_id=2058248785 node_paths=PackedStringArray("health", "meshes")]
 script = ExtResource("6_mo1ky")
-health = NodePath("../EnemyHealth")
+health = NodePath("../Health")
 meshes = [null]
 
 [node name="VariantApplier" type="Node" parent="." unique_id=1189141985]
@@ -129,7 +129,7 @@ tag_height = 2.0
 
 [node name="EnemyDeathGore" type="Node3D" parent="." unique_id=1816470462 node_paths=PackedStringArray("health")]
 script = ExtResource("11_6s1gy")
-health = NodePath("../EnemyHealth")
+health = NodePath("../Health")
 chunk_scene = ExtResource("12_27ry8")
 pool_scene = ExtResource("13_esfq3")
 chunk_count = 3
@@ -139,7 +139,7 @@ pool_spawn_radius = 1.0
 
 [node name="EnemyDeathSfx" type="Node3D" parent="." unique_id=1099249628 node_paths=PackedStringArray("health")]
 script = ExtResource("15_qlal6")
-health = NodePath("../EnemyHealth")
+health = NodePath("../Health")
 death_clips = Array[AudioStream]([ExtResource("16_5yix0"), ExtResource("17_imorw"), ExtResource("18_0vprv")])
 audio_bus = "Sfx"
 max_distance = 70.0
@@ -154,6 +154,6 @@ max_distance = 70.0
 
 [node name="EssenceReward" type="Node" parent="." unique_id=1648984984]
 script = ExtResource("21_ovthj")
-enemy_health_path = NodePath("../EnemyHealth")
+enemy_health_path = NodePath("../Health")
 
 [editable path="goblin"]

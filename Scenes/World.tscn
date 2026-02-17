@@ -15,7 +15,7 @@
 [ext_resource type="Resource" uid="uid://de6beud2jv2ye" path="res://Scripts/upgrades/data/damage_up.tres" id="8_0ao37"]
 [ext_resource type="Resource" uid="uid://xfgefhjvboio" path="res://Scripts/upgrades/data/jump_vel.tres" id="9_33kev"]
 [ext_resource type="PackedScene" uid="uid://ba768gedrunjg" path="res://Scenes/tower.tscn" id="9_kn06e"]
-[ext_resource type="Resource" uid="uid://icifdnnsrqsh" path="res://magicmissile.tres" id="9_ti1bm"]
+[ext_resource type="Resource" uid="uid://icifdnnsrqsh" path="res://MagicMissile.tres" id="9_ti1bm"]
 [ext_resource type="PackedScene" uid="uid://c8a5s64pbm82q" path="res://Scenes/walls.tscn" id="9_uo7di"]
 [ext_resource type="Resource" uid="uid://etcrpyiheqjb" path="res://Scripts/upgrades/data/crit_chance.tres" id="10_g01fq"]
 [ext_resource type="Resource" uid="uid://serm4imhucch" path="res://Scripts/upgrades/data/life_regen.tres" id="11_0bcf6"]
@@ -112,10 +112,12 @@ all_upgrades = Array[ExtResource("5_r0dna")]([ExtResource("8_0ao37"), ExtResourc
 
 [node name="Canv_HUD" type="CanvasLayer" parent="UI" unique_id=1025217641]
 
-[node name="HUD" parent="UI/Canv_HUD" unique_id=1975167068 node_paths=PackedStringArray("player", "enemy_count_label") instance=ExtResource("1_45d1s")]
+[node name="HUD" parent="UI/Canv_HUD" unique_id=1975167068 node_paths=PackedStringArray("player", "enemy_count_label", "essence_label", "pap_label") instance=ExtResource("1_45d1s")]
 mouse_filter = 2
 player = NodePath("../../../Player")
 enemy_count_label = NodePath("EnemyCountLabel")
+essence_label = NodePath("EssenceLabel")
+pap_label = NodePath("PAPLabel")
 
 [node name="EnemyIndicator" parent="UI/Canv_HUD/HUD" index="8" unique_id=1935920187]
 player_path = NodePath("../../../../Player")
@@ -211,7 +213,7 @@ render_target_update_mode = 4
 [node name="ViewCam" parent="Player/HandsOverlay/SubViewportContainer/SubViewport" unique_id=1319821979 instance=ExtResource("11_7yo87")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -11.691832)
 
-[node name="Skeleton3D" parent="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms/arms_armature" parent_id_path=PackedInt32Array(1319821979, 1269669271, 962156207) index="0" unique_id=511549231]
+[node name="Skeleton3D" parent="Player/HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms/arms_armature" parent_id_path=PackedInt32Array(1319821979, 1269669271, 731591147) index="0" unique_id=2017600432]
 bones/3/rotation = Quaternion(-0.026996087, 0.75851554, -0.64777946, -0.06562864)
 bones/4/rotation = Quaternion(0.028665742, 0.34369487, 0.35906988, 0.86724913)
 bones/6/rotation = Quaternion(0.02162823, -0.7392342, 0.6729616, -0.013702676)
