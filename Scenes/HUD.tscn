@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cgk72w1p81shm" path="res://Assets/Icons/Crosshairs/crosshair_dot.png" id="3_psnte"]
 [ext_resource type="Script" uid="uid://dn6h8h08uxt21" path="res://Scripts/EnemyBehindIndicator.gd" id="4_s3jbq"]
 [ext_resource type="Script" uid="uid://dwtnuml2gwix4" path="res://Scenes/FPSCounter.gd" id="5_c3eba"]
+[ext_resource type="PackedScene" uid="uid://b2vd83os48jst" path="res://Scenes/StatBlock.tscn" id="6_g8s2e"]
 
-[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "hurt_flash", "crosshair")]
+[node name="HUD" type="Control" unique_id=1975167068 node_paths=PackedStringArray("hp_label", "level_label", "xp_bar", "crosshair")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,19 +15,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sd512")
-hp_label = NodePath("TopLeft/HPLabel")
-level_label = NodePath("Bottom/LevelLabel")
-xp_bar = NodePath("Bottom/XPBar")
-hurt_flash = NodePath("HurtFlash")
+hp_label = NodePath("BottomLeft/HPLabel")
+level_label = NodePath("BottomRight/LevelLabel")
+xp_bar = NodePath("BottomRight/XPBar")
 crosshair = NodePath("Crosshair")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=373967351]
+
+[node name="HurtFlash" type="ColorRect" parent="CanvasLayer" unique_id=622573003]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
 
 [node name="TopLeft" type="VBoxContainer" parent="." unique_id=1869544399]
 layout_mode = 1
 offset_right = 40.0
 offset_bottom = 50.0
-
-[node name="HPLabel" type="Label" parent="TopLeft" unique_id=1879003467]
-layout_mode = 2
 
 [node name="SpellLabel" type="Label" parent="TopLeft" unique_id=1274156550]
 visible = false
@@ -36,7 +44,12 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="Bottom" type="VBoxContainer" parent="." unique_id=245589413]
+[node name="FPS" type="Label" parent="TopLeft" unique_id=1752043822]
+layout_mode = 2
+script = ExtResource("5_c3eba")
+show_frame_time = true
+
+[node name="BottomRight" type="VBoxContainer" parent="." unique_id=245589413]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -48,10 +61,22 @@ offset_top = -54.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="XPBar" type="ProgressBar" parent="Bottom" unique_id=1874698629]
+[node name="XPBar" type="ProgressBar" parent="BottomRight" unique_id=1874698629]
 layout_mode = 2
 
-[node name="LevelLabel" type="Label" parent="Bottom" unique_id=2029892286]
+[node name="LevelLabel" type="Label" parent="BottomRight" unique_id=2029892286]
+layout_mode = 2
+
+[node name="BottomLeft" type="VBoxContainer" parent="." unique_id=1498777743]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="HPLabel" type="Label" parent="BottomLeft" unique_id=1879003467]
 layout_mode = 2
 
 [node name="Center" type="VBoxContainer" parent="." unique_id=286431526]
@@ -68,16 +93,6 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HurtFlash" type="ColorRect" parent="." unique_id=1759052652]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(1, 1, 1, 0)
-
 [node name="EnemyCountLabel" type="Label" parent="." unique_id=931882130]
 layout_mode = 1
 anchors_preset = 5
@@ -91,6 +106,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EssenceLabel" type="Label" parent="." unique_id=1770543568]
+visible = false
 layout_mode = 0
 offset_left = -1.0
 offset_top = 592.0
@@ -98,6 +114,7 @@ offset_right = 154.0
 offset_bottom = 618.0
 
 [node name="PAPLabel" type="Label" parent="." unique_id=1135853880]
+visible = false
 layout_mode = 0
 offset_left = 2.0
 offset_top = 563.0
@@ -128,11 +145,5 @@ radius_curve_power = 0.8
 color_curve_power = 1.0
 alpha_curve_power = 1.0
 
-[node name="FPS" type="Label" parent="." unique_id=1752043822]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("5_c3eba")
-show_frame_time = true
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=373967351]
+[node name="StatBlock" parent="." unique_id=1916233769 instance=ExtResource("6_g8s2e")]
+layout_mode = 1
