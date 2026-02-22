@@ -45,12 +45,21 @@ var _sprint_latched := false
 @export var slide_end_speed := 2.0
 @export var slide_cooldown := 0.35
 
+@export_group("Slide Boost Burst")
+# Short initial acceleration burst after slide starts.
+# Adds speed (m/s) along the initial slide direction for a brief duration,
+# capped by slide_burst_max_bonus.
+@export var slide_burst_duration := 0.12
+@export var slide_burst_accel := 30.0
+@export var slide_burst_max_bonus := 4.0
+
 @export_group("Slide Buffer")
 @export var slide_buffer_time := 0.20
 
 @export_group("Slide Ground Stick")
 @export var slide_ground_snap_speed := 16.0
 @export var slide_leave_ground_grace := 0.08
+
 
 @export_group("Slide Slopes")
 @export var slide_slope_accel := 14.0
@@ -69,6 +78,9 @@ var _sprint_latched := false
 @export var speed_lines_max_density := 1.0
 @export var speed_lines_lerp_in := 10.0
 @export var speed_lines_lerp_out := 14.0
+@export_group("Speed Lines (Slide Burst)")
+@export var speed_lines_burst_bonus := 0.35 # extra intensity while burst is active
+@export var speed_lines_burst_lerp := 18.0  # how fast it kicks in/out
 
 @export_group("Wind Loop (no node needed in scene)")
 @export var wind_stream: AudioStream
@@ -79,6 +91,15 @@ var _sprint_latched := false
 @export var wind_max_pitch := 1.15
 @export var wind_lerp := 10.0
 @export var wind_start_threshold := 0.02
+@export_group("Slide Loop (no node needed in scene)")
+@export var slide_loop_stream: AudioStream
+@export var slide_loop_bus := "SFX"
+@export var slide_loop_min_db := -26.0
+@export var slide_loop_max_db := -4.0
+@export var slide_loop_min_pitch := 0.95
+@export var slide_loop_max_pitch := 1.10
+@export var slide_loop_lerp := 14.0
+@export var slide_loop_start_speed := 1.0  # don’t play if barely moving
 
 @export_group("Momentum Carry")
 @export var carry_speed_in_air := true
@@ -94,6 +115,11 @@ var _slide_cd_left := 0.0
 var _slide_buffer_left := 0.0
 var _slide_leave_ground_left := 0.0
 
+# slide burst state
+var _slide_burst_left := 0.0
+var _slide_burst_dir := Vector3.ZERO
+var _slide_burst_added := 0.0
+
 var _head_base_pos: Vector3
 
 var _speed_fx_intensity := 0.0
@@ -101,6 +127,7 @@ var _speed_fx_intensity := 0.0
 var _air_speed_cap := 0.0
 
 var _wind_player: AudioStreamPlayer
+var _slide_loop_player: AudioStreamPlayer
 
 func _ready() -> void:
 	if ProjectSettings.has_setting("application/config/mouse_sensitivity"):
@@ -119,6 +146,7 @@ func _ready() -> void:
 
 	_air_speed_cap = max_air_speed
 	_setup_wind_player()
+	_setup_slide_loop_player()
 
 func _setup_wind_player() -> void:
 	if wind_stream == null:
@@ -131,6 +159,18 @@ func _setup_wind_player() -> void:
 	_wind_player.pitch_scale = wind_min_pitch
 	_wind_player.autoplay = false
 	add_child(_wind_player)
+	
+func _setup_slide_loop_player() -> void:
+	if slide_loop_stream == null:
+		return
+	_slide_loop_player = AudioStreamPlayer.new()
+	_slide_loop_player.name = "_SlideLoop"
+	_slide_loop_player.stream = slide_loop_stream
+	_slide_loop_player.bus = slide_loop_bus
+	_slide_loop_player.volume_db = slide_loop_min_db
+	_slide_loop_player.pitch_scale = slide_loop_min_pitch
+	_slide_loop_player.autoplay = false
+	add_child(_slide_loop_player)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -247,6 +287,7 @@ func _tick_air(delta: float, wish_dir: Vector3, has_move_input: bool, target_spe
 
 func _tick_slide(delta: float, wish_dir: Vector3, on_floor: bool, slide_held: bool) -> void:
 	if not slide_held:
+		_slide_burst_left = 0.0
 		_state = MoveState.GROUND
 		return
 
@@ -257,6 +298,7 @@ func _tick_slide(delta: float, wish_dir: Vector3, on_floor: bool, slide_held: bo
 		_slide_leave_ground_left = slide_leave_ground_grace
 	else:
 		if _slide_leave_ground_left <= 0.0:
+			_slide_burst_left = 0.0
 			_state = MoveState.AIR
 			_capture_air_cap()
 			return
@@ -285,10 +327,26 @@ func _tick_slide(delta: float, wish_dir: Vector3, on_floor: bool, slide_held: bo
 		var steered := hv_dir.slerp(wish_dir, t)
 		hv = steered * hv.length()
 
+	# --- NEW: short initial burst after slide start ---
+	if _slide_burst_left > 0.0:
+		_slide_burst_left = maxf(0.0, _slide_burst_left - delta)
+
+		# pick a direction if missing (e.g. if we started from near-zero hv)
+		if _slide_burst_dir.length_squared() < 0.000001:
+			_slide_burst_dir = hv.normalized() if hv.length_squared() > 0.000001 else wish_dir
+
+		var remaining := maxf(0.0, slide_burst_max_bonus - _slide_burst_added)
+		if remaining > 0.0 and _slide_burst_dir.length_squared() > 0.000001:
+			var add := minf(slide_burst_accel * delta, remaining)
+			hv += _slide_burst_dir.normalized() * add
+			_slide_burst_added += add
+	# -----------------------------------------------
+
 	velocity.x = hv.x
 	velocity.z = hv.z
 
 	if hv.length() <= slide_end_speed:
+		_slide_burst_left = 0.0
 		_state = MoveState.GROUND
 
 func _try_start_slide(on_floor: bool) -> void:
@@ -308,6 +366,11 @@ func _try_start_slide(on_floor: bool) -> void:
 	_slide_cd_left = slide_cooldown
 	_slide_leave_ground_left = slide_leave_ground_grace
 
+	# arm burst using the pre-slide direction
+	_slide_burst_left = slide_burst_duration
+	_slide_burst_added = 0.0
+	_slide_burst_dir = hv.normalized() if speed > 0.0 else Vector3.ZERO
+
 	if speed > 0.0:
 		var dir := hv.normalized()
 		velocity.x = dir.x * speed * slide_boost
@@ -326,6 +389,7 @@ func _do_jump() -> void:
 	var bonus := minf(over * jump_velocity_per_speed, jump_velocity_max_bonus)
 
 	if _state == MoveState.SLIDE:
+		_slide_burst_left = 0.0
 		_state = MoveState.AIR
 	_capture_air_cap()
 
@@ -363,13 +427,30 @@ func _update_speed_fx(delta: float) -> void:
 	var hv := Vector3(velocity.x, 0.0, velocity.z)
 	var speed := hv.length()
 
+	# base intensity from speed
 	var raw := 0.0
 	if speed > speed_lines_normal_speed:
 		raw = inverse_lerp(speed_lines_normal_speed, speed_lines_full_speed, speed)
 	raw = clampf(raw, 0.0, 1.0)
 
-	var lerp_rate := speed_lines_lerp_in if raw > _speed_fx_intensity else speed_lines_lerp_out
-	_speed_fx_intensity = lerpf(_speed_fx_intensity, raw, clampf(lerp_rate * delta, 0.0, 1.0))
+	# extra intensity during slide burst
+	var burst_raw := 0.0
+	if _state == MoveState.SLIDE and _slide_burst_left > 0.0:
+		# scale by remaining burst time (strongest at start)
+		var t := clampf(_slide_burst_left / max(slide_burst_duration, 0.001), 0.0, 1.0)
+		burst_raw = speed_lines_burst_bonus * t
+
+	raw = clampf(raw + burst_raw, 0.0, 1.0)
+
+	# smoother response (separate burst lerp)
+	var target := raw
+	var rate := speed_lines_lerp_in if target > _speed_fx_intensity else speed_lines_lerp_out
+
+	# if burst is active, kick faster
+	if _state == MoveState.SLIDE and _slide_burst_left > 0.0:
+		rate = maxf(rate, speed_lines_burst_lerp)
+
+	_speed_fx_intensity = lerpf(_speed_fx_intensity, target, clampf(rate * delta, 0.0, 1.0))
 
 	if speed_lines_material != null:
 		speed_lines_material.set_shader_parameter(
@@ -377,6 +458,7 @@ func _update_speed_fx(delta: float) -> void:
 			_speed_fx_intensity * speed_lines_max_density
 		)
 
+	# wind stays tied to intensity
 	if _wind_player != null and _wind_player.stream != null:
 		if _speed_fx_intensity > wind_start_threshold:
 			if not _wind_player.playing:
@@ -389,6 +471,37 @@ func _update_speed_fx(delta: float) -> void:
 		var target_pitch := lerpf(wind_min_pitch, wind_max_pitch, _speed_fx_intensity)
 		_wind_player.volume_db = lerpf(_wind_player.volume_db, target_db, clampf(wind_lerp * delta, 0.0, 1.0))
 		_wind_player.pitch_scale = lerpf(_wind_player.pitch_scale, target_pitch, clampf(wind_lerp * delta, 0.0, 1.0))
+
+func _update_slide_loop(delta: float) -> void:
+	if _slide_loop_player == null or _slide_loop_player.stream == null:
+		return
+
+	var hv := Vector3(velocity.x, 0.0, velocity.z)
+	var speed := hv.length()
+
+	var should_play := (_state == MoveState.SLIDE and speed >= slide_loop_start_speed)
+
+	if should_play:
+		if not _slide_loop_player.playing:
+			_slide_loop_player.play()
+
+		# map speed -> 0..1 (reuse your speed lines range for a good feel)
+		var t := 0.0
+		if speed > speed_lines_normal_speed:
+			t = inverse_lerp(speed_lines_normal_speed, speed_lines_full_speed, speed)
+		t = clampf(t, 0.0, 1.0)
+
+		var target_db := lerpf(slide_loop_min_db, slide_loop_max_db, t)
+		var target_pitch := lerpf(slide_loop_min_pitch, slide_loop_max_pitch, t)
+
+		_slide_loop_player.volume_db = lerpf(_slide_loop_player.volume_db, target_db, clampf(slide_loop_lerp * delta, 0.0, 1.0))
+		_slide_loop_player.pitch_scale = lerpf(_slide_loop_player.pitch_scale, target_pitch, clampf(slide_loop_lerp * delta, 0.0, 1.0))
+	else:
+		# fade out then stop
+		_slide_loop_player.volume_db = lerpf(_slide_loop_player.volume_db, slide_loop_min_db, clampf(slide_loop_lerp * delta, 0.0, 1.0))
+		if _slide_loop_player.playing and _slide_loop_player.volume_db <= (slide_loop_min_db + 0.5):
+			_slide_loop_player.stop()
+			_slide_loop_player.pitch_scale = slide_loop_min_pitch
 
 func add_xp(amount: int) -> void:
 	if level_system == null:

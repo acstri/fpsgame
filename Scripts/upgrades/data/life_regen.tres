@@ -8,4 +8,5 @@ title = "Life Regen +"
 description = "Increase your Life Regeneration."
 effect_key = "life_regen_up"
 effect_value = 0.5
+rarity = 1
 metadata/_custom_type_script = "uid://cpsts44t5urjv"

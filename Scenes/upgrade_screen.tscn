@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://8dwo1d2d67qo"]
 
 [ext_resource type="Script" uid="uid://d6epi1rbvicb" path="res://Scripts/upgrades/UpgradeScreen.gd" id="1_o5sws"]
+[ext_resource type="AudioStream" uid="uid://cqbda6qt4huil" path="res://Assets/Sounds/levelup1.mp3" id="2_kfdqr"]
+[ext_resource type="AudioStream" uid="uid://iq401jlybq8b" path="res://Assets/Sounds/levelup2.mp3" id="3_54md0"]
+[ext_resource type="AudioStream" uid="uid://jrti5in6x4ju" path="res://Assets/Sounds/levelup3.mp3" id="4_l53bo"]
+[ext_resource type="Script" uid="uid://ht3xtof7edel" path="res://Scenes/UpgradeChoiceCard.gd" id="5_54md0"]
 
 [node name="UpgradeScreen" type="Control" unique_id=847933536 node_paths=PackedStringArray("choice1", "choice2", "choice3")]
 process_mode = 1
@@ -11,11 +15,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_o5sws")
-choice1 = NodePath("PanelContainer/VBoxContainer/Choice1")
-choice2 = NodePath("PanelContainer/VBoxContainer/Choice2")
-choice3 = NodePath("PanelContainer/VBoxContainer/Choice3")
+choice1 = NodePath("Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1")
+choice2 = NodePath("Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2")
+choice3 = NodePath("Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3")
+min_button_width = 200.0
+level_up_sounds = Array[AudioStream]([ExtResource("2_kfdqr"), ExtResource("3_54md0"), ExtResource("4_l53bo")])
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1590582476]
+[node name="Dimmer" type="ColorRect" parent="." unique_id=966947368]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.31764707)
+
+[node name="Panel" type="PanelContainer" parent="Dimmer" unique_id=456362049]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -23,27 +38,222 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -96.5
-offset_top = -55.5
+offset_top = -53.0
 offset_right = 96.5
-offset_bottom = 55.5
+offset_bottom = 53.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=947493129]
+[node name="VBoxContainer" type="VBoxContainer" parent="Dimmer/Panel" unique_id=147965152]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1781996593]
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/VBoxContainer" unique_id=1781996593]
 layout_mode = 2
 text = "LEVEL UP! 
 
 CHOOSE YOUR UPGRADE"
 horizontal_alignment = 1
 
-[node name="Choice1" type="Button" parent="PanelContainer/VBoxContainer" unique_id=640474229]
+[node name="HintLabel" type="Label" parent="Dimmer/Panel/VBoxContainer" unique_id=1713351192]
 layout_mode = 2
 
-[node name="Choice2" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1484637820]
+[node name="CardsRow" type="HBoxContainer" parent="Dimmer/Panel/VBoxContainer" unique_id=1030292588]
 layout_mode = 2
 
-[node name="Choice3" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1223754337]
+[node name="Card1" type="Control" parent="Dimmer/Panel/VBoxContainer/CardsRow" unique_id=1399501852 node_paths=PackedStringArray("button", "title_label", "desc_label", "icon_rect", "rarity_label", "border_panel", "hold_fill", "sheen_rect")]
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
+script = ExtResource("5_54md0")
+button = NodePath("Button1")
+title_label = NodePath("Button1/Title1")
+desc_label = NodePath("Button1/Desc1")
+icon_rect = NodePath("Button1/Icon1")
+rarity_label = NodePath("Button1/Title1")
+border_panel = NodePath("Button1/Border1")
+hold_fill = NodePath("Button1/HoldFill1")
+sheen_rect = NodePath("Button1/Sheen1")
+
+[node name="Button1" type="Button" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1" unique_id=640474229]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Border1" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=1313432521]
+visible = false
+z_index = -2
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="BG1" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=472732186]
+visible = false
+z_index = -1
+layout_mode = 0
+offset_left = 2.5
+offset_top = 2.5
+offset_right = 197.5
+offset_bottom = 37.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Icon1" type="TextureRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=749482284]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Title1" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=663779492]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Desc1" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=961552191]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Sheen1" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=335654571]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="HoldFill1" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card1/Button1" unique_id=330309893]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Card2" type="Control" parent="Dimmer/Panel/VBoxContainer/CardsRow" unique_id=172638575 node_paths=PackedStringArray("button", "title_label", "desc_label", "icon_rect", "rarity_label", "border_panel", "hold_fill", "sheen_rect")]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+script = ExtResource("5_54md0")
+button = NodePath("Button2")
+title_label = NodePath("Button2/Title2")
+desc_label = NodePath("Button2/Desc2")
+icon_rect = NodePath("Button2/Icon2")
+rarity_label = NodePath("Button2/Title2")
+border_panel = NodePath("Button2/Border2")
+hold_fill = NodePath("Button2/HoldFill2")
+sheen_rect = NodePath("Button2/Sheen2")
+
+[node name="Button2" type="Button" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2" unique_id=313700383]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Border2" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=527209942]
+visible = false
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="BG2" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=1985304062]
+visible = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 2.5
+offset_right = 197.5
+offset_bottom = 37.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Icon2" type="TextureRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=2051580102]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Title2" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=220993170]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Desc2" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=185856881]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Sheen2" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=309840379]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="HoldFill2" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card2/Button2" unique_id=1256527746]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Card3" type="Control" parent="Dimmer/Panel/VBoxContainer/CardsRow" unique_id=257452733 node_paths=PackedStringArray("button", "title_label", "desc_label", "icon_rect", "rarity_label", "border_panel", "hold_fill", "sheen_rect")]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+script = ExtResource("5_54md0")
+button = NodePath("Button3")
+title_label = NodePath("Button3/Title3")
+desc_label = NodePath("Button3/Desc3")
+icon_rect = NodePath("Button3/Icon3")
+rarity_label = NodePath("Button3/Title3")
+border_panel = NodePath("Button3/Border3")
+hold_fill = NodePath("Button3/HoldFill3")
+sheen_rect = NodePath("Button3/Sheen3")
+
+[node name="Button3" type="Button" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3" unique_id=1329806576]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Border3" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=500271734]
+visible = false
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="BG3" type="Panel" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=631287590]
+visible = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 2.5
+offset_right = 197.5
+offset_bottom = 37.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Icon3" type="TextureRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=1143949686]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Title3" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=250528643]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Desc3" type="Label" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=1024237652]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Sheen3" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=1782162330]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="HoldFill3" type="ColorRect" parent="Dimmer/Panel/VBoxContainer/CardsRow/Card3/Button3" unique_id=2127531726]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)

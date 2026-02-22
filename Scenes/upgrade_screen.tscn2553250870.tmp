@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://8dwo1d2d67qo"]
+
+[ext_resource type="Script" uid="uid://d6epi1rbvicb" path="res://Scripts/upgrades/UpgradeScreen.gd" id="1_o5sws"]
+[ext_resource type="AudioStream" uid="uid://cqbda6qt4huil" path="res://Assets/Sounds/levelup1.mp3" id="2_kfdqr"]
+[ext_resource type="AudioStream" uid="uid://iq401jlybq8b" path="res://Assets/Sounds/levelup2.mp3" id="3_54md0"]
+[ext_resource type="AudioStream" uid="uid://jrti5in6x4ju" path="res://Assets/Sounds/levelup3.mp3" id="4_l53bo"]
+
+[node name="UpgradeScreen" type="Control" unique_id=847933536 node_paths=PackedStringArray("choice1", "choice2", "choice3")]
+process_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o5sws")
+choice1 = NodePath("PanelContainer/VBoxContainer/Choice1")
+choice2 = NodePath("PanelContainer/VBoxContainer/Choice2")
+choice3 = NodePath("PanelContainer/VBoxContainer/Choice3")
+hold_seconds = 1.0
+fill_color = Color(0, 0, 0, 0.59607846)
+level_up_sounds = Array[AudioStream]([ExtResource("2_kfdqr"), ExtResource("3_54md0"), ExtResource("4_l53bo")])
+randomize_pitch = null
+pitch_range = null
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1590582476]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.5
+offset_top = -55.5
+offset_right = 96.5
+offset_bottom = 55.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=947493129]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1781996593]
+layout_mode = 2
+text = "LEVEL UP! 
+
+CHOOSE YOUR UPGRADE"
+horizontal_alignment = 1
+
+[node name="Choice1" type="Button" parent="PanelContainer/VBoxContainer" unique_id=640474229]
+layout_mode = 2
+flat = true
+
+[node name="Choice2" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1484637820]
+layout_mode = 2
+flat = true
+
+[node name="Choice3" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1223754337]
+layout_mode = 2
+flat = true

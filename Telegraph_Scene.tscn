@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://cy1157csxkn7g"]
+
+[ext_resource type="Texture2D" uid="uid://ixq2opjma2pq" path="res://Assets/Textures/sigil.png" id="1_brnjn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jg3o"]
+transparency = 1
+albedo_color = Color(2.6034334, 0, 0, 1)
+albedo_texture = ExtResource("1_brnjn")
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 5.21
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_igmsx"]
+material = SubResource("StandardMaterial3D_0jg3o")
+size = Vector2(5, 5)
+
+[sub_resource type="Animation" id="Animation_mplu8"]
+resource_name = "1"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.37),
+"transitions": PackedFloat32Array(0.50000006, 1),
+"update": 0,
+"values": [Vector3(0.195, 0.195, 0.195), Vector3(1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeshInstance3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_brnjn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeshInstance3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0jg3o"]
+_data = {
+&"1": SubResource("Animation_mplu8"),
+&"RESET": SubResource("Animation_brnjn")
+}
+
+[node name="TelegraphScene" type="Node3D" unique_id=145093379]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1368813973]
+mesh = SubResource("PlaneMesh_igmsx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=226700257]
+libraries/ = SubResource("AnimationLibrary_0jg3o")
+autoplay = &"1"

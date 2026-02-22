@@ -1,0 +1,707 @@
+[gd_scene format=3 uid="uid://d4fv3wu1aee7u"]
+
+[ext_resource type="PackedScene" uid="uid://u58lfprpwrgs" path="res://Assets/Models/knight/firstknight.blend" id="1_wytma"]
+
+[node name="firstknight" unique_id=781976969 instance=ExtResource("1_wytma")]
+
+[node name="metarig" parent="." index="0" unique_id=1224594507]
+visible = false
+
+[node name="Skeleton3D" parent="metarig" index="0" unique_id=775509802]
+visible = false
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(782029838) index="0" unique_id=1256283774]
+bones/1/position = Vector3(0.030887868, 0.11014602, 1.0625483)
+bones/1/rotation = Quaternion(0.780555, 0.013719743, 0.07806268, 0.62004197)
+bones/3/rotation = Quaternion(0.080351666, 0.010756447, -0.01752935, 0.9965544)
+bones/4/rotation = Quaternion(0.10311004, 0.035172198, -0.026337665, 0.99369895)
+bones/5/rotation = Quaternion(0.20429078, -0.013561464, 0.010369262, 0.9787614)
+bones/7/rotation = Quaternion(-0.42774817, 0.001996084, 0.07344202, 0.9009072)
+bones/8/rotation = Quaternion(0.54159313, 0.46010303, 0.54193807, -0.4486482)
+bones/9/rotation = Quaternion(-0.3101272, -0.09105763, -0.3644295, 0.8733389)
+bones/9/scale = Vector3(1.0294343, 0.9436333, 1.0294343)
+bones/10/rotation = Quaternion(-9.469505e-07, -0.13801561, 2.9287708e-07, 0.99043006)
+bones/10/scale = Vector3(1.0000235, 0.9999531, 1.0000238)
+bones/11/rotation = Quaternion(-0.017964602, -0.10115769, -0.1862458, 0.97711664)
+bones/11/scale = Vector3(1.0106571, 0.9923182, 0.9988864)
+bones/12/rotation = Quaternion(1.122568e-07, -0.046262104, -9.952181e-07, 0.9989293)
+bones/13/rotation = Quaternion(-0.027011232, -0.045917932, -0.09230126, 0.9943051)
+bones/13/scale = Vector3(0.9757745, 1.0534848, 0.97326195)
+bones/14/rotation = Quaternion(0.5505134, -0.43857244, -0.578175, -0.41267785)
+bones/15/rotation = Quaternion(-0.3512451, 0.08508127, 0.4004687, 0.84202904)
+bones/15/scale = Vector3(1.0222486, 0.9569458, 1.0222487)
+bones/16/rotation = Quaternion(6.062761e-08, 0.15826227, 7.4225795e-07, 0.98739713)
+bones/16/scale = Vector3(1.0000256, 0.9999472, 1.0000262)
+bones/17/rotation = Quaternion(-0.10857414, 0.060199644, 0.011959065, 0.9921919)
+bones/17/scale = Vector3(0.99894077, 0.999223, 1.0022322)
+bones/18/rotation = Quaternion(-4.4953204e-08, 0.07237739, 2.3705984e-07, 0.9973774)
+bones/19/rotation = Quaternion(-0.08128024, 0.07239815, 0.0018812488, 0.9940566)
+bones/19/scale = Vector3(0.9792606, 1.0411991, 0.9809693)
+bones/20/rotation = Quaternion(-0.0073970887, 0.70574397, 0.7084089, -0.005255595)
+bones/21/rotation = Quaternion(-0.0073970673, 0.70574397, 0.7084089, -0.0052554957)
+bones/24/rotation = Quaternion(0.98070973, -0.014478095, 0.00050364144, 0.19493249)
+bones/24/scale = Vector3(1.0460579, 0.9138783, 1.0460583)
+bones/25/rotation = Quaternion(-4.9433527e-08, -0.040892813, 7.6410416e-08, 0.9991635)
+bones/26/rotation = Quaternion(0.3757983, -0.03979176, 0.018996848, 0.9256519)
+bones/26/scale = Vector3(1.0164273, 0.9104487, 1.090477)
+bones/27/rotation = Quaternion(3.2997497e-07, 0.0029098925, -7.717651e-08, 0.99999577)
+bones/28/rotation = Quaternion(-0.62422323, -0.004741494, 0.008497886, 0.7811854)
+bones/28/scale = Vector3(0.94075036, 0.9500435, 1.1223427)
+bones/29/rotation = Quaternion(-0.00015406634, 0.9801344, -0.19833298, -0.0007894265)
+bones/29/scale = Vector3(0.9998385, 1.0002497, 0.9999115)
+bones/30/rotation = Quaternion(0.99417794, -0.07272681, 0.00090522354, 0.079500645)
+bones/30/scale = Vector3(1.0197488, 0.9616427, 1.0197488)
+bones/31/rotation = Quaternion(-4.4808112e-07, 0.09631921, 2.1797533e-08, 0.99535054)
+bones/32/rotation = Quaternion(0.03228585, -0.019735351, -0.002672998, 0.9992802)
+bones/32/scale = Vector3(1.0043535, 0.9911262, 1.0046093)
+bones/33/rotation = Quaternion(2.540575e-07, 0.08364116, -4.998151e-08, 0.99649596)
+bones/34/rotation = Quaternion(-0.58425695, 0.092219085, 0.028023245, 0.80582523)
+bones/34/scale = Vector3(0.9768965, 0.9833934, 1.041933)
+bones/35/rotation = Quaternion(-0.0001974355, 0.98020524, -0.19798274, -0.0007822607)
+bones/35/scale = Vector3(0.999785, 1.0003325, 0.99988216)
+bones/36/position = Vector3(0.5489914, -0.0992973, 1.3480297)
+bones/36/rotation = Quaternion(-0.43490383, 0.028430793, -0.092445135, 0.8952677)
+bones/36/scale = Vector3(0.9999998, 14.25306, 1)
+bones/37/position = Vector3(-0.35327935, -0.3116216, 1.22393)
+bones/37/rotation = Quaternion(-0.41280705, -0.19202459, 0.25331086, 0.85355175)
+bones/37/scale = Vector3(1.0000001, 14.22767, 1)
+bones/38/position = Vector3(0.28893146, -0.028463066, 0.50257075)
+bones/38/rotation = Quaternion(0.71773905, 0.4713317, -0.4693457, 0.2059412)
+bones/38/scale = Vector3(1, 27.632063, 1)
+bones/39/position = Vector3(-0.1958279, 0.065785035, 0.4178091)
+bones/39/rotation = Quaternion(0.89770234, -0.3114373, 0.3095846, -0.03598327)
+bones/39/scale = Vector3(1.0000001, 27.851671, 1)
+bones/41/position = Vector3(0.032105234, 0.01281815, -0.01995349)
+bones/41/rotation = Quaternion(0.06215976, -0.05896665, 0.050713785, 0.9950313)
+bones/45/rotation = Quaternion(0.74104875, 0.0154829025, -0.00059443025, 0.67127246)
+bones/54/rotation = Quaternion(0.97973484, -0.02325344, -0.04371977, 0.19408146)
+bones/54/scale = Vector3(0.9138786, 0.9138796, 0.9138787)
+bones/55/rotation = Quaternion(0.3766244, 0.0010067415, 0.0031156526, 0.9263603)
+bones/55/scale = Vector3(0.96795017, 0.96795064, 0.96794975)
+bones/56/rotation = Quaternion(-0.6253446, -0.004841092, 0.008060655, 0.78029203)
+bones/56/scale = Vector3(1.130469, 1.1304698, 1.1304687)
+bones/57/position = Vector3(-2.1092405e-06, 0.1718059, -7.749291e-05)
+bones/57/rotation = Quaternion(-0.00015980851, 0.98008966, -0.19855374, -0.0007882566)
+bones/61/scale = Vector3(1.1304694, 1.1304682, 1.1304699)
+bones/63/rotation = Quaternion(-7.3132425e-09, -0.002719277, 1.1028285e-08, 0.9999963)
+bones/63/scale = Vector3(1.1304691, 1.130468, 1.13047)
+bones/64/rotation = Quaternion(0.11251824, 0.0055933665, -0.00072713447, 0.99363375)
+bones/65/scale = Vector3(1.094238, 1.0942372, 1.0942383)
+bones/66/rotation = Quaternion(1.05507965e-07, 0.023936626, 4.981979e-08, 0.9997135)
+bones/66/scale = Vector3(1.0942382, 1.0942372, 1.0942384)
+bones/67/rotation = Quaternion(-0.023574265, -0.01972832, 0.0007968077, 0.9995271)
+bones/68/rotation = Quaternion(0.991195, -0.06643157, 0.0769603, 0.0848315)
+bones/68/scale = Vector3(0.96164304, 0.9616433, 0.9616425)
+bones/69/rotation = Quaternion(0.03217498, 0.000135622, -0.0032714468, 0.9994769)
+bones/69/scale = Vector3(0.9913496, 0.9913495, 0.99134934)
+bones/70/rotation = Quaternion(-0.5841463, 0.093362436, 0.028294204, 0.80576426)
+bones/70/scale = Vector3(1.0489621, 1.0489628, 1.0489622)
+bones/71/position = Vector3(1.3018501e-05, 0.17178741, -0.00020024039)
+bones/71/rotation = Quaternion(-0.00015986376, 0.9800898, -0.19855373, -0.00078987377)
+bones/75/scale = Vector3(1.048962, 1.0489619, 1.0489628)
+bones/77/rotation = Quaternion(-7.082185e-09, 0.05163351, 2.66797e-08, 0.99866617)
+bones/77/scale = Vector3(1.0489621, 1.0489622, 1.0489632)
+bones/78/rotation = Quaternion(0.14580171, 0.031723596, 0.025630692, 0.98847294)
+bones/79/scale = Vector3(1.0398879, 1.0398878, 1.0398886)
+bones/80/rotation = Quaternion(3.7392986e-08, -0.03822187, 6.3883348e-09, 0.99926925)
+bones/80/scale = Vector3(1.0398879, 1.0398875, 1.0398885)
+bones/81/rotation = Quaternion(-0.053096656, 0.05800694, 0.0035173048, 0.99689704)
+bones/84/rotation = Quaternion(-0.85078204, -0.012783801, 0.04322856, 0.5235817)
+bones/85/rotation = Quaternion(0.5595027, -0.000603346, 0.0054829596, 0.82881016)
+bones/87/rotation = Quaternion(-0.27356273, -0.010971103, 0.0036577152, 0.96178466)
+bones/88/rotation = Quaternion(-0.00015982635, 0.98008966, -0.19855379, -0.00078824617)
+bones/90/rotation = Quaternion(-0.75880945, 0.017666256, 0.018673504, 0.65080535)
+bones/91/rotation = Quaternion(-0.11492674, -0.039885804, -0.0054457313, 0.992558)
+bones/91/scale = Vector3(0.9138778, 0.9138783, 0.91387755)
+bones/92/rotation = Quaternion(0.37662444, 0.0010067425, 0.003115653, 0.9263603)
+bones/92/scale = Vector3(0.96795017, 0.9679506, 0.9679497)
+bones/93/rotation = Quaternion(0.9807097, -0.014478157, 0.00050365605, 0.19493249)
+bones/97/rotation = Quaternion(-0.80568165, 0.11557054, -0.01381819, 0.5808009)
+bones/98/rotation = Quaternion(0.30936137, 0.05996161, 0.032253057, 0.9485041)
+bones/100/rotation = Quaternion(-0.2592034, 0.06969759, -0.025869213, 0.96295726)
+bones/101/rotation = Quaternion(-0.00015990515, 0.98008966, -0.19855374, -0.00078988104)
+bones/103/rotation = Quaternion(-0.7498191, 0.05071016, 0.048511244, 0.65791065)
+bones/104/rotation = Quaternion(-0.009939348, 0.07601676, 0.0017835897, 0.9970554)
+bones/104/scale = Vector3(0.96164215, 0.96164197, 0.96164143)
+bones/105/rotation = Quaternion(0.032174982, 0.00013562136, -0.0032714475, 0.9994769)
+bones/105/scale = Vector3(0.9913495, 0.99134946, 0.99134934)
+bones/106/rotation = Quaternion(0.9941778, -0.072726846, 0.00090526365, 0.07950065)
+bones/108/rotation = Quaternion(0.9807097, -0.014478113, 0.00050365896, 0.19493252)
+bones/108/scale = Vector3(1.0460591, 0.9138792, 1.0460591)
+bones/109/rotation = Quaternion(0.99417794, -0.072726816, 0.0009052389, 0.079500645)
+bones/109/scale = Vector3(1.0197496, 0.9616434, 1.0197498)
+bones/114/rotation = Quaternion(0.7921823, 0.042283304, 0.0030706096, 0.6088101)
+bones/115/rotation = Quaternion(-0.03373412, -0.010864934, 0.00833273, 0.99933714)
+bones/119/rotation = Quaternion(0.76846796, 0.034960885, -0.0010865665, 0.6389316)
+bones/120/rotation = Quaternion(0.20429075, -0.013561453, 0.010369379, 0.97876143)
+bones/122/rotation = Quaternion(-0.42774823, 0.0019961132, 0.0734421, 0.9009073)
+bones/123/rotation = Quaternion(-0.7834117, -0.042559564, 0.0013633338, 0.6200426)
+bones/124/rotation = Quaternion(0.90267473, 0.024512514, -0.016104499, 0.42932284)
+bones/125/rotation = Quaternion(-0.94533926, -0.05979327, 0.021935714, 0.31980824)
+bones/133/rotation = Quaternion(0.541593, 0.46010318, 0.5419381, -0.44864827)
+bones/134/rotation = Quaternion(0.034375943, 0.5473897, -0.47729057, 0.6865687)
+bones/134/scale = Vector3(0.9436326, 0.9436337, 0.9436332)
+bones/135/rotation = Quaternion(0.18660028, -1.7833791e-08, 3.0650757e-08, 0.9824359)
+bones/135/scale = Vector3(1.0031463, 1.0031465, 1.0031463)
+bones/136/rotation = Quaternion(0.05411895, -0.7960127, -0.079117626, 0.5976415)
+bones/136/scale = Vector3(1.0564103, 1.0564095, 1.0564108)
+bones/139/scale = Vector3(1.0564108, 1.0564096, 1.0564106)
+bones/140/rotation = Quaternion(2.6685314e-08, -0.7710958, -2.4979894e-08, 0.63671917)
+bones/141/rotation = Quaternion(8.6324164e-08, -0.7855722, 2.0248496e-08, 0.6187701)
+bones/141/scale = Vector3(1.0564106, 1.0564096, 1.0564109)
+bones/142/rotation = Quaternion(-0.018604029, -0.023175243, -0.056586325, 0.9979553)
+bones/143/scale = Vector3(1.0597347, 1.0597336, 1.0597343)
+bones/144/rotation = Quaternion(-4.5645066e-08, -0.73678714, 1.4477288e-07, 0.6761248)
+bones/144/scale = Vector3(1.0597345, 1.059734, 1.059735)
+bones/145/rotation = Quaternion(0.013190264, -0.086652584, 0.08979734, 0.9920957)
+bones/148/rotation = Quaternion(-0.4318341, 0.14167832, -0.7486343, 0.48269373)
+bones/149/rotation = Quaternion(-0.10998544, 3.1041447e-05, -0.3841489, 0.9166968)
+bones/151/rotation = Quaternion(3.844741e-08, -1.1936758e-05, 1.2011587e-07, 1)
+bones/152/rotation = Quaternion(-0.29927015, 0.14026923, -0.90993303, 0.25056693)
+bones/153/rotation = Quaternion(-0.07853245, 0.6532139, 0.06840011, 0.7499771)
+bones/153/scale = Vector3(0.9436328, 0.9436334, 0.9436327)
+bones/154/rotation = Quaternion(0.18660025, -1.4963803e-08, 3.1022267e-08, 0.982436)
+bones/154/scale = Vector3(1.0031463, 1.0031465, 1.0031463)
+bones/155/rotation = Quaternion(-0.3101274, -0.09105681, -0.3644299, 0.87333876)
+bones/158/rotation = Quaternion(-0.31012723, -0.091057576, -0.3644295, 0.87333894)
+bones/158/scale = Vector3(1.0294341, 0.94363326, 1.0294342)
+bones/159/rotation = Quaternion(0.55051357, -0.43857247, -0.5781749, -0.41267776)
+bones/160/rotation = Quaternion(0.3028763, -0.7959602, 0.43819454, 0.2875745)
+bones/160/scale = Vector3(0.9569426, 0.9569432, 0.9569425)
+bones/161/rotation = Quaternion(0.10902639, 6.231084e-08, -1.5545073e-08, 0.99403894)
+bones/161/scale = Vector3(1.0020921, 1.002092, 1.0020922)
+bones/162/rotation = Quaternion(-0.00010437472, -0.99563086, -0.08115422, 0.04618826)
+bones/162/scale = Vector3(1.0428133, 1.0428126, 1.0428133)
+bones/165/scale = Vector3(1.0428133, 1.0428125, 1.0428134)
+bones/166/rotation = Quaternion(-1.4183066e-08, 0.9996519, -2.0362345e-09, 0.02638348)
+bones/167/rotation = Quaternion(-5.3092037e-08, -0.99995077, -1.0534754e-07, 0.009925041)
+bones/167/scale = Vector3(1.0428132, 1.0428123, 1.0428132)
+bones/168/rotation = Quaternion(-0.04607034, 0.036082458, -0.0026513592, 0.9982828)
+bones/169/scale = Vector3(1.044995, 1.0449941, 1.0449952)
+bones/170/rotation = Quaternion(6.6183716e-08, 0.9906954, 4.3541e-07, 0.13609798)
+bones/170/scale = Vector3(1.0449944, 1.0449939, 1.0449952)
+bones/171/rotation = Quaternion(0.03266247, 0.049234852, 0.08356418, 0.99474925)
+bones/174/rotation = Quaternion(-0.43130076, -0.10408248, 0.7388977, 0.50712603)
+bones/175/rotation = Quaternion(-0.3336751, 0.08641366, 0.13393962, 0.9291145)
+bones/177/rotation = Quaternion(1.15543415e-07, 1.1678067e-05, -2.6799236e-07, 1)
+bones/178/rotation = Quaternion(-0.38139543, -0.22909161, 0.8587989, 0.25400585)
+bones/179/rotation = Quaternion(-0.014973323, -0.96722335, -0.058731463, 0.2465876)
+bones/179/scale = Vector3(0.9569423, 0.956943, 0.95694214)
+bones/180/rotation = Quaternion(0.10902639, 6.2582856e-08, -6.5213754e-09, 0.99403894)
+bones/180/scale = Vector3(1.0020921, 1.0020921, 1.0020922)
+bones/181/rotation = Quaternion(-0.35124466, 0.08508083, 0.40046918, 0.84202904)
+bones/184/rotation = Quaternion(-0.35124508, 0.08508131, 0.4004687, 0.8420291)
+bones/184/scale = Vector3(1.0222485, 0.95694554, 1.0222487)
+bones/185/rotation = Quaternion(-0.0073971893, 0.705744, 0.70840883, -0.0052556633)
+bones/187/rotation = Quaternion(-0.007397109, 0.705744, 0.70840883, -0.0052555804)
+bones/189/rotation = Quaternion(-0.0073971893, 0.705744, 0.70840883, -0.0052556633)
+bones/190/rotation = Quaternion(-0.007397109, 0.705744, 0.70840883, -0.0052555804)
+bones/191/rotation = Quaternion(0.541593, 0.46010318, 0.5419381, -0.44864827)
+bones/192/rotation = Quaternion(0.55051357, -0.43857247, -0.5781749, -0.41267776)
+bones/195/position = Vector3(-0.39525786, -0.29460177, -0.6169649)
+bones/195/rotation = Quaternion(-0.48439687, 0.23276037, -0.7696142, 0.34478435)
+bones/197/position = Vector3(0.6303008, 0.8952931, -0.24987021)
+bones/197/rotation = Quaternion(-0.46801257, 0.11046016, 0.060533144, 0.8746992)
+bones/200/position = Vector3(0.79051477, -0.41881913, -0.82101506)
+bones/200/rotation = Quaternion(-0.5633126, -0.5369756, 0.5461489, 0.30993158)
+bones/202/position = Vector3(-0.51116735, 0.7616116, 0.0056059957)
+bones/202/rotation = Quaternion(-0.4491114, 0.033908416, 0.14845102, 0.8804042)
+bones/205/position = Vector3(0.070143715, 0.13658519, 0.15415853)
+bones/205/rotation = Quaternion(0.19143824, 0.0017368948, 0.10868104, 0.97546756)
+bones/212/rotation = Quaternion(0.9768068, 0.0001722793, -0.00078593777, -0.21412112)
+bones/215/rotation = Quaternion(3.1763952e-07, -0.01590921, 0.99987346, -7.802596e-09)
+bones/216/position = Vector3(1.0681918, 0.37105724, 0.45026928)
+bones/216/rotation = Quaternion(-0.6238212, 0.013340879, 0.07812832, 0.7775379)
+bones/219/position = Vector3(-0.009856015, 0.107706174, -5.850196e-05)
+bones/219/rotation = Quaternion(-8.503057e-05, -0.0008051783, -0.10358375, 0.9946204)
+bones/226/rotation = Quaternion(0.9768068, 0.00017250815, -0.0007869364, -0.21412112)
+bones/229/rotation = Quaternion(-3.0926196e-07, -0.015909212, 0.99987346, -2.475978e-09)
+bones/230/position = Vector3(-0.6805855, 0.18536341, 0.6596444)
+bones/230/rotation = Quaternion(-0.6238212, 0.013340879, 0.07812832, 0.7775379)
+
+[node name="Cube" parent="Armature/Skeleton3D" index="0" unique_id=1554928544]
+layers = 4
+
+[node name="WGT-rig_spine_fk" parent="." index="2" unique_id=496984109]
+visible = false
+
+[node name="WGT-rig_spine_fk_001" parent="." index="3" unique_id=1837685226]
+visible = false
+
+[node name="WGT-rig_spine_fk_002" parent="." index="4" unique_id=987035670]
+visible = false
+
+[node name="WGT-rig_spine_fk_003" parent="." index="5" unique_id=1128389861]
+visible = false
+
+[node name="WGT-rig_tweak_spine" parent="." index="6" unique_id=1217601732]
+visible = false
+
+[node name="WGT-rig_tweak_spine_001" parent="." index="7" unique_id=792856268]
+visible = false
+
+[node name="WGT-rig_tweak_spine_002" parent="." index="8" unique_id=669530528]
+visible = false
+
+[node name="WGT-rig_tweak_spine_003" parent="." index="9" unique_id=682975045]
+visible = false
+
+[node name="WGT-rig_tweak_spine_004" parent="." index="10" unique_id=1359489055]
+visible = false
+
+[node name="WGT-rig_torso" parent="." index="11" unique_id=842579731]
+visible = false
+
+[node name="WGT-rig_hips" parent="." index="12" unique_id=1743662893]
+visible = false
+
+[node name="WGT-rig_chest" parent="." index="13" unique_id=1477494703]
+visible = false
+
+[node name="WGT-rig_breast_L" parent="." index="14" unique_id=757912502]
+visible = false
+
+[node name="WGT-rig_breast_R" parent="." index="15" unique_id=1224414456]
+visible = false
+
+[node name="WGT-rig_shoulder_L" parent="." index="16" unique_id=1293926960]
+visible = false
+
+[node name="WGT-rig_upper_arm_parent_L" parent="." index="17" unique_id=641945735]
+visible = false
+
+[node name="WGT-rig_upper_arm_fk_L" parent="." index="18" unique_id=763394663]
+visible = false
+
+[node name="WGT-rig_forearm_fk_L" parent="." index="19" unique_id=745257007]
+visible = false
+
+[node name="WGT-rig_hand_fk_L" parent="." index="20" unique_id=2058659810]
+visible = false
+
+[node name="WGT-rig_upper_arm_ik_L" parent="." index="21" unique_id=1388122620]
+visible = false
+
+[node name="WGT-rig_upper_arm_ik_target_L" parent="." index="22" unique_id=1703644831]
+visible = false
+
+[node name="WGT-rig_hand_ik_L" parent="." index="23" unique_id=1153090236]
+visible = false
+
+[node name="WGT-rig_VIS_upper_arm_ik_pole_L" parent="." index="24" unique_id=368464677]
+visible = false
+
+[node name="WGT-rig_upper_arm_tweak_L" parent="." index="25" unique_id=1274513106]
+visible = false
+
+[node name="WGT-rig_upper_arm_tweak_L_001" parent="." index="26" unique_id=174565178]
+visible = false
+
+[node name="WGT-rig_forearm_tweak_L" parent="." index="27" unique_id=877373113]
+visible = false
+
+[node name="WGT-rig_forearm_tweak_L_001" parent="." index="28" unique_id=365011925]
+visible = false
+
+[node name="WGT-rig_hand_tweak_L" parent="." index="29" unique_id=1104198845]
+visible = false
+
+[node name="WGT-rig_shoulder_R" parent="." index="30" unique_id=1431872747]
+visible = false
+
+[node name="WGT-rig_upper_arm_parent_R" parent="." index="31" unique_id=1924157703]
+visible = false
+
+[node name="WGT-rig_upper_arm_fk_R" parent="." index="32" unique_id=1169886491]
+visible = false
+
+[node name="WGT-rig_forearm_fk_R" parent="." index="33" unique_id=1648850677]
+visible = false
+
+[node name="WGT-rig_hand_fk_R" parent="." index="34" unique_id=775643456]
+visible = false
+
+[node name="WGT-rig_upper_arm_ik_R" parent="." index="35" unique_id=797771079]
+visible = false
+
+[node name="WGT-rig_upper_arm_ik_target_R" parent="." index="36" unique_id=1899527420]
+visible = false
+
+[node name="WGT-rig_hand_ik_R" parent="." index="37" unique_id=1097519247]
+visible = false
+
+[node name="WGT-rig_VIS_upper_arm_ik_pole_R" parent="." index="38" unique_id=450838545]
+visible = false
+
+[node name="WGT-rig_upper_arm_tweak_R" parent="." index="39" unique_id=1471180441]
+visible = false
+
+[node name="WGT-rig_upper_arm_tweak_R_001" parent="." index="40" unique_id=934170000]
+visible = false
+
+[node name="WGT-rig_forearm_tweak_R" parent="." index="41" unique_id=1633195279]
+visible = false
+
+[node name="WGT-rig_forearm_tweak_R_001" parent="." index="42" unique_id=489068618]
+visible = false
+
+[node name="WGT-rig_hand_tweak_R" parent="." index="43" unique_id=1905580085]
+visible = false
+
+[node name="WGT-rig_neck" parent="." index="44" unique_id=745066914]
+visible = false
+
+[node name="WGT-rig_head" parent="." index="45" unique_id=1860807083]
+visible = false
+
+[node name="WGT-rig_tweak_spine_005" parent="." index="46" unique_id=606938666]
+visible = false
+
+[node name="WGT-rig_thigh_parent_L" parent="." index="47" unique_id=253918714]
+visible = false
+
+[node name="WGT-rig_thigh_fk_L" parent="." index="48" unique_id=2007333340]
+visible = false
+
+[node name="WGT-rig_shin_fk_L" parent="." index="49" unique_id=562213137]
+visible = false
+
+[node name="WGT-rig_foot_fk_L" parent="." index="50" unique_id=1686150567]
+visible = false
+
+[node name="WGT-rig_toe_fk_L" parent="." index="51" unique_id=99491356]
+visible = false
+
+[node name="WGT-rig_thigh_ik_L" parent="." index="52" unique_id=703722746]
+visible = false
+
+[node name="WGT-rig_thigh_ik_target_L" parent="." index="53" unique_id=826139506]
+visible = false
+
+[node name="WGT-rig_foot_ik_L" parent="." index="54" unique_id=378651708]
+visible = false
+
+[node name="WGT-rig_VIS_thigh_ik_pole_L" parent="." index="55" unique_id=417856473]
+visible = false
+
+[node name="WGT-rig_thigh_tweak_L" parent="." index="56" unique_id=643055631]
+visible = false
+
+[node name="WGT-rig_thigh_tweak_L_001" parent="." index="57" unique_id=1423351526]
+visible = false
+
+[node name="WGT-rig_shin_tweak_L" parent="." index="58" unique_id=2050102557]
+visible = false
+
+[node name="WGT-rig_shin_tweak_L_001" parent="." index="59" unique_id=91370908]
+visible = false
+
+[node name="WGT-rig_foot_tweak_L" parent="." index="60" unique_id=1964873661]
+visible = false
+
+[node name="WGT-rig_foot_spin_ik_L" parent="." index="61" unique_id=1588667285]
+visible = false
+
+[node name="WGT-rig_foot_heel_ik_L" parent="." index="62" unique_id=869491533]
+visible = false
+
+[node name="WGT-rig_toe_ik_L" parent="." index="63" unique_id=1887467503]
+visible = false
+
+[node name="WGT-rig_thigh_parent_R" parent="." index="64" unique_id=1901088931]
+visible = false
+
+[node name="WGT-rig_thigh_fk_R" parent="." index="65" unique_id=1585261967]
+visible = false
+
+[node name="WGT-rig_shin_fk_R" parent="." index="66" unique_id=459779454]
+visible = false
+
+[node name="WGT-rig_foot_fk_R" parent="." index="67" unique_id=1934819773]
+visible = false
+
+[node name="WGT-rig_toe_fk_R" parent="." index="68" unique_id=1643171975]
+visible = false
+
+[node name="WGT-rig_thigh_ik_R" parent="." index="69" unique_id=1288763612]
+visible = false
+
+[node name="WGT-rig_thigh_ik_target_R" parent="." index="70" unique_id=260931980]
+visible = false
+
+[node name="WGT-rig_foot_ik_R" parent="." index="71" unique_id=1858279082]
+visible = false
+
+[node name="WGT-rig_VIS_thigh_ik_pole_R" parent="." index="72" unique_id=256489740]
+visible = false
+
+[node name="WGT-rig_thigh_tweak_R" parent="." index="73" unique_id=827457492]
+visible = false
+
+[node name="WGT-rig_thigh_tweak_R_001" parent="." index="74" unique_id=93279730]
+visible = false
+
+[node name="WGT-rig_shin_tweak_R" parent="." index="75" unique_id=738197377]
+visible = false
+
+[node name="WGT-rig_shin_tweak_R_001" parent="." index="76" unique_id=71992805]
+visible = false
+
+[node name="WGT-rig_foot_tweak_R" parent="." index="77" unique_id=2127787859]
+visible = false
+
+[node name="WGT-rig_foot_spin_ik_R" parent="." index="78" unique_id=1164436167]
+visible = false
+
+[node name="WGT-rig_foot_heel_ik_R" parent="." index="79" unique_id=560963962]
+visible = false
+
+[node name="WGT-rig_toe_ik_R" parent="." index="80" unique_id=459687628]
+visible = false
+
+[node name="WGT-rig_root" parent="." index="81" unique_id=1809554741]
+visible = false
+
+[node name="WGT-Armature_spine_fk" parent="." index="82" unique_id=1756360424]
+visible = false
+
+[node name="WGT-Armature_spine_fk_001" parent="." index="83" unique_id=1577516613]
+visible = false
+
+[node name="WGT-Armature_spine_fk_002" parent="." index="84" unique_id=750592110]
+visible = false
+
+[node name="WGT-Armature_spine_fk_003" parent="." index="85" unique_id=819803207]
+visible = false
+
+[node name="WGT-Armature_tweak_spine" parent="." index="86" unique_id=1106368845]
+visible = false
+
+[node name="WGT-Armature_tweak_spine_001" parent="." index="87" unique_id=1339638872]
+visible = false
+
+[node name="WGT-Armature_tweak_spine_002" parent="." index="88" unique_id=338094933]
+visible = false
+
+[node name="WGT-Armature_tweak_spine_003" parent="." index="89" unique_id=1838447208]
+visible = false
+
+[node name="WGT-Armature_tweak_spine_004" parent="." index="90" unique_id=802958784]
+visible = false
+
+[node name="WGT-Armature_torso" parent="." index="91" unique_id=637707502]
+visible = false
+
+[node name="WGT-Armature_hips" parent="." index="92" unique_id=343189753]
+visible = false
+
+[node name="WGT-Armature_chest" parent="." index="93" unique_id=36212117]
+visible = false
+
+[node name="WGT-Armature_breast_L" parent="." index="94" unique_id=575594753]
+visible = false
+
+[node name="WGT-Armature_breast_R" parent="." index="95" unique_id=542257767]
+visible = false
+
+[node name="WGT-Armature_shoulder_L" parent="." index="96" unique_id=988388526]
+visible = false
+
+[node name="WGT-Armature_upper_arm_parent_L" parent="." index="97" unique_id=1847592691]
+visible = false
+
+[node name="WGT-Armature_upper_arm_fk_L" parent="." index="98" unique_id=1936076983]
+visible = false
+
+[node name="WGT-Armature_forearm_fk_L" parent="." index="99" unique_id=283821185]
+visible = false
+
+[node name="WGT-Armature_hand_fk_L" parent="." index="100" unique_id=123004540]
+visible = false
+
+[node name="WGT-Armature_upper_arm_ik_L" parent="." index="101" unique_id=1146772227]
+visible = false
+
+[node name="WGT-Armature_upper_arm_ik_target_L" parent="." index="102" unique_id=554125554]
+visible = false
+
+[node name="WGT-Armature_hand_ik_L" parent="." index="103" unique_id=1775534788]
+visible = false
+
+[node name="WGT-Armature_VIS_upper_arm_ik_pole_L" parent="." index="104" unique_id=1687401879]
+visible = false
+
+[node name="WGT-Armature_upper_arm_tweak_L" parent="." index="105" unique_id=867348858]
+visible = false
+
+[node name="WGT-Armature_upper_arm_tweak_L_001" parent="." index="106" unique_id=1968447563]
+visible = false
+
+[node name="WGT-Armature_forearm_tweak_L" parent="." index="107" unique_id=784524323]
+visible = false
+
+[node name="WGT-Armature_forearm_tweak_L_001" parent="." index="108" unique_id=1448860909]
+visible = false
+
+[node name="WGT-Armature_hand_tweak_L" parent="." index="109" unique_id=1249075830]
+visible = false
+
+[node name="WGT-Armature_shoulder_R" parent="." index="110" unique_id=399057433]
+visible = false
+
+[node name="WGT-Armature_upper_arm_parent_R" parent="." index="111" unique_id=819220795]
+visible = false
+
+[node name="WGT-Armature_upper_arm_fk_R" parent="." index="112" unique_id=457805894]
+visible = false
+
+[node name="WGT-Armature_forearm_fk_R" parent="." index="113" unique_id=115459719]
+visible = false
+
+[node name="WGT-Armature_hand_fk_R" parent="." index="114" unique_id=965752924]
+visible = false
+
+[node name="WGT-Armature_upper_arm_ik_R" parent="." index="115" unique_id=2039688277]
+visible = false
+
+[node name="WGT-Armature_upper_arm_ik_target_R" parent="." index="116" unique_id=2022839746]
+visible = false
+
+[node name="WGT-Armature_hand_ik_R" parent="." index="117" unique_id=1840013206]
+visible = false
+
+[node name="WGT-Armature_VIS_upper_arm_ik_pole_R" parent="." index="118" unique_id=1482772744]
+visible = false
+
+[node name="WGT-Armature_upper_arm_tweak_R" parent="." index="119" unique_id=1896913130]
+visible = false
+
+[node name="WGT-Armature_upper_arm_tweak_R_001" parent="." index="120" unique_id=1773453548]
+visible = false
+
+[node name="WGT-Armature_forearm_tweak_R" parent="." index="121" unique_id=2145168523]
+visible = false
+
+[node name="WGT-Armature_forearm_tweak_R_001" parent="." index="122" unique_id=1699345831]
+visible = false
+
+[node name="WGT-Armature_hand_tweak_R" parent="." index="123" unique_id=72589885]
+visible = false
+
+[node name="WGT-Armature_neck" parent="." index="124" unique_id=1505050776]
+visible = false
+
+[node name="WGT-Armature_head" parent="." index="125" unique_id=1122703190]
+visible = false
+
+[node name="WGT-Armature_tweak_spine_005" parent="." index="126" unique_id=620236115]
+visible = false
+
+[node name="WGT-Armature_thigh_parent_L" parent="." index="127" unique_id=1383315452]
+visible = false
+
+[node name="WGT-Armature_thigh_fk_L" parent="." index="128" unique_id=778542779]
+visible = false
+
+[node name="WGT-Armature_shin_fk_L" parent="." index="129" unique_id=1848546327]
+visible = false
+
+[node name="WGT-Armature_foot_fk_L" parent="." index="130" unique_id=1880232108]
+visible = false
+
+[node name="WGT-Armature_toe_fk_L" parent="." index="131" unique_id=451755084]
+visible = false
+
+[node name="WGT-Armature_thigh_ik_L" parent="." index="132" unique_id=1820206615]
+visible = false
+
+[node name="WGT-Armature_thigh_ik_target_L" parent="." index="133" unique_id=128981871]
+visible = false
+
+[node name="WGT-Armature_foot_ik_L" parent="." index="134" unique_id=1684274654]
+visible = false
+
+[node name="WGT-Armature_VIS_thigh_ik_pole_L" parent="." index="135" unique_id=1797833370]
+visible = false
+
+[node name="WGT-Armature_thigh_tweak_L" parent="." index="136" unique_id=1570749670]
+visible = false
+
+[node name="WGT-Armature_thigh_tweak_L_001" parent="." index="137" unique_id=891618639]
+visible = false
+
+[node name="WGT-Armature_shin_tweak_L" parent="." index="138" unique_id=1322685899]
+visible = false
+
+[node name="WGT-Armature_shin_tweak_L_001" parent="." index="139" unique_id=569159175]
+visible = false
+
+[node name="WGT-Armature_foot_tweak_L" parent="." index="140" unique_id=1459867020]
+visible = false
+
+[node name="WGT-Armature_foot_spin_ik_L" parent="." index="141" unique_id=1512802386]
+visible = false
+
+[node name="WGT-Armature_foot_heel_ik_L" parent="." index="142" unique_id=1151139862]
+visible = false
+
+[node name="WGT-Armature_toe_ik_L" parent="." index="143" unique_id=529576129]
+visible = false
+
+[node name="WGT-Armature_thigh_parent_R" parent="." index="144" unique_id=2111543757]
+visible = false
+
+[node name="WGT-Armature_thigh_fk_R" parent="." index="145" unique_id=215489109]
+visible = false
+
+[node name="WGT-Armature_shin_fk_R" parent="." index="146" unique_id=1079699743]
+visible = false
+
+[node name="WGT-Armature_foot_fk_R" parent="." index="147" unique_id=1143509790]
+visible = false
+
+[node name="WGT-Armature_toe_fk_R" parent="." index="148" unique_id=1060032133]
+visible = false
+
+[node name="WGT-Armature_thigh_ik_R" parent="." index="149" unique_id=1388158087]
+visible = false
+
+[node name="WGT-Armature_thigh_ik_target_R" parent="." index="150" unique_id=879956427]
+visible = false
+
+[node name="WGT-Armature_foot_ik_R" parent="." index="151" unique_id=2077301717]
+visible = false
+
+[node name="WGT-Armature_VIS_thigh_ik_pole_R" parent="." index="152" unique_id=2118558161]
+visible = false
+
+[node name="WGT-Armature_thigh_tweak_R" parent="." index="153" unique_id=957724824]
+visible = false
+
+[node name="WGT-Armature_thigh_tweak_R_001" parent="." index="154" unique_id=1470938192]
+visible = false
+
+[node name="WGT-Armature_shin_tweak_R" parent="." index="155" unique_id=1086698528]
+visible = false
+
+[node name="WGT-Armature_shin_tweak_R_001" parent="." index="156" unique_id=703788096]
+visible = false
+
+[node name="WGT-Armature_foot_tweak_R" parent="." index="157" unique_id=1235399395]
+visible = false
+
+[node name="WGT-Armature_foot_spin_ik_R" parent="." index="158" unique_id=1505195281]
+visible = false
+
+[node name="WGT-Armature_foot_heel_ik_R" parent="." index="159" unique_id=1177784476]
+visible = false
+
+[node name="WGT-Armature_toe_ik_R" parent="." index="160" unique_id=635311418]
+visible = false
+
+[node name="WGT-Armature_root" parent="." index="161" unique_id=2069160107]
+visible = false
+
+[node name="AnimationPlayer" parent="." index="162" unique_id=307504497]
+autoplay = &"Armature|mixamo_com_005"
+speed_scale = 1.3

@@ -6,10 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c0jp8fyq4bgcf" path="res://Scenes/GameOverScreen.tscn" id="1_y7y61"]
 [ext_resource type="PackedScene" uid="uid://c3qw14r6douqb" path="res://Scenes/Enemy.tscn" id="2_gjpho"]
 [ext_resource type="PackedScene" uid="uid://bba1rtjmy8a0l" path="res://Scenes/Player.tscn" id="3_p70al"]
-[ext_resource type="PackedScene" uid="uid://cy1157csxkn7g" path="res://Telegraph_Scene.tscn" id="4_d2jk0"]
 [ext_resource type="Script" uid="uid://xfslssbcxm88" path="res://Scripts/upgrades/UpgradeManager.gd" id="4_mvfa8"]
-[ext_resource type="AudioStream" uid="uid://pmcd1fnre3vf" path="res://Assets/Sounds/warningsound.mp3" id="4_n1aqv"]
-[ext_resource type="AudioStream" uid="uid://bg177k36xf01q" path="res://Assets/Sounds/incant.mp3" id="5_n1aqv"]
 [ext_resource type="Script" uid="uid://d0cgobcghafpp" path="res://Scripts/upgrades/RunHooks.gd" id="5_p70al"]
 [ext_resource type="Script" uid="uid://cpsts44t5urjv" path="res://Scripts/upgrades/UpgradeData.gd" id="5_r0dna"]
 [ext_resource type="Resource" uid="uid://bvxj8j5uhqgc3" path="res://Scripts/upgrades/data/move_speed_up.tres" id="6_b5aes"]
@@ -26,6 +23,9 @@
 [ext_resource type="Resource" uid="uid://b5wrv57imlu13" path="res://Scripts/upgrades/data/projectiles.tres" id="14_mq4nq"]
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="PackedScene" uid="uid://se74irodpl8i" path="res://Scenes/DamageNumber.tscn" id="17_ao4cr"]
+[ext_resource type="AudioStream" uid="uid://cqbda6qt4huil" path="res://Assets/Sounds/levelup1.mp3" id="18_5dli4"]
+[ext_resource type="AudioStream" uid="uid://iq401jlybq8b" path="res://Assets/Sounds/levelup2.mp3" id="19_uvb3s"]
+[ext_resource type="AudioStream" uid="uid://jrti5in6x4ju" path="res://Assets/Sounds/levelup3.mp3" id="20_crxrm"]
 [ext_resource type="Script" uid="uid://b3vra038m6gwv" path="res://Scripts/DamageNumbersLayer.gd" id="22_ao4cr"]
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
@@ -52,13 +52,15 @@ sky = SubResource("Sky_7yo87")
 tonemap_mode = 2
 glow_enabled = true
 fog_enabled = true
+fog_mode = 1
 fog_light_color = Color(0.43191856, 0.5734833, 0.64844275, 1)
+fog_density = 0.315
 fog_depth_curve = 0.59460354
 fog_depth_begin = 5.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_5dli4"]
 material = ExtResource("33_irg3d")
-size = Vector3(72, 10, 72)
+size = Vector3(70, 10, 70)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uo7di"]
 size = Vector3(70, 10, 70)
@@ -98,14 +100,9 @@ script = ExtResource("1_5nsto")
 enemy_scene = ExtResource("2_gjpho")
 max_spawns_per_second = 8.0
 max_alive_enemies = 200
-burst_telegraph_delay = 0.2
-ground_mask = 1
 avoid_mask = 1
 avoid_radius = 0.6
-telegraph_scene = ExtResource("4_d2jk0")
-telegraph_sound = ExtResource("4_n1aqv")
-spawn_sound = ExtResource("5_n1aqv")
-spawn_volume_db = 0.0
+ground_mask = 1
 
 [node name="UpgradeManager" type="Node" parent="GameStates" unique_id=1077308573]
 script = ExtResource("4_mvfa8")
@@ -122,15 +119,12 @@ enemy_count_label = NodePath("EnemyCountLabel")
 essence_label = NodePath("EssenceLabel")
 pap_label = NodePath("PAPLabel")
 
-[node name="EnemyIndicator" parent="UI/Canv_HUD/HUD" index="9" unique_id=1935920187]
+[node name="EnemyIndicator" parent="UI/Canv_HUD/HUD" index="8" unique_id=1935920187]
 player_path = NodePath("../../../../Player")
 camera_path = NodePath("../../../../Player/Head/WorldCam")
 show_only_if_behind = false
 color_curve_power = 3.0
 alpha_curve_power = 3.0
-
-[node name="StatBlock" parent="UI/Canv_HUD/HUD" index="11" unique_id=1916233769 node_paths=PackedStringArray("stats")]
-stats = NodePath("../../../../Player/PlayerStats")
 
 [node name="DamageNumbersLayer" type="CanvasLayer" parent="UI" unique_id=1812757444 node_paths=PackedStringArray("camera")]
 script = ExtResource("22_ao4cr")
@@ -152,6 +146,7 @@ process_mode = 3
 
 [node name="UpgradeScreen" parent="UI/Canv_Fade" unique_id=847933536 instance=ExtResource("1_gjpho")]
 process_mode = 3
+level_up_sounds = Array[AudioStream]([ExtResource("18_5dli4"), ExtResource("19_uvb3s"), ExtResource("20_crxrm")])
 randomize_pitch = true
 
 [node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
@@ -287,161 +282,123 @@ metadata/footstep_surface = "stone"
 
 [node name="Tower4" parent="statics" unique_id=296234923 instance=ExtResource("9_kn06e")]
 transform = Transform3D(0.033752978, 2.1516085, -2.0903215, -2.1951966, 1.4424477, 1.449294, 2.0444973, 1.5132496, 1.5906305, -5.111803, 9.903331, -41.374367)
-metadata/footstep_surface = "stone"
 
 [node name="Tower2" parent="statics" unique_id=1633041765 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.9729638, -0.40046704, 0.033367738, 0.40185475, 2.962697, -0.24685803, 0, 0.24910296, 2.98964, 23, -2.656622, 21)
-metadata/footstep_surface = "stone"
 
 [node name="Tower6" parent="statics" unique_id=252361440 instance=ExtResource("9_kn06e")]
 transform = Transform3D(-2.8699284, 0.74233276, -0.4609294, 0.82444334, 2.8247526, -0.5840088, 0.28949475, -0.6853579, -2.906283, 60.93214, 13.015387, -59.570152)
-metadata/footstep_surface = "stone"
 
 [node name="Tower8" parent="statics" unique_id=1038697834 instance=ExtResource("9_kn06e")]
 transform = Transform3D(-1.8356111, 1.4084342, 1.9096717, 1.112338, 2.643411, -0.8803876, -2.0960047, 0.16938372, -2.1396427, 31.004925, -0.4508524, -43.058357)
-metadata/footstep_surface = "stone"
 
 [node name="Tower10" parent="statics" unique_id=805651426 instance=ExtResource("9_kn06e")]
 transform = Transform3D(1.8850673, -0.4727854, 2.285386, 2.0373888, -1.0994346, -1.9079545, 1.1382284, 2.750948, -0.36975348, 23.004017, 35.46403, -63.224415)
-metadata/footstep_surface = "stone"
 
 [node name="Tower3" parent="statics" unique_id=715385468 instance=ExtResource("9_kn06e")]
 transform = Transform3D(-0.36942947, -0.4790687, -2.9383698, 0.2818926, 2.9419742, -0.5150976, 2.9637914, -0.33953232, -0.31726864, -25.57179, -3.8594513, 25.21036)
-metadata/footstep_surface = "stone"
 
 [node name="Tower7" parent="statics" unique_id=1538101111 instance=ExtResource("9_kn06e")]
 transform = Transform3D(0.33323666, 0.23933122, 2.9718132, 0.17628287, 2.9835052, -0.26003984, -2.9762187, 0.20351154, 0.3173411, -20.667078, -3.038084, 15.391805)
-metadata/footstep_surface = "stone"
 
 [node name="Tower9" parent="statics" unique_id=1768136098 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.4290195, 0, -1.7606432, 0, 3, 0, 1.7606432, 0, 2.4290195, -12.421625, -0.12756062, 7.963952)
-metadata/footstep_surface = "stone"
 
 [node name="Tower5" parent="statics" unique_id=566632445 instance=ExtResource("9_kn06e")]
 transform = Transform3D(2.9665349, -0.44390684, 0.0511655, 0.44322482, 2.8795009, -0.7155617, 0.056770533, 0.71513873, 2.912963, -31.442276, -4.4486, 29.902988)
-metadata/footstep_surface = "stone"
 
 [node name="Walls" parent="statics" unique_id=1348878863 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.97790015, 0.18379733, 0.09964848, -0.20907243, 0.85968024, 0.46608856, 0, -0.47662184, 0.8791084, 11, -0.11551857, -16)
-metadata/footstep_surface = "stone"
 
 [node name="Walls8" parent="statics" unique_id=1396626152 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.6910332, 0.46712047, -0.55160826, -0.2090724, 0.8596801, 0.46608847, 0.6919262, -0.20675658, 0.69172955, 27.314594, 1.790432, 7.2252426)
-metadata/footstep_surface = "stone"
 
 [node name="Walls2" parent="statics" unique_id=71518215 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.8585664, 0, 0.51270235, 0, 1, 0, -0.51270235, 0, 0.8585664, -10.833212, -0.68736935, 19.897503)
-metadata/footstep_surface = "stone"
 
 [node name="stone" parent="statics" unique_id=2123473406 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(0.47893697, -0.299911, -0.82502896, 0, 0.9398298, -0.34164292, 0.8778493, 0.16362542, 0.45011926, -7.968347, -0.11841297, -34.273388)
-metadata/footstep_surface = "stone"
 
 [node name="stone2" parent="statics" unique_id=1425173398 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(1, 0, 0, 0, 0.9398298, -0.34164292, 0, 0.34164292, 0.9398298, -13.038465, 3.081098, -35.321148)
 
 [node name="stone3" parent="statics" unique_id=1661196152 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(3.0534964, 1.4510151, -3.6518183, -4.538797, 1.446209, -2.219094, -0.5201004, -4.1018605, -2.0742092, -34.348892, 3.5504045, -35.05007)
-metadata/footstep_surface = "stone"
 
 [node name="stone4" parent="statics" unique_id=1759254944 instance=ExtResource("32_ao4cr")]
 transform = Transform3D(0.9237408, -2.1417131, 0.10951519, 1.427948, 0.7032452, 1.7084014, -1.5999665, -0.6088815, 1.5879532, -57.348892, 8.306734, -7.0500717)
-metadata/footstep_surface = "stone"
 
 [node name="Walls3" parent="statics" unique_id=1008833160 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.9779366, 0, 0.20890167, 0, 1, 0, -0.20890167, 0, 0.9779366, -7.31147, 2, -20.057621)
 
 [node name="Walls6" parent="statics" unique_id=1432086533 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.89745444, -0.26852086, -0.34996003, 0.05828298, 0.85859597, -0.5093286, 0.43723968, 0.43670258, 0.78620124, 31.3793, 6.6870527, -59.511127)
-metadata/footstep_surface = "stone"
 
 [node name="Walls5" parent="statics" unique_id=1728580826 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.7171682, -0.25881904, 0.6470568, 0.19216464, 0.9659258, 0.17337836, -0.66988254, 0, 0.74246716, -23.212894, 10.048943, -54.777435)
-metadata/footstep_surface = "stone"
 
 [node name="Walls4" parent="statics" unique_id=1141679315 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 1.0720592, 13.04841)
-metadata/foorstep_surface = "stone"
 
 [node name="Walls7" parent="statics" unique_id=550151271 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.6346361, 0, 0.7728111, 0.18456398, 0.97106344, -0.15156479, -0.75044864, 0.23882158, 0.6162719, 11.004983, 14.58803, 57.75186)
-metadata/footstep_surface = "stone"
 
 [node name="Walls9" parent="statics" unique_id=1763016452 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.99465966, 0.10319432, -0.0017508183, -0.10320918, 0.99451643, -0.016873192, 0, 0.016963784, 0.999856, 38.21236, 13.981, 62.17348)
-metadata/footstep_surface = "stone"
 
 [node name="Walls11" parent="statics" unique_id=691481792 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.99835086, -0.05739894, 0.00097384345, 0.057407208, 0.9982071, -0.016935809, 0, 0.016963784, 0.999856, 38.21236, 13.981, 58.188965)
-metadata/footstep_surface = "stone"
 
 [node name="Walls10" parent="statics" unique_id=1590976016 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.9877863, -0.15581381, 0, 0.15581381, 0.9877863, 38.21236, 13.981, 66.16255)
-metadata/footstep_surface = "stone"
 
 [node name="Walls16" parent="statics" unique_id=1338304950 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 42.21236, 14.389342, 67.12645)
-metadata/footstep_surface = "stone"
 
 [node name="Walls19" parent="statics" unique_id=245507214 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 46.21236, 14.198602, 66.14644)
-metadata/footstep_surface = "stone"
 
 [node name="Walls20" parent="statics" unique_id=1881536752 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 50.21236, 13.981, 64.96233)
-metadata/footstep_surface = "stone"
 
 [node name="Walls21" parent="statics" unique_id=1528780984 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.9925311, -0.12199059, 0, 0.12199059, 0.9925311, 54.21236, 13.981, 66.158585)
-metadata/footstep_surface = "stone"
 
 [node name="Walls22" parent="statics" unique_id=478081332 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 58.21236, 13.981, 66.13369)
-metadata/footstep_surface = "stone"
 
 [node name="Walls23" parent="statics" unique_id=1612034256 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 62.21236, 13.981, 66.1435)
-metadata/footstep_surface = "stone"
 
 [node name="Walls24" parent="statics" unique_id=97361851 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.9935747, -0.10225159, -0.04851902, 0.112865746, 0.92703295, 0.35759088, 0.008414484, -0.36076945, 0.93261707, 66.46932, 13.981, 66.74713)
-metadata/footstep_surface = "stone"
 
 [node name="Walls25" parent="statics" unique_id=28835601 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.82389873, -0.013978453, 0.56656444, 0.016963786, 0.999856, 7.415105e-10, -0.5664829, 0.009611077, 0.8240173, 66.21236, 14.026875, 63.132427)
-metadata/footstep_surface = "stone"
 
 [node name="Walls26" parent="statics" unique_id=5500552 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-3.8078593e-08, -0.4910406, 0.8711366, 0.016963761, 0.87101126, 0.49096993, -0.9998561, 0.014777776, 0.008329865, 66.21236, 13.981, 54.136814)
-metadata/footstep_surface = "stone"
 
 [node name="Walls33" parent="statics" unique_id=1837487655 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.371138e-08, 0, 0.9999999, 0.016963784, 0.999856, 7.4151046e-10, -0.999856, 0.016963782, -4.3705086e-08, 66.21236, 13.981, 58.129665)
-metadata/footstep_surface = "stone"
 
 [node name="Walls27" parent="statics" unique_id=575626051 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.359957e-08, 0.07148002, 0.997442, 0.01696379, 0.9972985, -0.07146975, -0.999856, 0.01692039, -0.0012126154, 66.21236, 13.981, 50.220448)
-metadata/footstep_surface = "stone"
 
 [node name="Walls28" parent="statics" unique_id=95094287 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.371138e-08, 0, 0.9999999, 0.016963784, 0.999856, 7.4151046e-10, -0.999856, 0.016963782, -4.3705086e-08, 66.21236, 13.981, 46.235462)
-metadata/footstep_surface = "stone"
 
 [node name="Walls29" parent="statics" unique_id=1633982123 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.371138e-08, 0, 0.9999999, -0.12760127, 0.9918254, -5.577628e-09, -0.9918254, -0.12760125, -4.335406e-08, 66.21236, 13.981, 42.227005)
-metadata/footstep_surface = "stone"
 
 [node name="Walls30" parent="statics" unique_id=1527544618 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.38789403, -0.0065810992, 0.92168033, 0.016963786, 0.999856, 7.415106e-10, -0.9215477, 0.015635189, 0.38794985, 67.28701, 13.981, 38.27871)
-metadata/footstep_surface = "stone"
 
 [node name="Walls31" parent="statics" unique_id=221018973 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.371138e-08, 0, 0.9999999, 0.016963784, 0.999856, 7.4151046e-10, -0.999856, 0.016963782, -4.3705086e-08, 62.212357, 13.981, 38.217407)
-metadata/footstep_surface = "stone"
 
 [node name="Walls32" parent="statics" unique_id=843852734 instance=ExtResource("9_uo7di")]
 transform = Transform3D(-4.371138e-08, -8.682472e-16, 0.9999999, -0.19404602, 0.9809923, -8.48202e-09, -0.9809923, -0.19404599, -4.288053e-08, 58.212357, 13.981, 38.213837)
-metadata/footstep_surface = "stone"
 
 [node name="Walls12" parent="statics" unique_id=607916015 instance=ExtResource("9_uo7di")]
 transform = Transform3D(0.99818873, 0.060160056, 0, -0.0601514, 0.99804497, -0.016963784, -0.0010205422, 0.016933057, 0.999856, 36.165787, 13.981, 42.10359)
@@ -457,11 +414,9 @@ transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.99
 
 [node name="Walls17" parent="statics" unique_id=474700438 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.9937639, 0.1115036, 0, -0.1115036, 0.9937639, 44.165787, 13.981, 38.08649)
-metadata/footstep_surface = "stone"
 
 [node name="Walls18" parent="statics" unique_id=1599308654 instance=ExtResource("9_uo7di")]
 transform = Transform3D(1, 0, 0, 0, 0.999856, -0.016963782, 0, 0.016963782, 0.999856, 48.165787, 13.981, 38.07892)
-metadata/footstep_surface = "stone"
 
 [node name="ground" type="Node" parent="." unique_id=1218908264 groups=["ground"]]
 

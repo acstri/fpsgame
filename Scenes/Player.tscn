@@ -4,6 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://do86ididdh3w3" path="res://Assets/Sounds/wind.mp3" id="2_1iu4k"]
 [ext_resource type="Script" uid="uid://dh0j7rct0ytoi" path="res://Scripts/CameraShake.gd" id="2_glx4g"]
 [ext_resource type="Material" uid="uid://c0oklrallvw82" path="res://SpeedLines.tres" id="2_m0x7a"]
+[ext_resource type="AudioStream" uid="uid://cgrivrb5kqkjx" path="res://Assets/Sounds/slidingsound.mp3" id="4_8flut"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
 [ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
 [ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/ChainLightning.gd" id="5_nn08x"]
@@ -19,8 +20,9 @@
 [ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="14_1iu4k"]
 [ext_resource type="Script" uid="uid://chgxf52cmoucj" path="res://Scripts/FootstepSurfaceSet.gd" id="16_ulo2v"]
 [ext_resource type="Resource" uid="uid://dvsamejkiw6pu" path="res://footsteps_grass.tres" id="17_1iu4k"]
-[ext_resource type="AudioStream" uid="uid://btpfsc87wbp2n" path="res://Assets/Sounds/footstepts_stone.mp3" id="19_qidb7"]
 [ext_resource type="Script" uid="uid://dhwxwo6b1usr2" path="res://SpeedLines.gd" id="21_5v66d"]
+[ext_resource type="Resource" uid="uid://cklkbn8ft4gsu" path="res://footsteps_stone.tres" id="21_u7x0b"]
+[ext_resource type="AudioStream" uid="uid://c43hhqabgqfyg" path="res://Assets/Sounds/footsteps_grass.mp3" id="22_utwlt"]
 [ext_resource type="Script" uid="uid://ct6o1r8a0q85s" path="res://Scenes/HurtFX.gd" id="22_x63xi"]
 [ext_resource type="AudioStream" uid="uid://cpu7rdqoyv3i0" path="res://Assets/Sounds/hurt1.mp3" id="23_70hv0"]
 [ext_resource type="AudioStream" uid="uid://dyhjf7ld2lcty" path="res://Assets/Sounds/hurt2.mp3" id="24_8flut"]
@@ -50,11 +52,13 @@ slide_buffer_time = 0.5
 speed_lines_material = ExtResource("2_m0x7a")
 wind_stream = ExtResource("2_1iu4k")
 wind_bus = "Sfx"
+slide_loop_stream = ExtResource("4_8flut")
+slide_loop_bus = "Sfx"
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="WorldCam" type="Camera3D" parent="Head" unique_id=1011416034]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 cull_mask = 524287
 current = true
 
@@ -115,8 +119,8 @@ anim_player_path = NodePath("")
 [node name="FootstepsSfx" type="Node3D" parent="." unique_id=925148658 node_paths=PackedStringArray("character")]
 script = ExtResource("14_1iu4k")
 character = NodePath("..")
-surface_sets = Array[ExtResource("16_ulo2v")]([ExtResource("17_1iu4k")])
-default_step_clips = Array[AudioStream]([ExtResource("19_qidb7")])
+surface_sets = Array[ExtResource("16_ulo2v")]([ExtResource("17_1iu4k"), ExtResource("21_u7x0b")])
+default_step_clips = Array[AudioStream]([ExtResource("22_utwlt")])
 volume_db = 0.0
 
 [node name="SpeedLines" type="ColorRect" parent="." unique_id=1738702982]

@@ -8,4 +8,5 @@ title = "Crit Chance +"
 description = "Increase your chance make a projectile do double damage."
 effect_key = "crit_chance_up"
 effect_value = 0.05
+rarity = 1
 metadata/_custom_type_script = "uid://cpsts44t5urjv"
