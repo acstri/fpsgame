@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://drlshkarpltvq" path="res://Scripts/HandCastAnimator.tscn" id="13_miouo"]
 [ext_resource type="Script" uid="uid://biju0dookynrv" path="res://Scenes/FootstepsSfx.gd" id="14_1iu4k"]
 [ext_resource type="Script" uid="uid://chgxf52cmoucj" path="res://Scripts/FootstepSurfaceSet.gd" id="16_ulo2v"]
+[ext_resource type="Script" uid="uid://k2ywy2ybfa5f" path="res://Scenes/ArcGunSpell.gd" id="16_utwlt"]
 [ext_resource type="Resource" uid="uid://dvsamejkiw6pu" path="res://footsteps_grass.tres" id="17_1iu4k"]
 [ext_resource type="Script" uid="uid://dhwxwo6b1usr2" path="res://SpeedLines.gd" id="21_5v66d"]
 [ext_resource type="Resource" uid="uid://cklkbn8ft4gsu" path="res://footsteps_stone.tres" id="21_u7x0b"]
@@ -110,6 +111,9 @@ cast_bus = "Sfx"
 [node name="MagicMissile" type="Node3D" parent="SpellCaster" unique_id=1813416411]
 script = ExtResource("9_miouo")
 projectile_scene = ExtResource("10_o3h8g")
+
+[node name="ArcGun" type="Node3D" parent="SpellCaster" unique_id=420379538]
+script = ExtResource("16_utwlt")
 
 [node name="SpellSwitch" type="Node" parent="." unique_id=967301249]
 script = ExtResource("11_1e7my")

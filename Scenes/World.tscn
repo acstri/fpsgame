@@ -30,7 +30,9 @@
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
 [ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
+[ext_resource type="Resource" uid="uid://djhpc66qu5ss8" path="res://ArcGun.tres" id="27_uvb3s"]
 [ext_resource type="AudioStream" uid="uid://lc6sk3t8urnq" path="res://Assets/Sounds/mm_cast.mp3" id="29_uvb3s"]
+[ext_resource type="PackedScene" uid="uid://c8bxy1wypdxk0" path="res://Scenes/ArcGunProjectile.tscn" id="30_5dli4"]
 [ext_resource type="AudioStream" uid="uid://c2etaa1d6yebb" path="res://Assets/Sounds/mm_shoot.mp3" id="31_d4o7i"]
 [ext_resource type="Texture2D" uid="uid://rglbv2qcc5dm" path="res://Assets/Textures/dirt_text.jpg" id="32_371b6"]
 [ext_resource type="PackedScene" uid="uid://co01o5bii6vsr" path="res://Scenes/stone.tscn" id="32_ao4cr"]
@@ -161,15 +163,15 @@ speed_lines_max_density = 0.7
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
 
-[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("chainlightning", "magicmissile", "fireball", "stats", "camera")]
+[node name="SpellCaster" parent="Player" index="6" unique_id=392683619 node_paths=PackedStringArray("chainlightning", "magicmissile", "fireball", "arcgun", "stats", "camera")]
 chainlightning = NodePath("ChainLightning")
 magicmissile = NodePath("MagicMissile")
 fireball = NodePath("Fireball")
-allow_runtime_switching = true
+arcgun = NodePath("ArcGun")
 spell_chainlightning = ExtResource("25_0bcf6")
 spell_fireball = ExtResource("25_mq4nq")
 spell_magicmissile = ExtResource("9_ti1bm")
-automatic = true
+spell_arcgun = ExtResource("27_uvb3s")
 stats = NodePath("../PlayerStats")
 camera = NodePath("../Head/WorldCam")
 
@@ -189,6 +191,11 @@ stats = NodePath("../../PlayerStats")
 sfx_cast = ExtResource("29_uvb3s")
 sfx_charge_loop = ExtResource("29_uvb3s")
 sfx_flight_loop = ExtResource("31_d4o7i")
+
+[node name="ArcGun" parent="Player/SpellCaster" index="3" unique_id=420379538 node_paths=PackedStringArray("camera", "stats")]
+camera = NodePath("../../Head/WorldCam")
+stats = NodePath("../../PlayerStats")
+projectile_scene = ExtResource("30_5dli4")
 
 [node name="HandCastAnimator" parent="Player" index="8" unique_id=2019263904]
 anim_player_path = NodePath("../HandsOverlay/SubViewportContainer/SubViewport/ViewCam/WeaponRig/arms/AnimationPlayer")
