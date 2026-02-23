@@ -96,7 +96,7 @@ layout_mode = 2
 layout_mode = 2
 max_value = 1.0
 step = 0.01
-value = 0.8
+value = 1.0
 
 [node name="MouseRow" type="HBoxContainer" parent="CanvasLayer/Root/CenterContainer/VBoxContainer/OptionsPanel" unique_id=295229489]
 layout_mode = 2

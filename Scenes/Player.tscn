@@ -49,11 +49,15 @@ max_air_speed = 100.0
 jump_velocity_per_speed = 0.18
 jump_velocity_max_bonus = 4.0
 slide_buffer_time = 0.5
+fov_max_bonus_deg = 18.0
+slide_roll_max_deg = 16.0
 speed_lines_material = ExtResource("2_m0x7a")
 wind_stream = ExtResource("2_1iu4k")
 wind_bus = "Sfx"
 slide_loop_stream = ExtResource("4_8flut")
 slide_loop_bus = "Sfx"
+slide_loop_min_db = -30.0
+slide_loop_max_db = -6.0
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
@@ -86,8 +90,6 @@ script = ExtResource("6_nn08x")
 
 [node name="SpellCaster" type="Node" parent="." unique_id=392683619]
 script = ExtResource("7_52ee3")
-allow_runtime_switching = null
-automatic = null
 
 [node name="ChainLightning" type="Node3D" parent="SpellCaster" unique_id=1392762653 node_paths=PackedStringArray("camera", "stats")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4742575, 0.39339018)

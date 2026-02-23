@@ -44,6 +44,7 @@ transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=648665732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84509444, 0)
+visible = false
 shape = SubResource("CapsuleShape3D_287tu")
 
 [node name="Health" type="Node" parent="." unique_id=1467536774]
@@ -55,6 +56,7 @@ xp_gem_scene = ExtResource("4_1exfc")
 
 [node name="HurtArea" type="Area3D" parent="." unique_id=2126833244]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("4_kpr8r")
@@ -69,7 +71,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="EnemyHurtFlash" type="Node" parent="." unique_id=2058248785 node_paths=PackedStringArray("health", "meshes")]
 script = ExtResource("6_mo1ky")
 health = NodePath("../Health")
-meshes = [NodePath("../firstknight/Armature/Skeleton3D/Cube")]
+meshes = [null]
 
 [node name="VariantApplier" type="Node" parent="." unique_id=1189141985]
 script = ExtResource("7_6bs3c")

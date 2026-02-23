@@ -40,9 +40,9 @@ materials/extract_path=""
 _subresources={
 "animations": {
 "Armature|mixamo_com_005": {
-"save_to_file/enabled": false,
+"save_to_file/enabled": true,
 "save_to_file/fallback_path": "",
-"save_to_file/keep_custom_tracks": "",
+"save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "",
 "settings/loop_mode": 1,
 "slice_1/end_frame": 0,
@@ -2101,6 +2101,11 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://Assets/Materials/knight.tres",
 "use_external/path": "uid://dy4dhljbc6n2r"
+}
+},
+"nodes": {
+"PATH:Armature/Skeleton3D/Cube": {
+"mesh_instance/layers": 4
 }
 }
 }

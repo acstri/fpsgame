@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_ejh8l")
 spell_key = &"magicmissile"
+damage = 6.0
 spell_range = 25.0
 spread_deg = 20.0
 delivery_kind = &"magicmissile"

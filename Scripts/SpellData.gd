@@ -1,35 +1,36 @@
-# res://Scripts/spells/SpellData.gd
+# res://Scripts/SpellData.gd
 extends Resource
 class_name SpellData
 
-# Stable identifier for Pack-a-Punch and UI.
-# Set this to: "fireball", "chainlightning", "magicmissile"
 @export var spell_key: StringName = &""
 
-# Generic spell data (locked semantics)
 @export var damage: float = 10.0
 @export var cooldown: float = 1.0
 
-# Your HUD already expects these names:
 @export var spell_range: float = 12.0
 @export var spread_deg: float = 0.0
 
-# Existing field used by your systems/UI
 @export var delivery_kind: StringName = &""
-
-# Optional metadata (safe for PaP tags like pap_tier/pap_name)
 @export var extras: Dictionary = {}
 
-# Compatibility aliases so other scripts can use "range" / "spread"
-# (PackAPunchService uses range/spread by default.)
+@export_group("Ammo (optional)")
+@export var ammo_max: int = 0
+@export var ammo_cost_per_cast: int = 1
+
+# Regen starts only when NOT holding fire, after this delay from last shot.
+@export_range(0.0, 10.0, 0.01) var ammo_regen_delay: float = 0.12
+
+# If you stop shooting with ammo still left -> quick refill.
+@export_range(0.0, 999.0, 0.1) var ammo_regen_per_sec_partial: float = 40.0
+
+# If you empty the mag -> slower "reload".
+@export_range(0.0, 999.0, 0.1) var ammo_regen_per_sec_empty: float = 12.0
+
+# Compatibility aliases (PackAPunchService uses range/spread)
 var range: float:
-	get:
-		return spell_range
-	set(value):
-		spell_range = value
+	get: return spell_range
+	set(v): spell_range = v
 
 var spread: float:
-	get:
-		return spread_deg
-	set(value):
-		spread_deg = value
+	get: return spread_deg
+	set(v): spread_deg = v

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://djhpc66qu5ss8"]
+
+[ext_resource type="Script" uid="uid://cdwgpfk6al1jf" path="res://Scripts/SpellData.gd" id="1_sk5hy"]
+
+[resource]
+script = ExtResource("1_sk5hy")
+spell_key = &"arcgun"
+damage = 12.0
+cooldown = 0.5
+spell_range = 30.0
+delivery_kind = &"arcgun"
+ammo_max = 30
+ammo_regen_delay = 1.0
+ammo_regen_per_sec_partial = 5.0
+ammo_regen_per_sec_empty = 2.5
+metadata/_custom_type_script = "uid://cdwgpfk6al1jf"

@@ -17,7 +17,6 @@ class_name MainMenu
 @export var name_input: LineEdit
 @export var name_warning_label: Label # optional: "Enter a name to start"
 
-# New: start spell selector
 @export_group("Start Spell")
 @export var start_spell_option: OptionButton
 
@@ -27,6 +26,10 @@ const SECTION := "settings"
 const KEY_MASTER := "master_volume"
 const KEY_MOUSE := "mouse_sensitivity"
 const KEY_START_SPELL := "start_spell_kind"
+
+const START_FIREBALL := "fireball"
+const START_MAGICMISSILE := "magicmissile"
+const START_ARCGUN := "arcgun"
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -98,6 +101,7 @@ func _setup_start_spell_option() -> void:
 	start_spell_option.clear()
 	start_spell_option.add_item("Fireball", 0)
 	start_spell_option.add_item("Magic Missile", 1)
+	start_spell_option.add_item("ArcGun", 2)
 
 	start_spell_option.item_selected.connect(func(_idx: int) -> void:
 		_apply_start_spell_setting()
@@ -140,7 +144,6 @@ func _commit_name() -> void:
 	if profile != null and profile.has_method("set_player_name"):
 		profile.set_player_name(name_input.text)
 
-	# write back sanitized value
 	if profile != null and "player_name" in profile:
 		name_input.text = str(profile.player_name)
 
@@ -188,8 +191,8 @@ func _load_settings() -> void:
 		mouse_slider.value = float(cfg.get_value(SECTION, KEY_MOUSE, mouse_slider.value))
 
 	if start_spell_option:
-		var kind := String(cfg.get_value(SECTION, KEY_START_SPELL, "fireball"))
-		start_spell_option.selected = 0 if kind == "fireball" else 1
+		var kind := String(cfg.get_value(SECTION, KEY_START_SPELL, START_FIREBALL))
+		start_spell_option.selected = _kind_to_option_index(kind)
 
 	_apply_start_spell_setting()
 
@@ -226,10 +229,29 @@ func _apply_mouse_sensitivity() -> void:
 	ProjectSettings.set_setting("application/config/mouse_sensitivity", float(mouse_slider.value))
 	ProjectSettings.save()
 
+func _kind_to_option_index(kind: String) -> int:
+	match kind:
+		START_FIREBALL:
+			return 0
+		START_MAGICMISSILE:
+			return 1
+		START_ARCGUN:
+			return 2
+		_:
+			return 0
+
 func _get_start_spell_kind() -> String:
 	if start_spell_option == null:
-		return "fireball"
-	return "fireball" if start_spell_option.selected == 0 else "magicmissile"
+		return START_FIREBALL
+	match start_spell_option.selected:
+		0:
+			return START_FIREBALL
+		1:
+			return START_MAGICMISSILE
+		2:
+			return START_ARCGUN
+		_:
+			return START_FIREBALL
 
 func _apply_start_spell_setting() -> void:
 	ProjectSettings.set_setting("application/config/start_spell_kind", _get_start_spell_kind())

@@ -1,4 +1,4 @@
-# full replacement: PlayerController.gd
+# res://Scripts/PlayerController.gd
 extends CharacterBody3D
 class_name PlayerController
 
@@ -22,14 +22,14 @@ class_name PlayerController
 
 @export_group("Air Control")
 @export var air_accel := 18.0
-@export var air_decel := 0.0 # 0 = do NOT bleed speed in air when no input
-@export var max_air_speed := 8.0 # normal air cap (can be exceeded if carried)
+@export var air_decel := 0.0
+@export var max_air_speed := 8.0
 
 @export_group("Jump")
-@export var jump_velocity_base := 4.5          # jump at/below jump_speed_ref
-@export var jump_speed_ref := 6.0              # "normal" run speed reference
-@export var jump_velocity_per_speed := 0.10    # extra vertical velocity per 1.0 speed above ref
-@export var jump_velocity_max_bonus := 2.5     # cap of the bonus (so it doesn't get silly)
+@export var jump_velocity_base := 4.5
+@export var jump_speed_ref := 6.0
+@export var jump_velocity_per_speed := 0.10
+@export var jump_velocity_max_bonus := 2.5
 
 @export_group("Sprint Sticky (press to start, stop moving to cancel)")
 @export var sprint_action := "sprint"
@@ -39,16 +39,13 @@ var _sprint_latched := false
 @export_group("Slide (hold)")
 @export var slide_action := "crouch"
 @export var slide_min_speed := 6.0
-@export var slide_friction := 10.0 # lower = keep speed longer
+@export var slide_friction := 10.0
 @export var slide_steer := 4.0
 @export var slide_boost := 1.05
 @export var slide_end_speed := 2.0
 @export var slide_cooldown := 0.35
 
 @export_group("Slide Boost Burst")
-# Short initial acceleration burst after slide starts.
-# Adds speed (m/s) along the initial slide direction for a brief duration,
-# capped by slide_burst_max_bonus.
 @export var slide_burst_duration := 0.12
 @export var slide_burst_accel := 30.0
 @export var slide_burst_max_bonus := 4.0
@@ -60,7 +57,6 @@ var _sprint_latched := false
 @export var slide_ground_snap_speed := 16.0
 @export var slide_leave_ground_grace := 0.08
 
-
 @export_group("Slide Slopes")
 @export var slide_slope_accel := 14.0
 @export var slide_slope_max_speed := 20.0
@@ -69,6 +65,18 @@ var _sprint_latched := false
 @export_group("Slide Camera")
 @export var slide_camera_drop := 0.45
 @export var slide_camera_lerp_speed := 12.0
+
+@export_group("Camera Juice - FOV")
+@export var fov_speed_start := 6.0          # speed where FOV starts widening
+@export var fov_speed_end := 16.0           # speed where FOV reaches max bonus
+@export var fov_max_bonus_deg := 12.0       # max added FOV at/above fov_speed_end
+@export var fov_lerp_in := 10.0             # when speeding up
+@export var fov_lerp_out := 14.0            # when slowing down
+
+@export_group("Camera Juice - Slide Roll")
+@export_range(0.0, 30.0, 0.1) var slide_roll_max_deg := 10.0
+@export var slide_roll_lerp := 14.0
+@export var slide_roll_invert := false      # flip roll direction if desired
 
 @export_group("Speed Lines (Shader)")
 @export var speed_lines_material: ShaderMaterial
@@ -79,8 +87,8 @@ var _sprint_latched := false
 @export var speed_lines_lerp_in := 10.0
 @export var speed_lines_lerp_out := 14.0
 @export_group("Speed Lines (Slide Burst)")
-@export var speed_lines_burst_bonus := 0.35 # extra intensity while burst is active
-@export var speed_lines_burst_lerp := 18.0  # how fast it kicks in/out
+@export var speed_lines_burst_bonus := 0.35
+@export var speed_lines_burst_lerp := 18.0
 
 @export_group("Wind Loop (no node needed in scene)")
 @export var wind_stream: AudioStream
@@ -91,6 +99,7 @@ var _sprint_latched := false
 @export var wind_max_pitch := 1.15
 @export var wind_lerp := 10.0
 @export var wind_start_threshold := 0.02
+
 @export_group("Slide Loop (no node needed in scene)")
 @export var slide_loop_stream: AudioStream
 @export var slide_loop_bus := "SFX"
@@ -99,11 +108,11 @@ var _sprint_latched := false
 @export var slide_loop_min_pitch := 0.95
 @export var slide_loop_max_pitch := 1.10
 @export var slide_loop_lerp := 14.0
-@export var slide_loop_start_speed := 1.0  # don’t play if barely moving
+@export var slide_loop_start_speed := 1.0
 
 @export_group("Momentum Carry")
 @export var carry_speed_in_air := true
-@export var air_carry_decay := 0.0 # 0 = never decay carried cap; >0 decays back to max_air_speed
+@export var air_carry_decay := 0.0
 
 enum MoveState { GROUND, AIR, SLIDE }
 var _state: MoveState = MoveState.GROUND
@@ -115,19 +124,20 @@ var _slide_cd_left := 0.0
 var _slide_buffer_left := 0.0
 var _slide_leave_ground_left := 0.0
 
-# slide burst state
 var _slide_burst_left := 0.0
 var _slide_burst_dir := Vector3.ZERO
 var _slide_burst_added := 0.0
 
 var _head_base_pos: Vector3
-
 var _speed_fx_intensity := 0.0
-
 var _air_speed_cap := 0.0
 
 var _wind_player: AudioStreamPlayer
 var _slide_loop_player: AudioStreamPlayer
+
+# Camera juice state
+var _base_fov := 75.0
+var _base_cam_rot: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	if ProjectSettings.has_setting("application/config/mouse_sensitivity"):
@@ -148,6 +158,12 @@ func _ready() -> void:
 	_setup_wind_player()
 	_setup_slide_loop_player()
 
+	_base_fov = camera.fov
+	_base_cam_rot = camera.rotation
+
+func is_sliding() -> bool:
+	return _state == MoveState.SLIDE
+
 func _setup_wind_player() -> void:
 	if wind_stream == null:
 		return
@@ -159,7 +175,7 @@ func _setup_wind_player() -> void:
 	_wind_player.pitch_scale = wind_min_pitch
 	_wind_player.autoplay = false
 	add_child(_wind_player)
-	
+
 func _setup_slide_loop_player() -> void:
 	if slide_loop_stream == null:
 		return
@@ -238,6 +254,8 @@ func _physics_process(delta: float) -> void:
 
 	_update_slide_camera(delta)
 	_update_speed_fx(delta)
+	_update_slide_loop(delta)
+	_update_camera_juice(delta, input_vec)
 
 	move_and_slide()
 
@@ -327,11 +345,8 @@ func _tick_slide(delta: float, wish_dir: Vector3, on_floor: bool, slide_held: bo
 		var steered := hv_dir.slerp(wish_dir, t)
 		hv = steered * hv.length()
 
-	# --- NEW: short initial burst after slide start ---
 	if _slide_burst_left > 0.0:
 		_slide_burst_left = maxf(0.0, _slide_burst_left - delta)
-
-		# pick a direction if missing (e.g. if we started from near-zero hv)
 		if _slide_burst_dir.length_squared() < 0.000001:
 			_slide_burst_dir = hv.normalized() if hv.length_squared() > 0.000001 else wish_dir
 
@@ -340,7 +355,6 @@ func _tick_slide(delta: float, wish_dir: Vector3, on_floor: bool, slide_held: bo
 			var add := minf(slide_burst_accel * delta, remaining)
 			hv += _slide_burst_dir.normalized() * add
 			_slide_burst_added += add
-	# -----------------------------------------------
 
 	velocity.x = hv.x
 	velocity.z = hv.z
@@ -366,7 +380,6 @@ func _try_start_slide(on_floor: bool) -> void:
 	_slide_cd_left = slide_cooldown
 	_slide_leave_ground_left = slide_leave_ground_grace
 
-	# arm burst using the pre-slide direction
 	_slide_burst_left = slide_burst_duration
 	_slide_burst_added = 0.0
 	_slide_burst_dir = hv.normalized() if speed > 0.0 else Vector3.ZERO
@@ -380,11 +393,9 @@ func _try_start_slide(on_floor: bool) -> void:
 		velocity.y = -slide_ground_snap_speed
 
 func _do_jump() -> void:
-	# jump height increases with current horizontal speed
 	var hv := Vector3(velocity.x, 0.0, velocity.z)
 	var speed := hv.length()
 
-	# compute bonus based on speed above reference
 	var over := maxf(0.0, speed - jump_speed_ref)
 	var bonus := minf(over * jump_velocity_per_speed, jump_velocity_max_bonus)
 
@@ -416,49 +427,66 @@ func _post_update_state(was_on_floor: bool, now_on_floor: bool) -> void:
 func _update_slide_camera(delta: float) -> void:
 	if head == null:
 		return
-
 	var target := _head_base_pos
 	if _state == MoveState.SLIDE:
 		target.y = _head_base_pos.y - slide_camera_drop
-
 	head.position = head.position.lerp(target, clampf(slide_camera_lerp_speed * delta, 0.0, 1.0))
+
+func _update_camera_juice(delta: float, input_vec: Vector2) -> void:
+	if camera == null:
+		return
+
+	# --- FOV by speed ---
+	var hv := Vector3(velocity.x, 0.0, velocity.z)
+	var speed := hv.length()
+
+	var t := 0.0
+	if speed > fov_speed_start:
+		t = inverse_lerp(fov_speed_start, fov_speed_end, speed)
+	t = clampf(t, 0.0, 1.0)
+
+	var target_fov := _base_fov + (fov_max_bonus_deg * t)
+	var rate_fov := fov_lerp_in if target_fov > camera.fov else fov_lerp_out
+	camera.fov = lerpf(camera.fov, target_fov, clampf(rate_fov * delta, 0.0, 1.0))
+
+	# --- Slide roll ---
+	var target_roll := 0.0
+	if _state == MoveState.SLIDE:
+		# Use strafe input for controllable roll feel.
+		var steer := clampf(input_vec.x, -1.0, 1.0)
+		var sign := -1.0 if slide_roll_invert else 1.0
+		target_roll = deg_to_rad(slide_roll_max_deg) * steer * sign
+
+	var cur_rot := camera.rotation
+	cur_rot.z = lerp_angle(cur_rot.z, _base_cam_rot.z + target_roll, clampf(slide_roll_lerp * delta, 0.0, 1.0))
+	camera.rotation = cur_rot
 
 func _update_speed_fx(delta: float) -> void:
 	var hv := Vector3(velocity.x, 0.0, velocity.z)
 	var speed := hv.length()
 
-	# base intensity from speed
 	var raw := 0.0
 	if speed > speed_lines_normal_speed:
 		raw = inverse_lerp(speed_lines_normal_speed, speed_lines_full_speed, speed)
 	raw = clampf(raw, 0.0, 1.0)
 
-	# extra intensity during slide burst
 	var burst_raw := 0.0
 	if _state == MoveState.SLIDE and _slide_burst_left > 0.0:
-		# scale by remaining burst time (strongest at start)
 		var t := clampf(_slide_burst_left / max(slide_burst_duration, 0.001), 0.0, 1.0)
 		burst_raw = speed_lines_burst_bonus * t
 
 	raw = clampf(raw + burst_raw, 0.0, 1.0)
 
-	# smoother response (separate burst lerp)
 	var target := raw
 	var rate := speed_lines_lerp_in if target > _speed_fx_intensity else speed_lines_lerp_out
-
-	# if burst is active, kick faster
 	if _state == MoveState.SLIDE and _slide_burst_left > 0.0:
 		rate = maxf(rate, speed_lines_burst_lerp)
 
 	_speed_fx_intensity = lerpf(_speed_fx_intensity, target, clampf(rate * delta, 0.0, 1.0))
 
 	if speed_lines_material != null:
-		speed_lines_material.set_shader_parameter(
-			speed_lines_density_param,
-			_speed_fx_intensity * speed_lines_max_density
-		)
+		speed_lines_material.set_shader_parameter(speed_lines_density_param, _speed_fx_intensity * speed_lines_max_density)
 
-	# wind stays tied to intensity
 	if _wind_player != null and _wind_player.stream != null:
 		if _speed_fx_intensity > wind_start_threshold:
 			if not _wind_player.playing:
@@ -478,14 +506,12 @@ func _update_slide_loop(delta: float) -> void:
 
 	var hv := Vector3(velocity.x, 0.0, velocity.z)
 	var speed := hv.length()
-
 	var should_play := (_state == MoveState.SLIDE and speed >= slide_loop_start_speed)
 
 	if should_play:
 		if not _slide_loop_player.playing:
 			_slide_loop_player.play()
 
-		# map speed -> 0..1 (reuse your speed lines range for a good feel)
 		var t := 0.0
 		if speed > speed_lines_normal_speed:
 			t = inverse_lerp(speed_lines_normal_speed, speed_lines_full_speed, speed)
@@ -497,7 +523,6 @@ func _update_slide_loop(delta: float) -> void:
 		_slide_loop_player.volume_db = lerpf(_slide_loop_player.volume_db, target_db, clampf(slide_loop_lerp * delta, 0.0, 1.0))
 		_slide_loop_player.pitch_scale = lerpf(_slide_loop_player.pitch_scale, target_pitch, clampf(slide_loop_lerp * delta, 0.0, 1.0))
 	else:
-		# fade out then stop
 		_slide_loop_player.volume_db = lerpf(_slide_loop_player.volume_db, slide_loop_min_db, clampf(slide_loop_lerp * delta, 0.0, 1.0))
 		if _slide_loop_player.playing and _slide_loop_player.volume_db <= (slide_loop_min_db + 0.5):
 			_slide_loop_player.stop()
@@ -508,8 +533,6 @@ func add_xp(amount: int) -> void:
 		push_error("PlayerController.add_xp(): level_system is null.")
 		return
 	level_system.add_xp(amount)
-
-# --- wiring/validation ---
 
 func _autowire() -> void:
 	if head == null:
