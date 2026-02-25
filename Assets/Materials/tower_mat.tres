@@ -1,8 +1,8 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://cixhj07w3qmc6"]
 
-[ext_resource type="Texture2D" uid="uid://cfhmlf6kxik4y" path="res://Assets/Textures/tower_text.png" id="1_6wtkc"]
+[ext_resource type="Texture2D" uid="uid://rtc1rlfaq5q0" path="res://Trenchbroom/textures/Hexen2/RTEX053.png" id="1_lpb53"]
 
 [resource]
-albedo_texture = ExtResource("1_6wtkc")
-uv1_scale = Vector3(0.57, 0.57, 0.57)
+albedo_texture = ExtResource("1_lpb53")
 uv1_triplanar = true
+texture_filter = 0

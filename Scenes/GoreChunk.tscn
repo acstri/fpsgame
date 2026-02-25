@@ -1,25 +1,19 @@
 [gd_scene format=3 uid="uid://bkaxbkgxm6fef"]
 
 [ext_resource type="Script" uid="uid://b3i4cvl75owfy" path="res://Scenes/GoreChunk.gd" id="1_1ilf0"]
+[ext_resource type="Texture2D" uid="uid://cptpmveyyq1bq" path="res://Assets/Textures/gore.png" id="2_21ooh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ilf0"]
-albedo_color = Color(0.6862745, 0, 0, 1)
+albedo_texture = ExtResource("2_21ooh")
+uv1_scale = Vector3(0.505, 0.505, 0.505)
+texture_filter = 0
 
 [sub_resource type="SphereMesh" id="SphereMesh_21ooh"]
 material = SubResource("StandardMaterial3D_1ilf0")
 radius = 0.2
 height = 0.4
 radial_segments = 4
-rings = 3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21ooh"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_c27qm"]
-material = SubResource("StandardMaterial3D_21ooh")
-radius = 0.1
-height = 0.2
-radial_segments = 4
-rings = 3
+rings = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1ilf0"]
 radius = 0.18880802
@@ -27,16 +21,11 @@ radius = 0.18880802
 [node name="GoreChunk" type="RigidBody3D" unique_id=1575394706]
 collision_layer = 256
 script = ExtResource("1_1ilf0")
+fade_mesh_path = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1308624809]
 layers = 256
 mesh = SubResource("SphereMesh_21ooh")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=585681321]
-transform = Transform3D(-0.4311232, 0.38395694, -0.816523, 0.1792739, 0.923351, 0.33953467, 0.88430405, 0, -0.4669115, 0.10355815, 0.15612109, 0)
-layers = 256
-mesh = SubResource("SphereMesh_c27qm")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=460898129]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.026092514, 0.04999493, 0)
 shape = SubResource("SphereShape3D_1ilf0")

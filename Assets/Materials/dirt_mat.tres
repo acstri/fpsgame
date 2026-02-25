@@ -1,8 +1,9 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://ctkut7vlmsdin"]
 
-[ext_resource type="Texture2D" uid="uid://rglbv2qcc5dm" path="res://Assets/Textures/dirt_text.jpg" id="1_gpadn"]
+[ext_resource type="Texture2D" uid="uid://iswho5q657l7" path="res://Trenchbroom/textures/Hexen2/RTEX102.png" id="1_tfjd2"]
 
 [resource]
-albedo_texture = ExtResource("1_gpadn")
-uv1_scale = Vector3(0.02, 0.02, 0.02)
+albedo_texture = ExtResource("1_tfjd2")
+uv1_scale = Vector3(0.3, 0.3, 0.3)
 uv1_triplanar = true
+texture_filter = 0

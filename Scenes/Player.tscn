@@ -1,14 +1,12 @@
 [gd_scene format=3 uid="uid://bba1rtjmy8a0l"]
 
-[ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/PlayerController.gd" id="1_v0iea"]
-[ext_resource type="AudioStream" uid="uid://do86ididdh3w3" path="res://Assets/Sounds/wind.mp3" id="2_1iu4k"]
+[ext_resource type="Script" uid="uid://c734mijurcsht" path="res://Scripts/Player/PlayerController.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://dh0j7rct0ytoi" path="res://Scripts/CameraShake.gd" id="2_glx4g"]
 [ext_resource type="Material" uid="uid://c0oklrallvw82" path="res://SpeedLines.tres" id="2_m0x7a"]
-[ext_resource type="AudioStream" uid="uid://cgrivrb5kqkjx" path="res://Assets/Sounds/slidingsound.mp3" id="4_8flut"]
 [ext_resource type="Script" uid="uid://bymvuouhjiker" path="res://Scripts/LevelSystem.gd" id="4_dewec"]
-[ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/PlayerStats.gd" id="5_5ixxa"]
+[ext_resource type="Script" uid="uid://s6dbxbxtktiq" path="res://Scripts/Player/PlayerStats.gd" id="5_5ixxa"]
 [ext_resource type="Script" uid="uid://bo0fonlk36btw" path="res://Scripts/ChainLightning.gd" id="5_nn08x"]
-[ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/PlayerHealth.gd" id="6_nn08x"]
+[ext_resource type="Script" uid="uid://c8efhu4ngh02b" path="res://Scripts/Player/PlayerHealth.gd" id="6_nn08x"]
 [ext_resource type="Script" uid="uid://d3kn4ba8eij1a" path="res://Scripts/SpellCaster.gd" id="7_52ee3"]
 [ext_resource type="Script" uid="uid://34hcn530p33q" path="res://Scripts/FireballSpell.gd" id="7_ksbbd"]
 [ext_resource type="PackedScene" uid="uid://bmg3pst3tbe74" path="res://Scenes/FireballProjectile.tscn" id="8_glx4g"]
@@ -29,6 +27,14 @@
 [ext_resource type="AudioStream" uid="uid://dyhjf7ld2lcty" path="res://Assets/Sounds/hurt2.mp3" id="24_8flut"]
 [ext_resource type="AudioStream" uid="uid://dptqtu8chqrpg" path="res://Assets/Sounds/hurt3.mp3" id="25_u7x0b"]
 
+[sub_resource type="Curve" id="Curve_utwlt"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.35361215, 0.59633756), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_utwlt"]
+top_radius = 0.02
+bottom_radius = 0.02
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t5aa"]
 albedo_color = Color(0, 0, 1, 1)
 
@@ -37,7 +43,10 @@ material = SubResource("StandardMaterial3D_6t5aa")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fkybt"]
 
-[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera", "stats", "level_system") groups=["player"]]
+[sub_resource type="SphereShape3D" id="SphereShape3D_kih0c"]
+radius = 0.25
+
+[node name="Player" type="CharacterBody3D" unique_id=111841163 node_paths=PackedStringArray("head", "camera", "stats", "level_system", "ceiling_check", "grapple_origin", "grapple_ray", "grapple_rope") groups=["player"]]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_v0iea")
@@ -45,20 +54,19 @@ head = NodePath("Head")
 camera = NodePath("Head/WorldCam")
 stats = NodePath("PlayerStats")
 level_system = NodePath("LevelSystem")
+ceiling_check = NodePath("CeilingCheck")
+speed_lines_material = ExtResource("2_m0x7a")
+grapple_origin = NodePath("Head/GrappleOrigin")
+grapple_ray = NodePath("Head/GrappleRay")
+grapple_rope = NodePath("Head/Rope")
 air_accel = 5.0
 max_air_speed = 100.0
 jump_velocity_per_speed = 0.18
 jump_velocity_max_bonus = 4.0
 slide_buffer_time = 0.5
-fov_max_bonus_deg = 18.0
 slide_roll_max_deg = 16.0
-speed_lines_material = ExtResource("2_m0x7a")
-wind_stream = ExtResource("2_1iu4k")
-wind_bus = "Sfx"
-slide_loop_stream = ExtResource("4_8flut")
-slide_loop_bus = "Sfx"
-slide_loop_min_db = -30.0
-slide_loop_max_db = -6.0
+air_strafe_curve = SubResource("Curve_utwlt")
+fov_max_bonus_deg = 18.0
 
 [node name="Head" type="Node3D" parent="." unique_id=419456813]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
@@ -70,6 +78,18 @@ current = true
 [node name="CameraShake" type="Node" parent="Head/WorldCam" unique_id=1819040865]
 script = ExtResource("2_glx4g")
 camera_path = NodePath("..")
+
+[node name="GrappleOrigin" type="Marker3D" parent="Head" unique_id=1125210979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3189929, 0, -0.32681555)
+
+[node name="GrappleRay" type="RayCast3D" parent="Head" unique_id=1205321624]
+target_position = Vector3(0, 0, -60)
+
+[node name="Rope" type="Node3D" parent="Head" unique_id=87741049]
+
+[node name="GrappleLine" type="MeshInstance3D" parent="Head/Rope" unique_id=1988746539]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_utwlt")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=148226516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -144,3 +164,8 @@ script = ExtResource("22_x63xi")
 head = NodePath("../Head")
 camera = NodePath("../Head/WorldCam")
 hurt_sounds = Array[AudioStream]([ExtResource("23_70hv0"), ExtResource("24_8flut"), ExtResource("25_u7x0b")])
+
+[node name="CeilingCheck" type="ShapeCast3D" parent="." unique_id=1252060122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("SphereShape3D_kih0c")
+target_position = Vector3(0, -0.1, 0)

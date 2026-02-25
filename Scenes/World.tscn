@@ -27,6 +27,7 @@
 [ext_resource type="Resource" uid="uid://ddbinyqeh7ayu" path="res://Scripts/upgrades/data/max_hp_up.tres" id="16_g01fq"]
 [ext_resource type="PackedScene" uid="uid://se74irodpl8i" path="res://Scenes/DamageNumber.tscn" id="17_ao4cr"]
 [ext_resource type="Script" uid="uid://b3vra038m6gwv" path="res://Scripts/DamageNumbersLayer.gd" id="22_ao4cr"]
+[ext_resource type="PackedScene" uid="uid://n345j3xrwh7p" path="res://Scenes/PauseMenu.tscn" id="23_d4o7i"]
 [ext_resource type="Resource" uid="uid://d1qrptn40fwle" path="res://chainlightning.tres" id="25_0bcf6"]
 [ext_resource type="Resource" uid="uid://dq14m3ra82cuy" path="res://fireball.tres" id="25_mq4nq"]
 [ext_resource type="PackedScene" uid="uid://b1yicvwa7lffw" path="res://Scenes/LightningBeam.tscn" id="26_0bcf6"]
@@ -39,6 +40,7 @@
 [ext_resource type="Material" uid="uid://fa4tvrn8ktbk" path="res://Assets/Materials/floor_mat.tres" id="33_irg3d"]
 [ext_resource type="Material" uid="uid://ctkut7vlmsdin" path="res://Assets/Materials/dirt_mat.tres" id="34_y8a40"]
 [ext_resource type="AudioStream" uid="uid://djwu15tmnmdif" path="res://Assets/Sounds/ambience.mp3" id="36_y8a40"]
+[ext_resource type="PackedScene" uid="uid://c5qnpy6myrvyr" path="res://Scenes/tb_test.tscn" id="37_crxrm"]
 [ext_resource type="PackedScene" uid="uid://btufsckmvxbdn" path="res://Scenes/PackAPunchMachine.tscn" id="37_n1aqv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kn06e"]
@@ -156,9 +158,12 @@ process_mode = 3
 process_mode = 3
 randomize_pitch = true
 
-[node name="Player" parent="." unique_id=111841163 instance=ExtResource("3_p70al")]
+[node name="PauseMenu" parent="UI" unique_id=1540385844 instance=ExtResource("23_d4o7i")]
+
+[node name="Player" parent="." unique_id=111841163 node_paths=PackedStringArray("pause_menu") instance=ExtResource("3_p70al")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.34855, 16.405642, 49.311348)
 speed_lines_max_density = 0.7
+pause_menu = NodePath("../UI/PauseMenu")
 
 [node name="WorldCam" parent="Player/Head" parent_id_path=PackedInt32Array(111841163, 419456813) index="0" unique_id=1011416034]
 near = 0.1
@@ -482,6 +487,8 @@ mesh = SubResource("BoxMesh_5dli4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ground/LevelLayout" unique_id=427253245]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.077, 0)
 shape = SubResource("BoxShape3D_uo7di")
+
+[node name="Tb_test" parent="ground/LevelLayout" unique_id=1288069552 instance=ExtResource("37_crxrm")]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="ground" unique_id=1904758274]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, -1.1228848, -52.5)

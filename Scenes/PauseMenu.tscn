@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://n345j3xrwh7p"]
+
+[ext_resource type="Script" uid="uid://bahv4fcbht1fr" path="res://Scenes/PauseMenu.gd" id="1_lj4oq"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=1540385844 node_paths=PackedStringArray("title_label", "time_label", "continue_button", "quit_button")]
+process_mode = 3
+script = ExtResource("1_lj4oq")
+title_label = NodePath("Panel/VBox/Title")
+time_label = NodePath("Panel/VBox/TimeLabel")
+continue_button = NodePath("Panel/VBox/Buttons/ContinueButton")
+quit_button = NodePath("Panel/VBox/Buttons/QuitButton")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1933301767]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.5
+offset_top = -154.0
+offset_right = 62.5
+offset_bottom = -69.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=723960401]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=545156293]
+layout_mode = 2
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="Panel/VBox" unique_id=638149587]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox" unique_id=1597221906]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Panel/VBox/Buttons" unique_id=645437312]
+layout_mode = 2
+text = "Continue"
+
+[node name="QuitButton" type="Button" parent="Panel/VBox/Buttons" unique_id=1121652856]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+text = "Quit"

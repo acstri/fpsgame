@@ -40,7 +40,6 @@ anim_player_path = NodePath("firstknight/AnimationPlayer")
 health = NodePath("Health")
 
 [node name="firstknight" parent="." unique_id=781976969 instance=ExtResource("2_ovthj")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=648665732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84509444, 0)

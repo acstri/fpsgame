@@ -119,18 +119,15 @@ func _bind_player_refs() -> void:
 		_on_spell_changed(_spell_caster._get_spelldata_kind(), _spell_caster.spell)
 
 func _bind_events() -> void:
-	var events := get_node_or_null("/root/Combat_Events")
-	if events != null and events.has_signal("hurt_flash"):
-		events.hurt_flash.connect(_on_hurt_flash)
+	if is_instance_valid(Combat_Events) and Combat_Events.has_signal(&"hurt_flash"):
+		Combat_Events.hurt_flash.connect(_on_hurt_flash)
 
-	var wallet := get_node_or_null("/root/EssenceWallet")
-	if wallet != null and wallet.has_signal("changed"):
-		wallet.changed.connect(_on_essence_changed)
-		_on_essence_changed(wallet.get_amount())
+	if is_instance_valid(EssenceWallet) and EssenceWallet.has_signal(&"changed"):
+		EssenceWallet.changed.connect(_on_essence_changed)
+		_on_essence_changed(EssenceWallet.get_amount())
 
-	var pap := get_node_or_null("/root/PackAPunch")
-	if pap != null and pap.has_signal("tier_changed"):
-		pap.tier_changed.connect(_on_pap_tier_changed)
+	if is_instance_valid(PackAPunch) and PackAPunch.has_signal(&"tier_changed"):
+		PackAPunch.tier_changed.connect(_on_pap_tier_changed)
 
 func _refresh_all() -> void:
 	_refresh_spell_panel(_spell_caster.spell if _spell_caster != null else null)
@@ -243,5 +240,6 @@ func _refresh_enemy_count(delta: float) -> void:
 func _on_hurt_flash(_amount: float) -> void: pass
 func _on_essence_changed(_amount: int) -> void: _refresh_essence()
 func _refresh_essence() -> void: pass
-func _on_pap_tier_changed(_kind: StringName, _tier: int, _name: String) -> void: _refresh_pap()
+func _on_pap_tier_changed(_kind: StringName, _tier: int) -> void:
+	_refresh_pap()
 func _refresh_pap() -> void: pass
