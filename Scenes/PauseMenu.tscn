@@ -10,6 +10,13 @@ time_label = NodePath("Panel/VBox/TimeLabel")
 continue_button = NodePath("Panel/VBox/Buttons/ContinueButton")
 quit_button = NodePath("Panel/VBox/Buttons/QuitButton")
 
+[node name="Dimmer" type="PanelContainer" parent="." unique_id=1407026951]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Panel" type="PanelContainer" parent="." unique_id=1933301767]
 anchors_preset = 8
 anchor_left = 0.5

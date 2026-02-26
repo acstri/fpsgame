@@ -28,7 +28,9 @@ Player_Profile="*uid://dfdw1oe8461rm"
 
 [display]
 
-window/stretch/mode="viewport"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
